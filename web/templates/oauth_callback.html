@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kolekt - OAuth Callback</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #ffffff;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .callback-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #7A3FFF 0%, #E940A4 40%, #FF6A3D 75%, #FFB443 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .status {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #7A3FFF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .message {
+            font-size: 14px;
+            color: #a0a0a0;
+            line-height: 1.5;
+        }
+        
+        .error {
+            color: #f87171;
+        }
+        
+        .success {
+            color: #4ade80;
+        }
+    </style>
+</head>
+<body>
+    <div class="callback-container">
+        <div class="logo">kolekt.io</div>
+        <div class="spinner" id="spinner"></div>
+        <div class="status" id="status">Processing authorization...</div>
+        <div class="message" id="message">Please wait while we complete your account connection.</div>
+    </div>
+
+    <script>
+        // Parse URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const state = urlParams.get('state');
+        const error = urlParams.get('error');
+        const errorDescription = urlParams.get('error_description');
+        
+        // Extract platform from state or URL path
+        const pathParts = window.location.pathname.split('/');
+        const platform = pathParts[pathParts.length - 2]; // /oauth/{platform}/callback
+        
+        const statusEl = document.getElementById('status');
+        const messageEl = document.getElementById('message');
+        const spinnerEl = document.getElementById('spinner');
+        
+        if (error) {
+            // Handle OAuth error
+            statusEl.textContent = 'Authorization Failed';
+            statusEl.className = 'status error';
+            
+            // Provide more specific error messages
+            let errorMsg = 'There was an error during authorization.';
+            if (error === 'access_denied') {
+                errorMsg = 'You denied the authorization request. Please try again and accept the permissions.';
+            } else if (error === 'invalid_request') {
+                errorMsg = 'Invalid authorization request. Please try again.';
+            } else if (error === 'server_error') {
+                errorMsg = 'Server error during authorization. Please try again later.';
+            } else if (errorDescription) {
+                errorMsg = errorDescription;
+            }
+            
+            messageEl.textContent = errorMsg;
+            messageEl.className = 'message error';
+            spinnerEl.style.display = 'none';
+            
+            // Notify parent window
+            if (window.opener) {
+                window.opener.postMessage({
+                    type: 'oauth_callback',
+                    platform: platform,
+                    error: error,
+                    error_description: errorMsg
+                }, window.location.origin);
+            }
+            
+            // Close window after 5 seconds to give user time to read error
+            setTimeout(() => {
+                window.close();
+            }, 5000);
+            
+        } else if (code) {
+            // Handle successful OAuth
+            statusEl.textContent = 'Authorization Successful!';
+            statusEl.className = 'status success';
+            messageEl.textContent = `Successfully connected your ${platform} account. This window will close automatically.`;
+            messageEl.className = 'message success';
+            spinnerEl.style.display = 'none';
+            
+            // Notify parent window
+            if (window.opener) {
+                window.opener.postMessage({
+                    type: 'oauth_callback',
+                    platform: platform,
+                    code: code,
+                    state: state
+                }, window.location.origin);
+            }
+            
+            // Close window after 2 seconds
+            setTimeout(() => {
+                window.close();
+            }, 2000);
+            
+        } else {
+            // No code or error - invalid callback
+            statusEl.textContent = 'Invalid Callback';
+            statusEl.className = 'status error';
+            messageEl.textContent = 'This callback URL is invalid or missing required parameters.';
+            messageEl.className = 'message error';
+            spinnerEl.style.display = 'none';
+            
+            // Close window after 3 seconds
+            setTimeout(() => {
+                window.close();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

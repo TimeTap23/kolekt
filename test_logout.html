@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        .btn { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>Kolekt Logout Test</h1>
+    
+    <div class="test-section">
+        <h2>Authentication Status</h2>
+        <div id="authStatus">Checking...</div>
+        <button class="btn" onclick="checkAuthStatus()">Check Status</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Logout Test</h2>
+        <button class="btn" onclick="testLogout()">Test Logout</button>
+        <div id="logoutResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Manual Logout</h2>
+        <button class="btn" onclick="manualLogout()">Manual Logout</button>
+        <div id="manualResult"></div>
+    </div>
+
+    <script src="/static/js/auth_modal.js?v=2.2.0"></script>
+    <script>
+        // Wait for kolektAuth to be initialized
+        window.addEventListener('load', function() {
+            setTimeout(checkAuthStatus, 1000);
+        });
+
+        function checkAuthStatus() {
+            const statusDiv = document.getElementById('authStatus');
+            const token = localStorage.getItem('threadstorm_access_token');
+            
+            if (token) {
+                statusDiv.innerHTML = '<span class="success">✅ Authenticated - Token found</span>';
+            } else {
+                statusDiv.innerHTML = '<span class="error">❌ Not authenticated - No token</span>';
+            }
+        }
+
+        function testLogout() {
+            const resultDiv = document.getElementById('logoutResult');
+            resultDiv.innerHTML = '<span class="info">Testing logout...</span>';
+            
+            try {
+                if (window.kolektAuth) {
+                    kolektAuth.logout().then(() => {
+                        resultDiv.innerHTML = '<span class="success">✅ Logout successful!</span>';
+                        setTimeout(checkAuthStatus, 1000);
+                    }).catch(error => {
+                        resultDiv.innerHTML = `<span class="error">❌ Logout failed: ${error.message}</span>`;
+                    });
+                } else {
+                    resultDiv.innerHTML = '<span class="error">❌ kolektAuth not found</span>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+        }
+
+        function manualLogout() {
+            const resultDiv = document.getElementById('manualResult');
+            resultDiv.innerHTML = '<span class="info">Performing manual logout...</span>';
+            
+            try {
+                // Clear tokens manually
+                localStorage.removeItem('threadstorm_access_token');
+                localStorage.removeItem('threadstorm_refresh_token');
+                localStorage.removeItem('threadstorm_user');
+                
+                resultDiv.innerHTML = '<span class="success">✅ Manual logout completed</span>';
+                setTimeout(checkAuthStatus, 1000);
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Manual logout failed: ${error.message}</span>`;
+            }
+        }
+    </script>
+</body>
+</html>

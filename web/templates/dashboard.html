@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kolekt Dashboard - Content Creation & Management</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css?v=2.4.2">
+    <link rel="stylesheet" href="/static/css/dashboard.css?v=2.3.0">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo-container">
+                <div class="logo-icon">K</div>
+                <span class="logo-text">kolekt.io</span>
+            </a>
+            
+            <nav class="nav">
+                <a href="/dashboard" class="nav-link active">Dashboard</a>
+                <a href="#content" class="nav-link">Content</a>
+                <a href="#analytics" class="nav-link">Analytics</a>
+                <a href="#settings" class="nav-link">Settings</a>
+            </nav>
+            
+            <div class="header-actions">
+                <div class="user-menu">
+                    <button class="user-menu-btn" onclick="toggleUserMenu()">
+                        <div class="user-avatar">
+                            <span id="userInitials">U</span>
+                        </div>
+                        <span id="userName">User</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#profile" class="dropdown-item">Profile</a>
+                        <a href="#settings" class="dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" onclick="kolektAuth.logout()">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <div class="container">
+                <h1 class="welcome-title">Welcome back, <span id="userDisplayName">User</span>! 👋</h1>
+                <p class="welcome-subtitle">Ready to create amazing content? Let's get started.</p>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions">
+            <div class="container">
+                <h2 class="section-title">Quick Actions</h2>
+                <div class="actions-grid">
+                    <div class="action-card" onclick="openContentCreator()">
+                        <div class="action-icon">✍️</div>
+                        <h3>Create Content</h3>
+                        <p>Start a new kolekt or import existing content</p>
+                    </div>
+                    <div class="action-card" onclick="openQuickPost()">
+                        <div class="action-icon">🚀</div>
+                        <h3>Quick Post</h3>
+                        <p>Post directly to your connected accounts</p>
+                    </div>
+                    <div class="action-card" onclick="openSocialConnections()">
+                        <div class="action-icon">🔗</div>
+                        <h3>Connect Accounts</h3>
+                        <p>Link your Threads, Instagram & Facebook</p>
+                    </div>
+                    <div class="action-card" onclick="openTemplates()">
+                        <div class="action-icon">📋</div>
+                        <h3>Browse Templates</h3>
+                        <p>Use proven templates for better engagement</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Content Overview -->
+        <section class="content-overview">
+            <div class="container">
+                <div class="overview-header">
+                    <h2 class="section-title">Your Content</h2>
+                    <button class="btn btn-primary" onclick="openContentCreator()">+ New Content</button>
+                </div>
+                
+                <div class="content-stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalContent">0</div>
+                        <div class="stat-label">Total Content</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="publishedContent">0</div>
+                        <div class="stat-label">Published</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="draftContent">0</div>
+                        <div class="stat-label">Drafts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="scheduledContent">0</div>
+                        <div class="stat-label">Scheduled</div>
+                    </div>
+                </div>
+
+                <div class="recent-content">
+                    <h3>Recent Content</h3>
+                    <div class="content-list" id="recentContentList">
+                        <div class="empty-state">
+                            <div class="empty-icon">📝</div>
+                            <h4>No content yet</h4>
+                            <p>Create your first piece of content to get started</p>
+                            <button class="btn btn-primary" onclick="openContentCreator()">Create Content</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Social Connections -->
+        <section class="social-connections">
+            <div class="container">
+                <h2 class="section-title">Connected Accounts</h2>
+                <div class="connections-grid">
+                    <div class="connection-card" id="threadsConnection">
+                        <div class="connection-icon">🧵</div>
+                        <div class="connection-info">
+                            <h3>Threads</h3>
+                            <p class="connection-status">Not connected</p>
+                        </div>
+                        <button class="btn btn-ghost" onclick="connectThreads()">Connect</button>
+                    </div>
+                    
+                    <div class="connection-card" id="instagramConnection">
+                        <div class="connection-icon">📸</div>
+                        <div class="connection-info">
+                            <h3>Instagram</h3>
+                            <p class="connection-status">Not connected</p>
+                        </div>
+                        <button class="btn btn-ghost" onclick="connectInstagram()">Connect</button>
+                    </div>
+                    
+                    <div class="connection-card" id="facebookConnection">
+                        <div class="connection-icon">📘</div>
+                        <div class="connection-info">
+                            <h3>Facebook</h3>
+                            <p class="connection-status">Not connected</p>
+                        </div>
+                        <button class="btn btn-ghost" onclick="connectFacebook()">Connect</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Preview -->
+        <section class="analytics-preview">
+            <div class="container">
+                <div class="analytics-header">
+                    <h2 class="section-title">Performance Overview</h2>
+                    <a href="#analytics" class="btn btn-ghost">View Full Analytics</a>
+                </div>
+                
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <div class="analytics-icon">👁️</div>
+                        <div class="analytics-content">
+                            <div class="analytics-number" id="totalViews">0</div>
+                            <div class="analytics-label">Total Views</div>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <div class="analytics-icon">❤️</div>
+                        <div class="analytics-content">
+                            <div class="analytics-number" id="totalLikes">0</div>
+                            <div class="analytics-label">Total Likes</div>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <div class="analytics-icon">💬</div>
+                        <div class="analytics-content">
+                            <div class="analytics-number" id="totalComments">0</div>
+                            <div class="analytics-label">Total Comments</div>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <div class="analytics-icon">📈</div>
+                        <div class="analytics-content">
+                            <div class="analytics-number" id="avgEngagement">0%</div>
+                            <div class="analytics-label">Avg Engagement</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <div id="contentCreatorModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Create New Content</h3>
+                <button class="modal-close" onclick="closeContentCreator()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="content-creator-tabs">
+                    <button class="tab-btn active" data-label="Manual Input" onclick="switchTab('manual')">Manual Input</button>
+                    <button class="tab-btn" data-label="Import Content" onclick="switchTab('import')">Import Content</button>
+                    <button class="tab-btn" data-label="AI Assistant" onclick="switchTab('ai')">AI Assistant</button>
+                </div>
+                
+                <!-- Manual Input Tab -->
+                <div class="tab-content active" id="manualTab">
+                    <form id="contentForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="contentTitle">Title</label>
+                                <input type="text" id="contentTitle" name="title" placeholder="Enter content title..." required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contentType">Platform</label>
+                                <select id="contentType" name="type" onchange="updateCharLimit()">
+                                    <option value="threads">Threads (500 chars)</option>
+                                    <option value="instagram">Instagram (2,200 chars)</option>
+                                    <option value="facebook">Facebook (63,206 chars)</option>
+                                    <option value="cross-platform">Cross-Platform</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contentText">Content</label>
+                            <textarea id="contentText" name="content" rows="8" placeholder="Write your content here..." required oninput="updateCharCount()"></textarea>
+                            <div class="char-count">
+                                <span id="charCount">0</span> / <span id="charLimit">500</span> characters
+                                <span id="charStatus" class="char-status"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="contentTags">Tags</label>
+                                <input type="text" id="contentTags" name="tags" placeholder="tech, ai, productivity">
+                                <small>Separate with commas</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="publishOption">Publishing</label>
+                                <select id="publishOption" name="publishOption" onchange="toggleScheduler()">
+                                    <option value="draft">Save as Draft</option>
+                                    <option value="immediate">Publish Now</option>
+                                    <option value="scheduled">Schedule for Later</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" id="schedulerGroup" style="display: none;">
+                            <label for="scheduleDate">Schedule Date & Time</label>
+                            <div class="datetime-inputs">
+                                <input type="date" id="scheduleDate" name="scheduleDate">
+                                <input type="time" id="scheduleTime" name="scheduleTime">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="aiOptimize" name="aiOptimize">
+                                    <span class="checkmark"></span>
+                                    Optimize with AI Assistant
+                                </label>
+                                <small>Enhance engagement and readability</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-ghost" onclick="closeContentCreator()">Cancel</button>
+                            <button type="button" class="btn btn-ghost" onclick="previewContent()">Preview</button>
+                            <button type="submit" class="btn btn-primary">
+                                <span id="submitButtonText">Create Content</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Import Content Tab -->
+                <div class="tab-content" id="importTab" style="display: none;">
+                    <div class="import-options">
+                        <div class="import-method active" onclick="selectImportMethod('url')">
+                            <div class="import-icon">🔗</div>
+                            <h4>Import from URL</h4>
+                            <p>Paste a link to import content</p>
+                        </div>
+                        
+                        <div class="import-method" onclick="selectImportMethod('file')">
+                            <div class="import-icon">📁</div>
+                            <h4>Upload File</h4>
+                            <p>Upload text, CSV, or document files</p>
+                        </div>
+                        
+                        <div class="import-method" onclick="selectImportMethod('existing')">
+                            <div class="import-icon">📋</div>
+                            <h4>Existing Post</h4>
+                            <p>Import from your connected accounts</p>
+                        </div>
+                    </div>
+                    
+                    <!-- URL Import -->
+                    <div class="import-content active" id="urlImport">
+                        <div class="form-group">
+                            <label for="importUrl">Content URL</label>
+                            <input type="url" id="importUrl" placeholder="https://example.com/post">
+                            <small>Supports: Twitter, LinkedIn, Medium, blogs, articles</small>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-primary" onclick="importFromUrl()">
+                                <span class="btn-icon">🔄</span>
+                                Import Content
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- File Import -->
+                    <div class="import-content" id="fileImport" style="display: none;">
+                        <div class="file-upload-area" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                            <div class="upload-icon">📁</div>
+                            <h4>Drag & Drop Files Here</h4>
+                            <p>Or click to browse</p>
+                            <input type="file" id="fileInput" accept=".txt,.csv,.docx,.pdf" multiple onchange="handleFileSelect(event)">
+                            <button type="button" class="btn btn-ghost" onclick="document.getElementById('fileInput').click()">Browse Files</button>
+                        </div>
+                        
+                        <div id="fileList" class="file-list"></div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-primary" onclick="processFiles()" id="processFilesBtn" disabled>
+                                <span class="btn-icon">⚡</span>
+                                Process Files
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Existing Post Import -->
+                    <div class="import-content" id="existingImport" style="display: none;">
+                        <div class="connected-accounts">
+                            <div class="account-selector" id="threadsAccount">
+                                <div class="account-info">
+                                    <div class="account-icon">🧵</div>
+                                    <div class="account-details">
+                                        <h4>Threads</h4>
+                                        <span class="connection-status" id="threadsStatus">Not Connected</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-ghost btn-sm" onclick="connectAccount('threads')">Connect</button>
+                            </div>
+                            
+                            <div class="account-selector" id="instagramAccount">
+                                <div class="account-info">
+                                    <div class="account-icon">📸</div>
+                                    <div class="account-details">
+                                        <h4>Instagram</h4>
+                                        <span class="connection-status" id="instagramStatus">Not Connected</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-ghost btn-sm" onclick="connectAccount('instagram')">Connect</button>
+                            </div>
+                            
+                            <div class="account-selector" id="facebookAccount">
+                                <div class="account-info">
+                                    <div class="account-icon">📘</div>
+                                    <div class="account-details">
+                                        <h4>Facebook</h4>
+                                        <span class="connection-status" id="facebookStatus">Not Connected</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-ghost btn-sm" onclick="connectAccount('facebook')">Connect</button>
+                            </div>
+                        </div>
+                        
+                        <div id="existingPosts" class="existing-posts" style="display: none;">
+                            <h4>Recent Posts</h4>
+                            <div id="postsList" class="posts-list"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- AI Assistant Tab -->
+                <div class="tab-content" id="aiTab" style="display: none;">
+                    <div class="ai-assistant">
+                        <div class="ai-header">
+                            <div class="ai-avatar">🤖</div>
+                            <div class="ai-info">
+                                <h4>Kolekt AI Assistant</h4>
+                                <p>I'll help you create engaging content optimized for your audience</p>
+                            </div>
+                        </div>
+                        
+                        <div class="ai-prompts">
+                            <h4>Quick Prompts</h4>
+                            <div class="prompt-buttons">
+                                <button class="prompt-btn" onclick="usePrompt('Create a viral thread about')">
+                                    🧵 Viral Thread
+                                </button>
+                                <button class="prompt-btn" onclick="usePrompt('Write an engaging Instagram caption for')">
+                                    📸 Instagram Caption
+                                </button>
+                                <button class="prompt-btn" onclick="usePrompt('Generate a professional LinkedIn post about')">
+                                    💼 LinkedIn Post
+                                </button>
+                                <button class="prompt-btn" onclick="usePrompt('Create educational content explaining')">
+                                    📚 Educational Content
+                                </button>
+                                <button class="prompt-btn" onclick="usePrompt('Write a compelling story about')">
+                                    📖 Storytelling
+                                </button>
+                                <button class="prompt-btn" onclick="usePrompt('Create a product announcement for')">
+                                    🚀 Product Launch
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="ai-input-section">
+                            <div class="form-group">
+                                <label for="aiPrompt">What would you like to create?</label>
+                                <textarea id="aiPrompt" rows="4" placeholder="Describe what you want to create, your target audience, key points to include, tone of voice, etc."></textarea>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="aiTone">Tone</label>
+                                    <select id="aiTone">
+                                        <option value="professional">Professional</option>
+                                        <option value="casual">Casual</option>
+                                        <option value="friendly">Friendly</option>
+                                        <option value="authoritative">Authoritative</option>
+                                        <option value="humorous">Humorous</option>
+                                        <option value="inspirational">Inspirational</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="aiLength">Length</label>
+                                    <select id="aiLength">
+                                        <option value="short">Short (1-2 sentences)</option>
+                                        <option value="medium">Medium (paragraph)</option>
+                                        <option value="long">Long (multiple paragraphs)</option>
+                                        <option value="thread">Thread (multiple posts)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="aiPlatform">Target Platform</label>
+                                    <select id="aiPlatform">
+                                        <option value="threads">Threads</option>
+                                        <option value="instagram">Instagram</option>
+                                        <option value="facebook">Facebook</option>
+                                        <option value="linkedin">LinkedIn</option>
+                                        <option value="twitter">Twitter/X</option>
+                                        <option value="general">General</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-primary" onclick="generateContent()">
+                                    <span class="btn-icon">✨</span>
+                                    Generate Content
+                                </button>
+                                <button type="button" class="btn btn-ghost" onclick="clearAiForm()">Clear</button>
+                            </div>
+                        </div>
+                        
+                        <div id="aiResults" class="ai-results" style="display: none;">
+                            <h4>Generated Content</h4>
+                            <div class="generated-content">
+                                <div id="generatedText" class="generated-text"></div>
+                                <div class="generation-actions">
+                                    <button type="button" class="btn btn-ghost btn-sm" onclick="regenerateContent()">
+                                        🔄 Regenerate
+                                    </button>
+                                    <button type="button" class="btn btn-ghost btn-sm" onclick="refineContent()">
+                                        ✏️ Refine
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="useGeneratedContent()">
+                                        ✅ Use This Content
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Social Connections Modal -->
+    <div id="socialConnectionsModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Connect Social Accounts</h3>
+                <button class="modal-close" onclick="closeSocialConnections()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description">Connect your social media accounts to publish and manage content across platforms.</p>
+                
+                <div class="social-accounts">
+                    <!-- Threads Connection -->
+                    <div class="social-account" id="threadsConnection">
+                        <div class="account-header">
+                            <div class="account-icon-large">🧵</div>
+                            <div class="account-info-large">
+                                <h4>Threads</h4>
+                                <p>Connect your Threads account to publish and import content</p>
+                                <div class="connection-status-large">
+                                    <span class="status-indicator" id="threadsIndicator">❌</span>
+                                    <span id="threadsConnectionStatus">Not Connected</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="account-actions">
+                            <button class="btn btn-primary" id="threadsConnectBtn" onclick="connectSocialAccount('threads')">
+                                <span class="btn-icon">🔗</span>
+                                Connect Threads
+                            </button>
+                            <button class="btn btn-ghost" id="threadsDisconnectBtn" onclick="disconnectSocialAccount('threads')" style="display: none;">
+                                <span class="btn-icon">❌</span>
+                                Disconnect
+                            </button>
+                        </div>
+                        
+                        <div class="account-details" id="threadsDetails" style="display: none;">
+                            <div class="detail-item">
+                                <span class="detail-label">Username:</span>
+                                <span class="detail-value" id="threadsUsername">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Followers:</span>
+                                <span class="detail-value" id="threadsFollowers">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Connected:</span>
+                                <span class="detail-value" id="threadsConnectedDate">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Instagram Connection -->
+                    <div class="social-account" id="instagramConnection">
+                        <div class="account-header">
+                            <div class="account-icon-large">📸</div>
+                            <div class="account-info-large">
+                                <h4>Instagram</h4>
+                                <p>Connect your Instagram Business account for professional posting</p>
+                                <div class="connection-status-large">
+                                    <span class="status-indicator" id="instagramIndicator">❌</span>
+                                    <span id="instagramConnectionStatus">Not Connected</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="account-actions">
+                            <button class="btn btn-primary" id="instagramConnectBtn" onclick="connectSocialAccount('instagram')">
+                                <span class="btn-icon">🔗</span>
+                                Connect Instagram
+                            </button>
+                            <button class="btn btn-ghost" id="instagramDisconnectBtn" onclick="disconnectSocialAccount('instagram')" style="display: none;">
+                                <span class="btn-icon">❌</span>
+                                Disconnect
+                            </button>
+                        </div>
+                        
+                        <div class="account-details" id="instagramDetails" style="display: none;">
+                            <div class="detail-item">
+                                <span class="detail-label">Username:</span>
+                                <span class="detail-value" id="instagramUsername">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Followers:</span>
+                                <span class="detail-value" id="instagramFollowers">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Account Type:</span>
+                                <span class="detail-value" id="instagramType">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Facebook Connection -->
+                    <div class="social-account" id="facebookConnection">
+                        <div class="account-header">
+                            <div class="account-icon-large">📘</div>
+                            <div class="account-info-large">
+                                <h4>Facebook</h4>
+                                <p>Connect your Facebook Page to publish and manage content</p>
+                                <div class="connection-status-large">
+                                    <span class="status-indicator" id="facebookIndicator">❌</span>
+                                    <span id="facebookConnectionStatus">Not Connected</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="account-actions">
+                            <button class="btn btn-primary" id="facebookConnectBtn" onclick="connectSocialAccount('facebook')">
+                                <span class="btn-icon">🔗</span>
+                                Connect Facebook
+                            </button>
+                            <button class="btn btn-ghost" id="facebookDisconnectBtn" onclick="disconnectSocialAccount('facebook')" style="display: none;">
+                                <span class="btn-icon">❌</span>
+                                Disconnect
+                            </button>
+                        </div>
+                        
+                        <div class="account-details" id="facebookDetails" style="display: none;">
+                            <div class="detail-item">
+                                <span class="detail-label">Page Name:</span>
+                                <span class="detail-value" id="facebookPageName">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Page ID:</span>
+                                <span class="detail-value" id="facebookPageId">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Followers:</span>
+                                <span class="detail-value" id="facebookFollowers">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="connection-help">
+                    <h4>Need Help?</h4>
+                    <div class="help-items">
+                        <div class="help-item">
+                            <strong>Threads:</strong> Sign in with your Instagram account credentials
+                        </div>
+                        <div class="help-item">
+                            <strong>Instagram:</strong> Requires a Business or Creator account for API access
+                        </div>
+                        <div class="help-item">
+                            <strong>Facebook:</strong> Connect your Facebook Page (not personal profile)
+                        </div>
+                    </div>
+                    <p class="help-note">
+                        <strong>Privacy Note:</strong> We only access permissions needed for content publishing. 
+                        Your personal data remains private and secure.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Preview Modal -->
+    <div id="contentPreviewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Content Preview</h3>
+                <button class="modal-close" onclick="closePreviewModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="preview-platforms">
+                    <div class="platform-tabs">
+                        <button class="platform-tab active" onclick="switchPreviewPlatform('threads')">🧵 Threads</button>
+                        <button class="platform-tab" onclick="switchPreviewPlatform('instagram')">📸 Instagram</button>
+                        <button class="platform-tab" onclick="switchPreviewPlatform('facebook')">📘 Facebook</button>
+                    </div>
+                    
+                    <div class="platform-preview" id="threadsPreview">
+                        <div class="mock-post threads-post">
+                            <div class="post-header">
+                                <div class="profile-pic">👤</div>
+                                <div class="profile-info">
+                                    <div class="username">@yourhandle</div>
+                                    <div class="timestamp">now</div>
+                                </div>
+                            </div>
+                            <div class="post-content" id="threadsContent">Your content will appear here...</div>
+                            <div class="post-actions">
+                                <span>❤️ 0</span>
+                                <span>💬 0</span>
+                                <span>🔄 0</span>
+                                <span>📤 0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="platform-preview" id="instagramPreview" style="display: none;">
+                        <div class="mock-post instagram-post">
+                            <div class="post-header">
+                                <div class="profile-pic">👤</div>
+                                <div class="profile-info">
+                                    <div class="username">yourhandle</div>
+                                    <div class="location">📍 Location</div>
+                                </div>
+                            </div>
+                            <div class="post-image">📷</div>
+                            <div class="post-actions">
+                                <span>❤️ 💬 📤</span>
+                            </div>
+                            <div class="post-content" id="instagramContent">Your content will appear here...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="platform-preview" id="facebookPreview" style="display: none;">
+                        <div class="mock-post facebook-post">
+                            <div class="post-header">
+                                <div class="profile-pic">👤</div>
+                                <div class="profile-info">
+                                    <div class="username">Your Page Name</div>
+                                    <div class="timestamp">Just now · 🌐</div>
+                                </div>
+                            </div>
+                            <div class="post-content" id="facebookContent">Your content will appear here...</div>
+                            <div class="post-actions">
+                                <span>👍 Like</span>
+                                <span>💬 Comment</span>
+                                <span>📤 Share</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="preview-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closePreviewModal()">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="proceedWithContent()">Looks Good - Proceed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Post Modal -->
+    <div id="quickPostModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Quick Post</h3>
+                <button class="modal-close" onclick="closeQuickPost()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="quickPostForm">
+                    <div class="form-group">
+                        <label for="quickPostContent">What's on your mind?</label>
+                        <textarea id="quickPostContent" name="content" rows="4" placeholder="Write your post here..." required maxlength="500"></textarea>
+                        <div class="char-count">
+                            <span id="quickPostCharCount">0</span> / 500 characters
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Post to:</label>
+                        <div class="platform-checkboxes">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="platforms" value="threads" checked>
+                                <span class="checkmark"></span>
+                                🧵 Threads
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="platforms" value="instagram">
+                                <span class="checkmark"></span>
+                                📸 Instagram
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="platforms" value="facebook">
+                                <span class="checkmark"></span>
+                                📘 Facebook
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-ghost" onclick="closeQuickPost()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <span id="quickPostButtonText">Post Now</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/auth_modal.js?v=2.2.1"></script>
+    <script src="/static/js/dashboard.js?v=2.3.2"></script>
+</body>
+</html>

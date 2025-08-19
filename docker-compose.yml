@@ -1,0 +1,156 @@
+version: '3.8'
+
+services:
+  # ThreadStorm Application
+  threadstorm:
+    build: .
+    container_name: threadstorm-app
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://redis:6379
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - META_APP_ID=${META_APP_ID}
+      - META_APP_SECRET=${META_APP_SECRET}
+      - THREADS_APP_ID=${THREADS_APP_ID}
+      - THREADS_APP_SECRET=${THREADS_APP_SECRET}
+      # Threads uses Facebook Graph API - no separate credentials needed
+      - SECRET_KEY=${SECRET_KEY}
+      - TOKEN_ENCRYPTION_KEY=${TOKEN_ENCRYPTION_KEY}
+      - AWS_KMS_KEY_ID=${AWS_KMS_KEY_ID}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - ENABLE_KMS_ENCRYPTION=${ENABLE_KMS_ENCRYPTION:-false}
+      - LOG_LEVEL=INFO
+      - CORS_ORIGINS=${CORS_ORIGINS:-https://threadstorm.com,https://www.threadstorm.com}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+    depends_on:
+      - redis
+    networks:
+      - threadstorm-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Redis for caching and job queue
+  redis:
+    image: redis:7-alpine
+    container_name: threadstorm-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-threadstorm_redis_2024}
+    volumes:
+      - redis_data:/data
+    networks:
+      - threadstorm-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: threadstorm-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - threadstorm
+    networks:
+      - threadstorm-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Celery Worker for background tasks
+  celery:
+    build: .
+    container_name: threadstorm-celery
+    restart: unless-stopped
+    command: celery -A src.services.celery_app worker --loglevel=info --concurrency=4
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://redis:6379
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - META_APP_ID=${META_APP_ID}
+      - META_APP_SECRET=${META_APP_SECRET}
+      - THREADS_APP_ID=${THREADS_APP_ID}
+      - THREADS_APP_SECRET=${THREADS_APP_SECRET}
+      # Threads uses Facebook Graph API - no separate credentials needed
+      - SECRET_KEY=${SECRET_KEY}
+      - TOKEN_ENCRYPTION_KEY=${TOKEN_ENCRYPTION_KEY}
+      - AWS_KMS_KEY_ID=${AWS_KMS_KEY_ID}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - ENABLE_KMS_ENCRYPTION=${ENABLE_KMS_ENCRYPTION:-false}
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      - redis
+    networks:
+      - threadstorm-network
+
+  # Celery Beat for scheduled tasks
+  celery-beat:
+    build: .
+    container_name: threadstorm-celery-beat
+    restart: unless-stopped
+    command: celery -A src.services.celery_app beat --loglevel=info
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://redis:6379
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - META_APP_ID=${META_APP_ID}
+      - META_APP_SECRET=${META_APP_SECRET}
+      - THREADS_APP_ID=${THREADS_APP_ID}
+      - THREADS_APP_SECRET=${THREADS_APP_SECRET}
+      # Threads uses Facebook Graph API - no separate credentials needed
+      - SECRET_KEY=${SECRET_KEY}
+      - TOKEN_ENCRYPTION_KEY=${TOKEN_ENCRYPTION_KEY}
+      - AWS_KMS_KEY_ID=${AWS_KMS_KEY_ID}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - ENABLE_KMS_ENCRYPTION=${ENABLE_KMS_ENCRYPTION:-false}
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      - redis
+    networks:
+      - threadstorm-network
+
+volumes:
+  redis_data:
+    driver: local
+
+networks:
+  threadstorm-network:
+    driver: bridge

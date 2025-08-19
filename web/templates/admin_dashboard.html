@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kolekt Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/style.css?v=2.4.0" rel="stylesheet">
+    <style>
+        :root {
+            --admin-primary: #1e40af;
+            --admin-secondary: #3b82f6;
+            --admin-accent: #60a5fa;
+            --admin-success: #10b981;
+            --admin-warning: #f59e0b;
+            --admin-danger: #ef4444;
+            --admin-dark: #1f2937;
+            --admin-light: #f9fafb;
+            --admin-border: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--admin-light);
+            margin: 0;
+            padding: 0;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .admin-sidebar {
+            width: 280px;
+            background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-secondary) 100%);
+            color: white;
+            padding: 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .admin-brand {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+
+        .admin-brand h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ffffff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .admin-nav {
+            padding: 1rem 0;
+        }
+
+        .admin-nav-item {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .admin-nav-item:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .admin-nav-item.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border-right: 3px solid white;
+        }
+
+        .admin-nav-item i {
+            width: 20px;
+            margin-right: 12px;
+        }
+
+        .admin-main {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--admin-border);
+        }
+
+        .admin-title {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--admin-dark);
+        }
+
+        .admin-subtitle {
+            color: #6b7280;
+            margin: 0.5rem 0 0 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--admin-border);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .stat-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-icon.users { background: linear-gradient(135deg, var(--admin-primary), var(--admin-secondary)); }
+        .stat-icon.content { background: linear-gradient(135deg, var(--admin-success), #34d399); }
+        .stat-icon.connections { background: linear-gradient(135deg, var(--admin-warning), #fbbf24); }
+        .stat-icon.api { background: linear-gradient(135deg, var(--admin-danger), #f87171); }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--admin-dark);
+            margin: 0;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .stat-change.positive { color: var(--admin-success); }
+        .stat-change.negative { color: var(--admin-danger); }
+
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--admin-border);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--admin-dark);
+            margin: 0;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--admin-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--admin-secondary);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: var(--admin-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--admin-border);
+        }
+
+        .table th {
+            font-weight: 600;
+            color: var(--admin-dark);
+            background: #f9fafb;
+        }
+
+        .table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-active { background: #d1fae5; color: #065f46; }
+        .status-inactive { background: #fee2e2; color: #991b1b; }
+        .status-pending { background: #fef3c7; color: #92400e; }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+
+        .loading i {
+            margin-right: 0.5rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .success-message {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                flex-direction: column;
+            }
+            
+            .admin-sidebar {
+                width: 100%;
+                position: fixed;
+                top: 0;
+                left: -100%;
+                transition: left 0.3s ease;
+                z-index: 1000;
+            }
+            
+            .admin-sidebar.open {
+                left: 0;
+            }
+            
+            .admin-main {
+                padding: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="admin-sidebar" id="adminSidebar">
+            <div class="admin-brand">
+                <h1>Kolekt Admin</h1>
+            </div>
+            
+            <nav class="admin-nav">
+                <button class="admin-nav-item active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </button>
+                <button class="admin-nav-item" data-section="users">
+                    <i class="fas fa-users"></i>
+                    Users
+                </button>
+                <button class="admin-nav-item" data-section="content">
+                    <i class="fas fa-file-alt"></i>
+                    Content
+                </button>
+                <button class="admin-nav-item" data-section="connections">
+                    <i class="fas fa-link"></i>
+                    Social Connections
+                </button>
+                <button class="admin-nav-item" data-section="analytics">
+                    <i class="fas fa-chart-bar"></i>
+                    Analytics
+                </button>
+                <button class="admin-nav-item" data-section="announcements">
+                    <i class="fas fa-bullhorn"></i>
+                    Announcements
+                </button>
+                <button class="admin-nav-item" data-section="system">
+                    <i class="fas fa-cog"></i>
+                    System
+                </button>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-main">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="admin-section">
+                <div class="admin-header">
+                    <div>
+                        <h1 class="admin-title">Dashboard</h1>
+                        <p class="admin-subtitle">Welcome to Kolekt Admin Dashboard</p>
+                    </div>
+                </div>
+
+                <div class="stats-grid" id="statsGrid">
+                    <div class="loading">
+                        <i class="fas fa-spinner"></i>
+                        Loading dashboard statistics...
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Recent Activity</h2>
+                        <button class="btn btn-secondary" onclick="refreshDashboard()">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                    </div>
+                    <div id="recentActivity">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
+                            Loading recent activity...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Section -->
+            <div id="users-section" class="admin-section hidden">
+                <div class="admin-header">
+                    <div>
+                        <h1 class="admin-title">User Management</h1>
+                        <p class="admin-subtitle">Manage Kolekt users and their permissions</p>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Users</h2>
+                        <div>
+                            <input type="search" placeholder="Search users..." id="userSearch" style="padding: 0.5rem; border: 1px solid var(--admin-border); border-radius: 8px; margin-right: 1rem;">
+                            <button class="btn btn-primary" onclick="refreshUsers()">
+                                <i class="fas fa-sync-alt"></i>
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div id="usersTable">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
+                            Loading users...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Section -->
+            <div id="content-section" class="admin-section hidden">
+                <div class="admin-header">
+                    <div>
+                        <h1 class="admin-title">Content Management</h1>
+                        <p class="admin-subtitle">Manage user content and moderation</p>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Content Statistics</h2>
+                        <button class="btn btn-secondary" onclick="refreshContent()">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                    </div>
+                    <div id="contentStats">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
+                            Loading content statistics...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Connections Section -->
+            <div id="connections-section" class="admin-section hidden">
+                <div class="admin-header">
+                    <div>
+                        <h1 class="admin-title">Social Connections</h1>
+                        <p class="admin-subtitle">Manage social media platform connections</p>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Connection Statistics</h2>
+                        <button class="btn btn-secondary" onclick="refreshConnections()">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                    </div>
+                    <div id="connectionsStats">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
+                            Loading connection statistics...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Section -->
+            <div id="analytics-section" class="admin-section hidden">
+                <div class="admin-header">
+                    <div>
+                        <h1 class="admin-title">Analytics</h1>
+                        <p class="admin-subtitle">Platform analytics and insights</p>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Platform Overview</h2>
+                        <button class="btn btn-secondary" onclick="refreshAnalytics()">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                    </div>
+                    <div id="analyticsOverview">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
+                            Loading analytics...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Announcements Section -->
+            <div id="announcements-section" class="admin-section hidden">
+                <div class="admin-header">
+                    <div>
+                        <h1 class="admin-title">Announcements</h1>
+                        <p class="admin-subtitle">Manage platform announcements</p>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Announcements</h2>
+                        <button class="btn btn-primary" onclick="createAnnouncement()">
+                            <i class="fas fa-plus"></i>
+                            New Announcement
+                        </button>
+                    </div>
+                    <div id="announcementsList">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
+                            Loading announcements...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Section -->
+            <div id="system-section" class="admin-section hidden">
+                <div class="admin-header">
+                    <div>
+                        <h1 class="admin-title">System Management</h1>
+                        <p class="admin-subtitle">System health and maintenance</p>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">System Health</h2>
+                        <button class="btn btn-secondary" onclick="checkSystemHealth()">
+                            <i class="fas fa-heartbeat"></i>
+                            Check Health
+                        </button>
+                    </div>
+                    <div id="systemHealth">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
+                            Checking system health...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/admin_dashboard.js?v=1.0.1"></script>
+</body>
+</html>

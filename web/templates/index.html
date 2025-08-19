@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Kolekt - Professional Threads Formatter</title>
+    
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="manifest" href="/static/manifest.json">
+    
+    <!-- Google Fonts - Inter for professional look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Critical CSS -->
+    <style>
+        /* Refined Kolekt Design System */
+        :root {
+            --kolekt-purple: #7A3FFF;
+            --kolekt-magenta: #E940A4;
+            --kolekt-orange: #FF6A3D;
+            --kolekt-gold: #FFB443;
+            --kolekt-gradient: linear-gradient(135deg, #7A3FFF 0%, #E940A4 50%, #FF6A3D 100%);
+            --kolekt-radial: radial-gradient(circle at center, #7A3FFF 0%, #E940A4 40%, #FF6A3D 75%, #FFB443 100%);
+            --kolekt-glow: rgba(122, 63, 255, 0.3);
+            --bg-dark: #0f0f23;
+            --bg-card: #1a1a2e;
+            --bg-card-hover: #252542;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6b7280;
+            --border-color: #2d2d44;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark) !important;
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        html {
+            background: var(--bg-dark) !important;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        /* Force dark background */
+        body, html, .main-content, .container {
+            background: var(--bg-dark) !important;
+        }
+        
+        /* Override any potential white backgrounds */
+        .bg-white, .bg-light, [class*="bg-"] {
+            background: var(--bg-card) !important;
+        }
+        
+        .header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem 0;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: var(--kolekt-radial);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.5rem;
+            box-shadow: 0 0 30px var(--kolekt-glow);
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: var(--kolekt-radial);
+            border-radius: 19px;
+            z-index: -1;
+            opacity: 0.4;
+            filter: blur(10px);
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--kolekt-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.025em;
+        }
+        
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--text-primary);
+            background: var(--bg-card-hover);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            line-height: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary {
+            background: var(--kolekt-purple);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(122, 63, 255, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: #8b4fff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(122, 63, 255, 0.4);
+        }
+        
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-ghost:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-color: var(--kolekt-purple);
+        }
+        
+        .main-content {
+            padding: 4rem 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .hero-section {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+        
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+        }
+        
+        .grid {
+            display: grid;
+            gap: 3rem;
+        }
+        
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.2s ease;
+            position: relative;
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .feature-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--kolekt-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 2rem;
+            color: var(--kolekt-purple);
+            display: block;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .feature-card .btn {
+            width: 100%;
+            justify-content: center;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .features-highlight {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .highlight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+        
+        .highlight-item {
+            color: var(--text-primary);
+        }
+        
+        .highlight-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--kolekt-purple);
+        }
+        
+        .highlight-text {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        
+        .footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .footer-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        
+        .footer-link:hover {
+            color: var(--kolekt-purple);
+        }
+        
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2.5rem;
+            }
+            
+            .feature-card {
+                min-height: 300px;
+                padding: 2.5rem 2rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
+        
+        .card {
+            background: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            transition: all 0.25s ease-in-out;
+        }
+        
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin: 0 0 1rem 0;
+        }
+        
+        .text-secondary {
+            color: #6b7280;
+        }
+        
+        .text-center { text-align: center; }
+        .mb-lg { margin-bottom: 3rem; }
+        .mb-md { margin-bottom: 1.5rem; }
+        .mt-lg { margin-top: 3rem; }
+        .gap-md { gap: 1rem; }
+        .flex { display: flex; }
+        .justify-center { justify-content: center; }
+        
+        @media (min-width: 768px) {
+            .md\\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+            .md\\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+            .md\\:grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+        }
+    </style>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css?v=2.4.2">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <!-- Logo -->
+            <a href="/" class="logo-container">
+                <div class="logo-icon">K</div>
+                <span class="logo-text">kolekt.io</span>
+            </a>
+            
+            <!-- Navigation -->
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#formatter" class="nav-link">Formatter</a></li>
+                    <li><a href="#templates" class="nav-link">Templates</a></li>
+                    <li><a href="#analytics" class="nav-link">Analytics</a></li>
+                </ul>
+            </nav>
+            
+            <!-- Auth Buttons -->
+            <div id="auth-buttons" class="auth-buttons">
+                <button class="btn btn-ghost" onclick="kolektAuth.showLoginModal()">Sign In</button>
+                <button class="btn btn-primary" onclick="kolektAuth.showRegisterModal()">Get Started</button>
+            </div>
+
+            <!-- User Menu (shown when authenticated) -->
+            <div id="user-info" class="user-menu" style="display: none;">
+                <button class="user-menu-btn" onclick="toggleUserMenu()">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <span class="user-name" id="user-name">User</span>
+                    <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true" style="margin-left: 8px;">
+                        <path d="M5 7l5 6 5-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="/dashboard" class="dropdown-item">Dashboard</a>
+                    <a href="#" class="dropdown-item" onclick="kolektAuth.showProfile()">Edit Profile</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item" onclick="kolektAuth.logout()">Sign Out</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero-section text-center mb-lg">
+                <h1 class="hero-title">Transform Content into Threads</h1>
+                <p class="hero-subtitle">
+                    Professional AI-powered formatting to create compelling kolekts with intelligent chunking and engagement optimization.
+                </p>
+                <div class="hero-actions flex gap-md justify-center mt-lg">
+                    <button class="btn btn-primary btn-lg" onclick="openThreadsFormatter()">
+                        Start Creating
+                    </button>
+                    <button class="btn btn-ghost btn-lg" onclick="openTemplateLibrary()">
+                        Browse Templates
+                    </button>
+                </div>
+            </section>
+
+            <!-- Features Grid -->
+            <section class="features-section mb-lg">
+                <div class="grid">
+                    <!-- Threads Formatter -->
+                    <div class="feature-card" onclick="openThreadsFormatter()">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Threads Formatter</h3>
+                        <p>
+                            Transform long-form content into optimized kolekts with intelligent chunking 
+                            and professional formatting.
+                        </p>
+                        <button class="btn btn-primary">Start Formatting</button>
+                    </div>
+
+                    <!-- Template Library -->
+                    <div class="feature-card" onclick="openTemplateLibrary()">
+                        <div class="feature-icon">📚</div>
+                        <h3>Template Library</h3>
+                        <p>
+                            Access pre-built templates for different content types and save your 
+                            successful formats for reuse.
+                        </p>
+                        <button class="btn btn-primary">Browse Templates</button>
+                    </div>
+
+                    <!-- Analytics Dashboard -->
+                    <div class="feature-card" onclick="openAnalytics()">
+                        <div class="feature-icon">📊</div>
+                        <h3>Analytics Dashboard</h3>
+                        <p>
+                            Track your thread performance and usage statistics 
+                            to optimize your content strategy.
+                        </p>
+                        <button class="btn btn-primary">View Analytics</button>
+                    </div>
+
+                    <!-- Review Queue -->
+                    <div class="feature-card" onclick="openReviewQueue()">
+                        <div class="feature-icon">📋</div>
+                        <h3>Review Queue</h3>
+                        <p>
+                            Review and approve content before it goes live. 
+                            Manage your content pipeline efficiently.
+                        </p>
+                        <button class="btn btn-primary">Open Queue</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Highlight -->
+            <section class="features-highlight">
+                <div class="highlight-grid">
+                    <div class="highlight-item">
+                        <div class="highlight-icon">⚡</div>
+                        <div class="highlight-text">AI-Powered Formatting</div>
+                    </div>
+                    <div class="highlight-item">
+                        <div class="highlight-icon">🎯</div>
+                        <div class="highlight-text">Engagement Optimized</div>
+                    </div>
+                    <div class="highlight-item">
+                        <div class="highlight-icon">🚀</div>
+                        <div class="highlight-text">Ready to Launch</div>
+                    </div>
+                    <div class="highlight-item">
+                        <div class="highlight-icon">💎</div>
+                        <div class="highlight-text">Professional Quality</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA Section -->
+            <section class="cta-section text-center">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="mb-md">Ready to Create Better Threads?</h2>
+                        <p class="text-secondary mb-lg">
+                            Join thousands of creators who are already using Kolekt to improve their content.
+                        </p>
+                                                  <button class="btn btn-primary btn-lg" onclick="kolektAuth.showRegisterModal()">
+                            Sign Up Now
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <div class="logo-icon">K</div>
+                <span class="logo-text">kolekt.io</span>
+            </div>
+            <div class="footer-links">
+                <a href="#" class="footer-link">Privacy Policy</a>
+                <a href="#" class="footer-link">Terms of Service</a>
+                <a href="#" class="footer-link">Support</a>
+                <a href="#" class="footer-link">Contact</a>
+            </div>
+            <div class="footer-copyright">
+                <p>&copy; 2024 Kolekt. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Authentication Modal -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Sign In</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="auth-modal-body">
+                    <!-- Modal content will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- General Modal Container -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-body">
+                <!-- Modal content will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/auth_modal.js?v=2.2.0"></script>
+    <script src="/static/js/app.js?v=2.1.0"></script>
+    <script>
+        // Minimal user menu toggle for homepage
+        function toggleUserMenu() {
+            const dd = document.getElementById('userDropdown');
+            if (dd) dd.classList.toggle('show');
+        }
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.user-menu')) {
+                const dd = document.getElementById('userDropdown');
+                if (dd) dd.classList.remove('show');
+            }
+        });
+    </script>
+    
+    <script>
+        // Feature Functions - These will be handled by the KolektApp class
+        function openThreadsFormatter() {
+            if (window.kolektApp) {
+                window.kolektApp.openThreadsFormatter();
+            }
+        }
+        
+        function openTemplateLibrary() {
+            if (window.kolektApp) {
+                window.kolektApp.openTemplateLibrary();
+            }
+        }
+        
+        function openAnalytics() {
+            if (window.kolektApp) {
+                window.kolektApp.openAnalytics();
+            }
+        }
+        
+        // Utility function for notifications
+        function showNotification(message, type = 'info') {
+                    if (window.kolektAuth) {
+            window.kolektAuth.showNotification(message, type);
+        }
+        }
+        
+
+        
+        // Global close function for any modal
+        function closeModal() {
+            const modal = document.getElementById('auth-modal');
+            if (modal) {
+                modal.classList.remove('show');
+                modal.style.display = 'none';
+                modal.style.opacity = '0';
+                modal.style.visibility = 'hidden';
+            }
+        }
+        
+        // Add responsive grid classes
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click outside to close functionality
+            const modal = document.getElementById('auth-modal');
+            if (modal) {
+                modal.addEventListener('click', function(event) {
+                    if (event.target === modal) {
+                        closeModal();
+                    }
+                });
+            }
+            
+            // Add responsive grid classes
+            const style = document.createElement('style');
+            style.textContent = `
+                @media (min-width: 768px) {
+                    .md\\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+                    .md\\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+                    .md\\:grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+                }
+                
+                .hero-title {
+                    font-size: var(--font-size-4xl);
+                    font-weight: 700;
+                    color: var(--text-primary);
+                    margin-bottom: var(--spacing-md);
+                }
+                
+                .hero-subtitle {
+                    font-size: var(--font-size-lg);
+                    max-width: 600px;
+                    margin: 0 auto;
+                }
+                
+                .feature-icon {
+                    font-size: 2rem;
+                    background: var(--kolekt-gradient);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                }
+                
+                .stat-number {
+                    font-size: var(--font-size-3xl);
+                    font-weight: 700;
+                    margin-bottom: var(--spacing-xs);
+                }
+                
+                .stat-label {
+                    font-size: var(--font-size-sm);
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                }
+                
+                /* Debug styles for modal */
+                .modal.show {
+                    opacity: 1 !important;
+                    visibility: visible !important;
+                    display: flex !important;
+                }
+                
+                /* Force modal visibility for debugging */
+                #auth-modal.show {
+                    opacity: 1 !important;
+                    visibility: visible !important;
+                    display: flex !important;
+                    z-index: 9999 !important;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+
+    <!-- Review Queue Modal -->
+    <div id="reviewQueueModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Content Review Queue</h2>
+                <span class="close" onclick="closeReviewQueue()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="reviewItems" class="review-items">
+                    <!-- Items will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
