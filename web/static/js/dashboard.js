@@ -771,6 +771,10 @@ class Dashboard {
                     'Authorization': `Bearer ${localStorage.getItem('threadstorm_access_token')}`
                 }
             });
+            if (response.status === 403) {
+                // Health endpoint is admin-only; silently ignore
+                return;
+            }
             if (!response.ok) return;
             const data = await response.json();
             if (!data.huggingface_available) {

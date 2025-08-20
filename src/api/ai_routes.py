@@ -13,7 +13,7 @@ from src.services.ai_service import (
     ContentGenerationRequest, 
     ContentGenerationResponse
 )
-from src.services.authentication import get_current_user
+from src.services.authentication import get_current_user, require_admin
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -158,18 +158,15 @@ async def get_available_models(
         raise HTTPException(status_code=500, detail="Failed to get available models")
 
 @router.get("/health")
-async def ai_health_check():
-    """Health check for AI services"""
+async def ai_health_check(current_user: Dict[str, Any] = Depends(require_admin)):
+    """Health check for AI services (admin only)"""
     try:
-        # Check if Hugging Face client is available
         hf_available = ai_service.client is not None
-        
         return {
-            "status": "healthy",
+            "status": "healthy" if hf_available else "degraded",
             "huggingface_available": hf_available,
             "models_ready": hf_available
         }
-        
     except Exception as e:
         logger.error(f"AI health check failed: {e}")
         return {
