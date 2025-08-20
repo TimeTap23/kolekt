@@ -17,6 +17,8 @@ class Dashboard {
         this.setupCharCounter();
         this.initializeTabs();
         this.setupFileUpload();
+        // AI health check to surface gotchas
+        this.aiHealthCheck();
     }
 
     loadUserData() {
@@ -762,6 +764,23 @@ class Dashboard {
         }
     }
 
+    async aiHealthCheck() {
+        try {
+            const response = await fetch('/api/v1/ai/health', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('threadstorm_access_token')}`
+                }
+            });
+            if (!response.ok) return;
+            const data = await response.json();
+            if (!data.huggingface_available) {
+                this.showNotification('AI running in mock mode until Hugging Face token is active.', 'warning');
+            }
+        } catch (_) {
+            // ignore health errors
+        }
+    }
+
     async generateContent() {
         const prompt = document.getElementById('aiPrompt').value;
         const tone = document.getElementById('aiTone').value;
@@ -775,16 +794,37 @@ class Dashboard {
 
         try {
             this.showNotification('Generating content with AI...', 'info');
-            
-            // Simulate AI generation (replace with actual API call)
-            const generatedContent = await this.simulateAIGeneration(prompt, tone, length, platform);
-            
-            this.displayGeneratedContent(generatedContent);
+            // Call backend AI endpoint
+            const response = await fetch('/api/v1/ai/generate-content', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('threadstorm_access_token')}`
+                },
+                body: JSON.stringify({
+                    topic: prompt,
+                    platform: platform,
+                    tone: tone,
+                    length: length,
+                    style: 'conversational',
+                    additional_context: null
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`AI generation failed (${response.status})`);
+            }
+
+            const data = await response.json();
+            this.displayGeneratedContent(data.content, data.hashtags || []);
             this.showNotification('Content generated successfully!', 'success');
             
         } catch (error) {
             console.error('Error generating content:', error);
-            this.showNotification('Failed to generate content', 'error');
+            // Fallback to simulated content
+            const generatedContent = await this.simulateAIGeneration(prompt, tone, length, platform);
+            this.displayGeneratedContent(generatedContent, []);
+            this.showNotification('Using fallback AI output (check AI configuration).', 'warning');
         }
     }
 
@@ -808,11 +848,23 @@ class Dashboard {
         return content;
     }
 
-    displayGeneratedContent(content) {
+    displayGeneratedContent(content, hashtags = []) {
         const resultsDiv = document.getElementById('aiResults');
         const generatedText = document.getElementById('generatedText');
         
-        if (generatedText) generatedText.textContent = content;
+        if (generatedText) {
+            generatedText.textContent = content;
+            // Render hashtags beneath content
+            let tagEl = document.getElementById('generatedHashtags');
+            if (!tagEl) {
+                tagEl = document.createElement('div');
+                tagEl.id = 'generatedHashtags';
+                tagEl.style.marginTop = '8px';
+                tagEl.style.opacity = '0.85';
+                generatedText.parentElement.appendChild(tagEl);
+            }
+            tagEl.textContent = hashtags && hashtags.length ? hashtags.join(' ') : '';
+        }
         if (resultsDiv) resultsDiv.style.display = 'block';
     }
 
