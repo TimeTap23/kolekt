@@ -1,495 +1,180 @@
-#!/usr/bin/env python3
 """
-AI Assistant API Routes
-Handles AI-powered content generation, optimization, and suggestions
+AI Routes for Kolekt
+Handles AI-powered content generation and optimization
 """
 
-from fastapi import APIRouter, HTTPException, Depends, Body
-from typing import List, Optional, Dict, Any
-from datetime import datetime
 import logging
-import asyncio
-import json
-
-# Setup logging
-logger = logging.getLogger(__name__)
-
-# Create router
-ai_router = APIRouter()
-
-# Pydantic models
+from typing import Dict, Any, List
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 
-class AIGenerationRequest(BaseModel):
-    prompt: str
-    tone: str = "professional"  # professional, casual, friendly, authoritative, humorous, inspirational
-    length: str = "medium"  # short, medium, long, thread
-    platform: str = "general"  # threads, instagram, facebook, linkedin, twitter, general
-    context: Optional[str] = None
-    keywords: Optional[List[str]] = None
-    target_audience: Optional[str] = None
-
-class AIOptimizationRequest(BaseModel):
-    content: str
-    platform: str
-    goal: str = "engagement"  # engagement, reach, conversions, brand_awareness
-    tone_adjustment: Optional[str] = None
-    length_adjustment: Optional[str] = None
-
-class AISuggestionRequest(BaseModel):
-    content_type: str  # thread, post, caption, story
-    topic: Optional[str] = None
-    industry: Optional[str] = None
-    platform: str = "general"
-
-class AIResponse(BaseModel):
-    success: bool
-    content: Optional[str] = None
-    suggestions: Optional[List[str]] = None
-    optimization_tips: Optional[List[str]] = None
-    hashtags: Optional[List[str]] = None
-    error_message: Optional[str] = None
-    metadata: Optional[Dict[str, Any]] = None
-
-class AIGenerationResponse(BaseModel):
-    success: bool
-    generated_content: str
-    alternatives: Optional[List[str]] = None
-    hashtags: Optional[List[str]] = None
-    optimization_score: Optional[float] = None
-    error_message: Optional[str] = None
-
+from src.services.ai_service import (
+    ai_service, 
+    ContentGenerationRequest, 
+    ContentGenerationResponse
+)
 from src.services.authentication import get_current_user
 
-# Dependency to get current user (via JWT)
-async def get_current_user_id(current_user: Dict = Depends(get_current_user)) -> str:
-    """Get current user ID from JWT-authenticated request"""
-    return current_user["user_id"]
+logger = logging.getLogger(__name__)
+router = APIRouter()
 
-@ai_router.post("/generate", response_model=AIGenerationResponse)
+class ContentOptimizationRequest(BaseModel):
+    """Request model for content optimization"""
+    content: str
+    target_platform: str
+    optimization_type: str = "engagement"  # "engagement", "reach", "conversion"
+    target_audience: str = "general"
+
+class ContentOptimizationResponse(BaseModel):
+    """Response model for content optimization"""
+    optimized_content: str
+    suggestions: List[str]
+    confidence_score: float
+    model_used: str
+
+class HashtagGenerationRequest(BaseModel):
+    """Request model for hashtag generation"""
+    content: str
+    platform: str
+    count: int = 10
+
+class HashtagGenerationResponse(BaseModel):
+    """Response model for hashtag generation"""
+    hashtags: List[str]
+    relevance_scores: List[float]
+    model_used: str
+
+@router.post("/generate-content", response_model=ContentGenerationResponse)
 async def generate_content(
-    request: AIGenerationRequest,
-    user_id: str = Depends(get_current_user_id)
+    request: ContentGenerationRequest,
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ):
-    """Generate AI-powered content based on prompt and parameters"""
+    """Generate AI-powered content for social media"""
     try:
-        logger.info(f"Generating AI content for user {user_id}: {request.prompt[:50]}...")
+        logger.info(f"Generating content for user {current_user.get('id')} about {request.topic}")
         
-        # Simulate AI processing delay
-        await asyncio.sleep(2)
+        response = ai_service.generate_content(request)
         
-        # Generate content based on parameters
-        generated_content = await _generate_ai_content(request)
-        
-        # Generate hashtags
-        hashtags = await _generate_hashtags(request.prompt, request.platform)
-        
-        # Calculate optimization score
-        optimization_score = await _calculate_optimization_score(generated_content, request.platform)
-        
-        return AIGenerationResponse(
-            success=True,
-            generated_content=generated_content,
-            hashtags=hashtags,
-            optimization_score=optimization_score,
-            alternatives=await _generate_alternatives(request)
-        )
+        logger.info(f"Content generated successfully using {response.model_used}")
+        return response
         
     except Exception as e:
-        logger.error(f"Error generating AI content: {e}")
-        return AIGenerationResponse(
-            success=False,
-            generated_content="",
-            error_message=str(e)
-        )
+        logger.error(f"Error generating content: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate content")
 
-@ai_router.post("/optimize", response_model=AIResponse)
+@router.post("/optimize-content", response_model=ContentOptimizationResponse)
 async def optimize_content(
-    request: AIOptimizationRequest,
-    user_id: str = Depends(get_current_user_id)
+    request: ContentOptimizationRequest,
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ):
     """Optimize existing content for better performance"""
     try:
-        logger.info(f"Optimizing content for user {user_id}")
+        logger.info(f"Optimizing content for user {current_user.get('id')}")
         
-        # Simulate optimization processing
-        await asyncio.sleep(1.5)
+        # For now, return a simple optimization
+        # In the future, this will use Mistral or another optimization model
+        optimized_content = request.content
         
-        # Generate optimization suggestions
-        optimization_tips = await _generate_optimization_tips(request)
+        suggestions = [
+            "Consider adding more engaging questions",
+            "Include relevant hashtags",
+            "Add a call-to-action",
+            "Use more visual language"
+        ]
         
-        # Generate optimized version
-        optimized_content = await _optimize_content_text(request.content, request.platform, request.goal)
-        
-        # Generate relevant hashtags
-        hashtags = await _generate_hashtags(request.content, request.platform)
-        
-        return AIResponse(
-            success=True,
-            content=optimized_content,
-            optimization_tips=optimization_tips,
-            hashtags=hashtags,
-            metadata={
-                "original_length": len(request.content),
-                "optimized_length": len(optimized_content),
-                "improvement_score": 0.85
-            }
+        return ContentOptimizationResponse(
+            optimized_content=optimized_content,
+            suggestions=suggestions,
+            confidence_score=0.75,
+            model_used="content-optimizer"
         )
         
     except Exception as e:
         logger.error(f"Error optimizing content: {e}")
-        return AIResponse(
-            success=False,
-            error_message=str(e)
-        )
+        raise HTTPException(status_code=500, detail="Failed to optimize content")
 
-@ai_router.post("/suggest", response_model=AIResponse)
-async def get_content_suggestions(
-    request: AISuggestionRequest,
-    user_id: str = Depends(get_current_user_id)
+@router.post("/generate-hashtags", response_model=HashtagGenerationResponse)
+async def generate_hashtags(
+    request: HashtagGenerationRequest,
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ):
-    """Get AI-powered content suggestions"""
-    try:
-        logger.info(f"Getting content suggestions for user {user_id}")
-        
-        # Simulate suggestion processing
-        await asyncio.sleep(1)
-        
-        # Generate suggestions based on parameters
-        suggestions = await _generate_content_suggestions(request)
-        
-        return AIResponse(
-            success=True,
-            suggestions=suggestions,
-            metadata={
-                "content_type": request.content_type,
-                "platform": request.platform,
-                "suggestion_count": len(suggestions)
-            }
-        )
-        
-    except Exception as e:
-        logger.error(f"Error getting content suggestions: {e}")
-        return AIResponse(
-            success=False,
-            error_message=str(e)
-        )
-
-@ai_router.post("/refine", response_model=AIGenerationResponse)
-async def refine_content(
-    request: AIGenerationRequest,
-    user_id: str = Depends(get_current_user_id)
-):
-    """Refine and improve existing content"""
-    try:
-        logger.info(f"Refining content for user {user_id}")
-        
-        # Simulate refinement processing
-        await asyncio.sleep(2)
-        
-        # Generate refined content
-        refined_content = await _refine_content_text(request.prompt, request.tone, request.platform)
-        
-        return AIGenerationResponse(
-            success=True,
-            generated_content=refined_content,
-            optimization_score=0.92
-        )
-        
-    except Exception as e:
-        logger.error(f"Error refining content: {e}")
-        return AIGenerationResponse(
-            success=False,
-            generated_content="",
-            error_message=str(e)
-        )
-
-# Helper functions for AI content generation
-async def _generate_ai_content(request: AIGenerationRequest) -> str:
-    """Generate AI content based on request parameters"""
-    
-    # Base content based on tone and length
-    tone_templates = {
-        "professional": "Here's a professional take on {topic}",
-        "casual": "Hey! So I was thinking about {topic}",
-        "friendly": "I wanted to share something interesting about {topic}",
-        "authoritative": "Based on my experience with {topic}",
-        "humorous": "Fun fact about {topic} that made me laugh",
-        "inspirational": "Let me inspire you with this insight about {topic}"
-    }
-    
-    length_templates = {
-        "short": "This is a concise message that gets straight to the point about {topic}.",
-        "medium": "This is a well-crafted paragraph that provides valuable insights about {topic} while maintaining engagement. It's perfectly sized for social media platforms.",
-        "long": "This is a comprehensive piece that dives deep into {topic}. It provides detailed information, multiple perspectives, and valuable insights that will engage your audience and deliver your message effectively.",
-        "thread": "🧵 Thread about {topic}:\n\n(1/3) Opening hook that captures attention\n\n(2/3) Deep dive into the details\n\n(3/3) Conclusion with actionable takeaways"
-    }
-    
-    # Platform-specific adjustments
-    platform_adjustments = {
-        "threads": "Perfect for Threads' conversational format",
-        "instagram": "Optimized for Instagram's visual-first approach",
-        "facebook": "Tailored for Facebook's community engagement",
-        "linkedin": "Professional tone for LinkedIn's business audience",
-        "twitter": "Concise and impactful for Twitter's character limit",
-        "general": "Versatile content for any platform"
-    }
-    
-    # Generate content
-    base_template = tone_templates.get(request.tone, tone_templates["professional"])
-    length_template = length_templates.get(request.length, length_templates["medium"])
-    platform_note = platform_adjustments.get(request.platform, "")
-    
-    content = f"{base_template.format(topic=request.prompt)}\n\n{length_template.format(topic=request.prompt)}\n\n{platform_note}"
-    
-    # Add context if provided
-    if request.context:
-        content += f"\n\nContext: {request.context}"
-    
-    # Add keywords if provided
-    if request.keywords:
-        content += f"\n\nKey points: {', '.join(request.keywords)}"
-    
-    return content
-
-async def _generate_hashtags(content: str, platform: str) -> List[str]:
     """Generate relevant hashtags for content"""
-    
-    # Platform-specific hashtag strategies
-    platform_hashtags = {
-        "threads": ["#Threads", "#SocialMedia", "#ContentCreation"],
-        "instagram": ["#Instagram", "#InstaGood", "#SocialMedia"],
-        "facebook": ["#Facebook", "#SocialMedia", "#Community"],
-        "linkedin": ["#LinkedIn", "#Professional", "#Networking"],
-        "twitter": ["#Twitter", "#SocialMedia", "#Content"],
-        "general": ["#ContentCreation", "#SocialMedia", "#DigitalMarketing"]
-    }
-    
-    # Extract potential hashtags from content
-    words = content.lower().split()
-    potential_tags = [word.strip('.,!?') for word in words if len(word) > 3]
-    
-    # Combine platform-specific and content-based hashtags
-    hashtags = platform_hashtags.get(platform, platform_hashtags["general"])
-    hashtags.extend([f"#{tag.title()}" for tag in potential_tags[:5]])
-    
-    return hashtags[:10]  # Limit to 10 hashtags
+    try:
+        logger.info(f"Generating hashtags for user {current_user.get('id')}")
+        
+        # Extract hashtags from the AI service
+        hashtags = ai_service._generate_hashtags(request.content)
+        
+        # Limit to requested count
+        hashtags = hashtags[:request.count]
+        
+        # Generate relevance scores (mock for now)
+        relevance_scores = [0.8] * len(hashtags)
+        
+        return HashtagGenerationResponse(
+            hashtags=hashtags,
+            relevance_scores=relevance_scores,
+            model_used="hashtag-generator"
+        )
+        
+    except Exception as e:
+        logger.error(f"Error generating hashtags: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate hashtags")
 
-async def _calculate_optimization_score(content: str, platform: str) -> float:
-    """Calculate content optimization score"""
-    
-    # Simple scoring algorithm
-    score = 0.7  # Base score
-    
-    # Length scoring
-    if 50 <= len(content) <= 500:
-        score += 0.1
-    elif 500 < len(content) <= 2000:
-        score += 0.05
-    
-    # Platform-specific scoring
-    platform_scores = {
-        "threads": 0.1,
-        "instagram": 0.08,
-        "facebook": 0.09,
-        "linkedin": 0.07,
-        "twitter": 0.06,
-        "general": 0.05
-    }
-    
-    score += platform_scores.get(platform, 0.05)
-    
-    # Engagement indicators
-    if any(word in content.lower() for word in ["you", "your", "we", "us"]):
-        score += 0.05  # Personal pronouns
-    
-    if "?" in content:
-        score += 0.03  # Questions
-    
-    if any(word in content.lower() for word in ["how", "what", "why", "when", "where"]):
-        score += 0.02  # Question words
-    
-    return min(score, 1.0)  # Cap at 1.0
-
-async def _generate_alternatives(request: AIGenerationRequest) -> List[str]:
-    """Generate alternative versions of content"""
-    
-    alternatives = []
-    
-    # Alternative tones
-    alternative_tones = ["casual", "professional", "friendly"]
-    for tone in alternative_tones:
-        if tone != request.tone:
-            alt_request = AIGenerationRequest(
-                prompt=request.prompt,
-                tone=tone,
-                length=request.length,
-                platform=request.platform
-            )
-            alternatives.append(await _generate_ai_content(alt_request))
-    
-    return alternatives[:2]  # Return 2 alternatives
-
-async def _generate_optimization_tips(request: AIOptimizationRequest) -> List[str]:
-    """Generate optimization tips for content"""
-    
-    tips = []
-    
-    # Platform-specific tips
-    platform_tips = {
-        "threads": [
-            "Use conversational language",
-            "Include questions to encourage replies",
-            "Keep it under 500 characters for better engagement"
-        ],
-        "instagram": [
-            "Use relevant hashtags (5-10 recommended)",
-            "Include a call-to-action",
-            "Optimize for visual storytelling"
-        ],
-        "facebook": [
-            "Encourage community engagement",
-            "Use Facebook-specific features",
-            "Include links when relevant"
-        ],
-        "linkedin": [
-            "Maintain professional tone",
-            "Include industry-specific keywords",
-            "Focus on thought leadership"
-        ],
-        "twitter": [
-            "Stay within character limits",
-            "Use trending hashtags strategically",
-            "Engage with your audience"
+@router.get("/models/available")
+async def get_available_models(
+    current_user: Dict[str, Any] = Depends(get_current_user)
+):
+    """Get list of available AI models"""
+    try:
+        models = [
+            {
+                "id": "llama-3.1-8b",
+                "name": "Llama 3.1 8B",
+                "type": "content_generation",
+                "description": "Meta's Llama 3.1 model for creative content generation",
+                "capabilities": ["content_generation", "creative_writing", "conversational"]
+            },
+            {
+                "id": "content-optimizer",
+                "name": "Content Optimizer",
+                "type": "optimization",
+                "description": "Optimizes content for better engagement",
+                "capabilities": ["content_optimization", "platform_adaptation"]
+            },
+            {
+                "id": "hashtag-generator",
+                "name": "Hashtag Generator",
+                "type": "hashtag_generation",
+                "description": "Generates relevant hashtags for content",
+                "capabilities": ["hashtag_generation", "trend_analysis"]
+            }
         ]
-    }
-    
-    tips.extend(platform_tips.get(request.platform, [
-        "Use engaging headlines",
-        "Include relevant hashtags",
-        "Add a clear call-to-action"
-    ]))
-    
-    # Goal-specific tips
-    goal_tips = {
-        "engagement": [
-            "Ask questions to encourage responses",
-            "Use interactive elements",
-            "Respond to comments quickly"
-        ],
-        "reach": [
-            "Use trending hashtags",
-            "Post at optimal times",
-            "Encourage sharing"
-        ],
-        "conversions": [
-            "Include clear call-to-action",
-            "Use compelling headlines",
-            "Provide value first"
-        ],
-        "brand_awareness": [
-            "Maintain consistent brand voice",
-            "Share valuable content",
-            "Engage with industry conversations"
-        ]
-    }
-    
-    tips.extend(goal_tips.get(request.goal, []))
-    
-    return tips[:5]  # Return top 5 tips
+        
+        return {"models": models}
+        
+    except Exception as e:
+        logger.error(f"Error getting available models: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get available models")
 
-async def _optimize_content_text(content: str, platform: str, goal: str) -> str:
-    """Optimize content text for better performance"""
-    
-    # Simple optimization rules
-    optimized = content
-    
-    # Add platform-specific optimizations
-    if platform == "threads" and len(content) > 500:
-        optimized = content[:497] + "..."
-    
-    elif platform == "instagram" and "#" not in content:
-        optimized += "\n\n#ContentCreation #SocialMedia"
-    
-    elif platform == "linkedin" and "professional" not in content.lower():
-        optimized = "Professional insight: " + optimized
-    
-    # Add goal-specific optimizations
-    if goal == "engagement" and "?" not in content:
-        optimized += "\n\nWhat do you think?"
-    
-    elif goal == "conversions" and "click" not in content.lower():
-        optimized += "\n\nLearn more in the link below!"
-    
-    return optimized
-
-async def _generate_content_suggestions(request: AISuggestionRequest) -> List[str]:
-    """Generate content suggestions based on parameters"""
-    
-    suggestions = []
-    
-    # Content type suggestions
-    type_suggestions = {
-        "thread": [
-            "Share a personal story with a lesson learned",
-            "Break down a complex topic into digestible parts",
-            "Create a how-to guide for your expertise",
-            "Share behind-the-scenes of your work process",
-            "Discuss a trending topic in your industry"
-        ],
-        "post": [
-            "Share a valuable insight or tip",
-            "Celebrate a milestone or achievement",
-            "Ask your audience a thought-provoking question",
-            "Share a quote that resonates with you",
-            "Provide a quick tutorial or explanation"
-        ],
-        "caption": [
-            "Tell the story behind the image",
-            "Share what inspired this moment",
-            "Ask followers to share their thoughts",
-            "Include a relevant quote or saying",
-            "Add context to make it more personal"
-        ],
-        "story": [
-            "Share a daily routine or habit",
-            "Document a process or journey",
-            "Show before and after results",
-            "Share a moment of inspiration",
-            "Create a mini-tutorial or tip"
-        ]
-    }
-    
-    suggestions.extend(type_suggestions.get(request.content_type, [
-        "Share your expertise on a relevant topic",
-        "Engage with your audience through questions",
-        "Provide value through tips or insights",
-        "Share personal experiences and lessons",
-        "Discuss industry trends and developments"
-    ]))
-    
-    return suggestions[:5]  # Return top 5 suggestions
-
-async def _refine_content_text(content: str, tone: str, platform: str) -> str:
-    """Refine and improve existing content"""
-    
-    refined = content
-    
-    # Tone refinements
-    if tone == "professional" and "I think" in content:
-        refined = refined.replace("I think", "Based on my experience")
-    
-    elif tone == "casual" and "Furthermore" in content:
-        refined = refined.replace("Furthermore", "Also")
-    
-    elif tone == "friendly" and "Dear" in content:
-        refined = refined.replace("Dear", "Hi")
-    
-    # Platform refinements
-    if platform == "threads" and len(refined) > 500:
-        refined = refined[:497] + "..."
-    
-    elif platform == "instagram" and "#" not in refined:
-        refined += "\n\n#ContentCreation #SocialMedia"
-    
-    return refined
+@router.get("/health")
+async def ai_health_check():
+    """Health check for AI services"""
+    try:
+        # Check if Hugging Face client is available
+        hf_available = ai_service.client is not None
+        
+        return {
+            "status": "healthy",
+            "huggingface_available": hf_available,
+            "models_ready": hf_available
+        }
+        
+    except Exception as e:
+        logger.error(f"AI health check failed: {e}")
+        return {
+            "status": "unhealthy",
+            "huggingface_available": False,
+            "models_ready": False,
+            "error": str(e)
+        }

@@ -86,6 +86,9 @@ class Settings(BaseSettings):
     # App Version
     APP_VERSION: str = Field(default="2.0.0", env="APP_VERSION")
     
+    # AI Configuration
+    HUGGINGFACE_TOKEN: Optional[str] = Field(default=None, env="HUGGINGFACE_TOKEN")
+    
     class Config:
         env_file = ".env"
         case_sensitive = True

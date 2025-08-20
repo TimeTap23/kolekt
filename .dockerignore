@@ -1,28 +1,25 @@
-# Git
-.git
-.gitignore
-
 # Python
-__pycache__
-*.pyc
-*.pyo
-*.pyd
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
 .Python
-env
-pip-log.txt
-pip-delete-this-directory.txt
-.tox
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
-.git
-.mypy_cache
-.pytest_cache
-.hypothesis
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
 # Virtual environments
 .env
@@ -49,6 +46,23 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
+# Logs
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
 # Kubernetes
 k8s/
 *.yaml
@@ -59,14 +73,71 @@ k8s/
 docs/
 
 # Test files
+tests/
 test_*.py
 *_test.py
-tests/
 
-# Logs
-logs/
-*.log
+# Development files
+.env.local
+.env.development
+.env.test
 
-# Temporary files
-tmp/
-temp/
+# Backup files
+*.bak
+*.backup
+
+# SSL certificates
+*.pem
+*.key
+*.crt
+
+# Database files
+*.db
+*.sqlite
+
+# Upload directories
+uploads/
+static/uploads/
+
+# Node modules (if any)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json

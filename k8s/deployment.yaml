@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: threadstorm
-        image: ghcr.io/your-username/threadstorm:latest
+        image: ghcr.io/timetap23/kolekt:latest
         ports:
         - containerPort: 8000
           name: http
@@ -108,11 +108,9 @@ spec:
           mountPath: /app/uploads
       volumes:
       - name: logs
-        persistentVolumeClaim:
-          claimName: threadstorm-logs-pvc
+        emptyDir: {}
       - name: uploads
-        persistentVolumeClaim:
-          claimName: threadstorm-uploads-pvc
+        emptyDir: {}
       imagePullSecrets:
       - name: ghcr-secret
 ---
@@ -143,13 +141,14 @@ metadata:
     nginx.ingress.kubernetes.io/rate-limit: "100"
     nginx.ingress.kubernetes.io/rate-limit-window: "1m"
 spec:
+  ingressClassName: nginx
   tls:
   - hosts:
-    - threadstorm.com
-    - www.threadstorm.com
+    - kolekt.io
+    - www.kolekt.io
     secretName: threadstorm-tls
   rules:
-  - host: threadstorm.com
+  - host: kolekt.io
     http:
       paths:
       - path: /
@@ -159,7 +158,7 @@ spec:
             name: threadstorm-service
             port:
               number: 80
-  - host: www.threadstorm.com
+  - host: www.kolekt.io
     http:
       paths:
       - path: /
@@ -195,29 +194,4 @@ spec:
       target:
         type: Utilization
         averageUtilization: 80
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: threadstorm-logs-pvc
-  namespace: threadstorm
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10Gi
-  storageClassName: standard
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: threadstorm-uploads-pvc
-  namespace: threadstorm
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
-  storageClassName: standard
+
