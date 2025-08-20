@@ -18,6 +18,7 @@ python-dotenv==1.0.0
 # Security and authentication
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
+cryptography==41.0.7
 
 # Utilities
 python-multipart==0.0.6
@@ -27,8 +28,12 @@ aiofiles==23.2.1
 pytest==7.4.3
 pytest-asyncio==0.21.1
 
-# Optional: Redis for caching (uncomment if using Redis)
-# redis==5.0.1
+# Redis for caching
+redis==5.0.1
 
-# Optional: Celery for background tasks (uncomment if using Celery)
-# celery==5.3.4
+# Celery for background tasks
+celery==5.3.4
+
+# Additional dependencies
+jinja2==3.1.2
+markupsafe==2.1.3
