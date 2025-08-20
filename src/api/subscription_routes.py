@@ -4,7 +4,7 @@ Subscription Management API Routes
 Handles user subscriptions, plans, and billing
 """
 
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends, Query, Request
 from typing import List, Optional, Dict, Any
 from datetime import datetime
 import logging
@@ -89,6 +89,8 @@ AVAILABLE_PLANS = {
 }
 
 from src.services.authentication import get_current_user
+from src.services.stripe_service import stripe_service
+from src.core.config import settings
 
 # Dependency to get current user (via JWT)
 async def get_current_user_id(current_user: Dict = Depends(get_current_user)) -> str:
@@ -186,16 +188,21 @@ async def upgrade_subscription(
         
         plan = AVAILABLE_PLANS[plan_id]
         
-        # For now, just return success
-        # In production, this would integrate with Stripe
-        
         logger.info(f"User {user_id} upgrading to plan {plan_id}")
-        
+        # Map plan to Stripe price
+        price_map = {
+            'pro': settings.STRIPE_PRICE_PRO_MONTHLY,
+            'business': settings.STRIPE_PRICE_BUSINESS_MONTHLY
+        }
+        price_id = price_map.get(plan_id)
+        success_url = "https://www.kolekt.io/dashboard?billing=success"
+        cancel_url = "https://www.kolekt.io/dashboard?billing=cancel"
+        session = stripe_service.create_checkout_session(user_id, price_id or 'price_mock', success_url, cancel_url)
         return {
             "success": True,
-            "message": f"Successfully upgraded to {plan.name} plan",
+            "message": f"Proceed to checkout for {plan.name}",
             "plan": plan,
-            "checkout_url": f"https://stripe.com/checkout/mock?plan={plan_id}"  # Mock Stripe URL
+            "checkout_url": session.get('url')
         }
         
     except HTTPException:
@@ -224,6 +231,60 @@ async def cancel_subscription(
     except Exception as e:
         logger.error(f"Error canceling subscription: {e}")
         raise HTTPException(status_code=500, detail="Failed to cancel subscription")
+
+@subscription_router.post("/portal")
+async def create_billing_portal(
+    user_id: str = Depends(get_current_user_id)
+):
+    """Create a Stripe billing portal session for the current user.
+    Note: In production, look up the user's Stripe customer ID in your DB."""
+    try:
+        # TODO: Replace with actual lookup of user's Stripe customer ID
+        mock_customer_id = "cus_mock"
+        session = stripe_service.create_billing_portal(
+            customer_id=mock_customer_id,
+            return_url=settings.STRIPE_BILLING_PORTAL_RETURN_URL or "https://www.kolekt.io/dashboard"
+        )
+        return {"success": True, "portal_url": session.get('url')}
+    except Exception as e:
+        logger.error(f"Error creating billing portal: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create billing portal")
+
+@subscription_router.post("/webhook")
+async def stripe_webhook(request: Request):
+    """Handle Stripe webhooks"""
+    try:
+        payload = await request.body()
+        sig_header = request.headers.get('stripe-signature')
+        event = None
+        try:
+            event = stripe_service.verify_webhook(payload, sig_header) if sig_header else None
+        except Exception:
+            raise HTTPException(status_code=400, detail="Webhook verification failed")
+
+        # If Stripe not enabled, accept mock
+        if event is None:
+            return {"received": True, "mock": True}
+
+        event_type = event['type']
+        data_object = event['data']['object']
+
+        # Handle subscription lifecycle events (skeleton)
+        if event_type == 'checkout.session.completed':
+            logger.info('Stripe checkout completed')
+        elif event_type == 'invoice.payment_succeeded':
+            logger.info('Invoice payment succeeded')
+        elif event_type == 'customer.subscription.updated':
+            logger.info('Subscription updated')
+        elif event_type == 'customer.subscription.deleted':
+            logger.info('Subscription canceled')
+
+        return {"received": True}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Stripe webhook error: {e}")
+        raise HTTPException(status_code=400, detail="Webhook error")
 
 @subscription_router.get("/limits")
 async def get_user_limits(

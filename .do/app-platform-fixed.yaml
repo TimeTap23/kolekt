@@ -37,4 +37,14 @@ services:
   - key: REDIS_PASSWORD
     value: "PMqS+yqv0dG50+TN5B/bmOfTqmw9dpGi/jQJM/QipWA="
   - key: HUGGINGFACE_TOKEN
-    value: "${HUGGINGFACE_TOKEN}"
+    value: "YOUR_HUGGINGFACE_TOKEN_HERE"
+  - key: STRIPE_SECRET_KEY
+    value: "YOUR_STRIPE_SECRET_KEY"
+  - key: STRIPE_WEBHOOK_SECRET
+    value: "YOUR_STRIPE_WEBHOOK_SECRET"
+  - key: STRIPE_PRICE_PRO_MONTHLY
+    value: "price_xxx_pro_monthly"
+  - key: STRIPE_PRICE_BUSINESS_MONTHLY
+    value: "price_xxx_business_monthly"
+  - key: STRIPE_BILLING_PORTAL_RETURN_URL
+    value: "https://www.kolekt.io/dashboard"

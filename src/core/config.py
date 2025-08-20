@@ -88,6 +88,13 @@ class Settings(BaseSettings):
     
     # AI Configuration
     HUGGINGFACE_TOKEN: Optional[str] = Field(default=None, env="HUGGINGFACE_TOKEN")
+
+    # Stripe Configuration
+    STRIPE_SECRET_KEY: Optional[str] = Field(default=None, env="STRIPE_SECRET_KEY")
+    STRIPE_WEBHOOK_SECRET: Optional[str] = Field(default=None, env="STRIPE_WEBHOOK_SECRET")
+    STRIPE_PRICE_PRO_MONTHLY: Optional[str] = Field(default=None, env="STRIPE_PRICE_PRO_MONTHLY")
+    STRIPE_PRICE_BUSINESS_MONTHLY: Optional[str] = Field(default=None, env="STRIPE_PRICE_BUSINESS_MONTHLY")
+    STRIPE_BILLING_PORTAL_RETURN_URL: Optional[str] = Field(default=None, env="STRIPE_BILLING_PORTAL_RETURN_URL")
     
     class Config:
         env_file = ".env"
