@@ -334,6 +334,219 @@ async def delete_content(content_id: str, request: Request):
         logging.error(f"Error deleting content: {e}")
         raise HTTPException(status_code=500, detail="Failed to delete content")
 
+# Social Media Integration endpoints
+@app.post("/api/v1/social/post")
+async def post_to_social_media(request: Request):
+    """Post content to social media platforms"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        data = await request.json()
+        
+        # Validate required fields
+        if not data.get("content"):
+            raise HTTPException(status_code=400, detail="Content is required")
+        
+        if not data.get("platforms"):
+            raise HTTPException(status_code=400, detail="At least one platform is required")
+        
+        # Extract data
+        content_text = data.get("content")
+        platforms = data.get("platforms", [])
+        schedule_time = data.get("schedule_time")
+        hashtags = data.get("hashtags", [])
+        mentions = data.get("mentions", [])
+        
+        # For now, simulate posting
+        # In production, this would use the SocialPostingService
+        results = []
+        
+        for platform in platforms:
+            # Simulate posting delay
+            await asyncio.sleep(0.5)
+            
+            # Mock successful post
+            post_id = f"{platform}_{int(time.time())}"
+            results.append({
+                "platform": platform,
+                "success": True,
+                "post_id": post_id,
+                "url": f"https://{platform}.com/post/{post_id}",
+                "published_at": datetime.utcnow().isoformat()
+            })
+        
+        return {
+            "success": True,
+            "results": results,
+            "message": f"Posted to {len(platforms)} platform(s) successfully"
+        }
+        
+    except Exception as e:
+        logging.error(f"Error posting to social media: {e}")
+        raise HTTPException(status_code=500, detail="Failed to post to social media")
+
+@app.get("/api/v1/social/posts")
+async def get_social_posts(request: Request):
+    """Get user's social media posts"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        
+        # For now, return mock posts
+        # In production, this would fetch from database
+        mock_posts = [
+            {
+                "id": "post_1",
+                "content": "Just posted some amazing content! 🚀",
+                "platforms": ["threads", "instagram"],
+                "status": "published",
+                "published_at": "2024-01-15T10:30:00Z",
+                "engagement": {
+                    "likes": 42,
+                    "comments": 7,
+                    "shares": 3
+                }
+            },
+            {
+                "id": "post_2",
+                "content": "Weekly productivity tips thread...",
+                "platforms": ["threads", "twitter"],
+                "status": "published",
+                "published_at": "2024-01-14T15:45:00Z",
+                "engagement": {
+                    "likes": 28,
+                    "comments": 12,
+                    "shares": 5
+                }
+            }
+        ]
+        
+        return {"posts": mock_posts}
+        
+    except Exception as e:
+        logging.error(f"Error getting social posts: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get social posts")
+
+@app.get("/api/v1/social/scheduled")
+async def get_scheduled_posts(request: Request):
+    """Get scheduled posts"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        
+        # For now, return mock scheduled posts
+        # In production, this would fetch from database
+        mock_scheduled = [
+            {
+                "id": "scheduled_1",
+                "content": "Product launch announcement coming soon!",
+                "platforms": ["threads", "instagram", "linkedin"],
+                "schedule_time": (datetime.utcnow() + timedelta(hours=2)).isoformat(),
+                "status": "scheduled"
+            }
+        ]
+        
+        return {"scheduled_posts": mock_scheduled}
+        
+    except Exception as e:
+        logging.error(f"Error getting scheduled posts: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get scheduled posts")
+
+@app.delete("/api/v1/social/posts/{post_id}")
+async def delete_social_post(post_id: str, request: Request):
+    """Delete a social media post"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        
+        # For now, return success
+        # In production, this would delete from all platforms
+        return {"success": True, "message": "Post deleted successfully"}
+        
+    except Exception as e:
+        logging.error(f"Error deleting social post: {e}")
+        raise HTTPException(status_code=500, detail="Failed to delete post")
+
+@app.post("/api/v1/social/connect/{platform}")
+async def connect_social_account(platform: str, request: Request):
+    """Connect a social media account"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        data = await request.json()
+        
+        # For now, return success
+        # In production, this would initiate OAuth flow
+        return {
+            "success": True,
+            "platform": platform,
+            "message": f"Successfully connected {platform} account"
+        }
+        
+    except Exception as e:
+        logging.error(f"Error connecting social account: {e}")
+        raise HTTPException(status_code=500, detail="Failed to connect account")
+
+@app.get("/api/v1/social/accounts")
+async def get_connected_accounts(request: Request):
+    """Get user's connected social media accounts"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        
+        # For now, return mock connected accounts
+        # In production, this would fetch from database
+        mock_accounts = [
+            {
+                "platform": "threads",
+                "username": "@user123",
+                "connected": True,
+                "connected_at": "2024-01-01T00:00:00Z"
+            },
+            {
+                "platform": "instagram",
+                "username": "@user123",
+                "connected": True,
+                "connected_at": "2024-01-01T00:00:00Z"
+            },
+            {
+                "platform": "twitter",
+                "username": "@user123",
+                "connected": False,
+                "connected_at": None
+            }
+        ]
+        
+        return {"accounts": mock_accounts}
+        
+    except Exception as e:
+        logging.error(f"Error getting connected accounts: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get connected accounts")
+
 # Status endpoint
 @app.get("/api/v1/status")
 async def status():
@@ -586,6 +799,18 @@ async def content_creator_page():
     except Exception as e:
         logging.error(f"Error loading content creator page: {e}")
         return HTMLResponse(content="<html><body><h1>Content Creator</h1><p>Loading...</p></body></html>")
+
+# Social manager page
+@app.get("/social-manager")
+async def social_manager_page():
+    """Social media manager page"""
+    try:
+        with open("web/templates/social-manager.html", "r") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        logging.error(f"Error loading social manager page: {e}")
+        return HTMLResponse(content="<html><body><h1>Social Media Manager</h1><p>Loading...</p></body></html>")
 
 if __name__ == "__main__":
     # Get port from environment or default to 8080

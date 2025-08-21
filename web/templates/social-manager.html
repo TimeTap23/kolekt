@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Manager - Kolekt</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css?v=2.4.2">
+    <link rel="stylesheet" href="/static/css/dashboard.css?v=2.3.0">
+    
+    <style>
+        .social-manager-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .manager-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .social-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        
+        .account-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .account-card {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .account-card.connected {
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+        
+        .account-card.disconnected {
+            border-color: #dc3545;
+            background: #fff8f8;
+        }
+        
+        .account-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .account-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .account-status {
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .account-status.connected {
+            color: #28a745;
+        }
+        
+        .account-status.disconnected {
+            color: #dc3545;
+        }
+        
+        .connect-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .connect-btn.connect {
+            background: #007bff;
+            color: white;
+        }
+        
+        .connect-btn.connect:hover {
+            background: #0056b3;
+        }
+        
+        .connect-btn.disconnect {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .connect-btn.disconnect:hover {
+            background: #c82333;
+        }
+        
+        .post-form {
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .platform-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .platform-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .platform-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .platform-option.selected {
+            border-color: #667eea;
+            background: #e3f2fd;
+        }
+        
+        .platform-option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .platform-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .platform-name {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .post-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: #007bff;
+            border: 2px solid #007bff;
+        }
+        
+        .btn-outline:hover {
+            background: #007bff;
+            color: white;
+        }
+        
+        .posts-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .post-item {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .post-item:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+        
+        .post-content {
+            font-size: 0.9rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: #666;
+        }
+        
+        .post-platforms {
+            display: flex;
+            gap: 0.25rem;
+        }
+        
+        .platform-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .platform-badge.threads {
+            background: #000;
+            color: white;
+        }
+        
+        .platform-badge.instagram {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            color: white;
+        }
+        
+        .platform-badge.twitter {
+            background: #1da1f2;
+            color: white;
+        }
+        
+        .platform-badge.linkedin {
+            background: #0077b5;
+            color: white;
+        }
+        
+        .engagement-stats {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .stat-icon {
+            font-size: 0.875rem;
+        }
+        
+        .scheduled-posts {
+            margin-top: 2rem;
+        }
+        
+        .scheduled-post {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .scheduled-time {
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: 0.5rem;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .character-count {
+            text-align: right;
+            font-size: 0.875rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        
+        .character-limit {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo-container">
+                <div class="logo-icon">K</div>
+                <span class="logo-text">kolekt.io</span>
+            </a>
+            
+            <nav class="nav">
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/content-creator" class="nav-link">Content</a>
+                <a href="/formatter" class="nav-link">Formatter</a>
+                <a href="/templates" class="nav-link">Templates</a>
+                <a href="/analytics" class="nav-link">Analytics</a>
+                <a href="/pricing" class="nav-link">Pricing</a>
+                <a href="/profile" class="nav-link">Profile</a>
+            </nav>
+            
+            <div class="header-actions">
+                <div class="user-menu">
+                    <button class="user-menu-btn" onclick="toggleUserMenu()">
+                        <div class="user-avatar">
+                            <span id="userInitials">U</span>
+                        </div>
+                        <span id="userName">User</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="/profile" class="dropdown-item">Profile</a>
+                        <a href="#settings" class="dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" onclick="kolektAuth.logout()">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="social-manager-container">
+        <div class="welcome-section">
+            <h1>Social Media Manager</h1>
+            <p>Connect your accounts and manage your social media presence</p>
+        </div>
+
+        <!-- Alert Messages -->
+        <div id="alert" class="alert"></div>
+
+        <div class="manager-grid">
+            <!-- Account Management Panel -->
+            <div class="social-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">🔗 Connected Accounts</h2>
+                    <button class="btn btn-outline" onclick="refreshAccounts()">Refresh</button>
+                </div>
+
+                <div class="account-grid" id="accountGrid">
+                    <!-- Accounts will be populated here -->
+                </div>
+
+                <div class="loading" id="accountsLoading">
+                    <div class="spinner"></div>
+                    <p>Loading accounts...</p>
+                </div>
+            </div>
+
+            <!-- Post Management Panel -->
+            <div class="social-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">📝 Quick Post</h2>
+                </div>
+
+                <form class="post-form" id="quickPostForm">
+                    <div class="form-group">
+                        <label for="postContent" class="form-label">What's on your mind?</label>
+                        <textarea 
+                            id="postContent" 
+                            name="content" 
+                            class="form-textarea" 
+                            placeholder="Share your thoughts..."
+                            maxlength="500"
+                        ></textarea>
+                        <div class="character-count" id="characterCount">0/500</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Select Platforms</label>
+                        <div class="platform-selector" id="platformSelector">
+                            <!-- Platforms will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class="post-actions">
+                        <button type="submit" class="btn btn-success">Post Now</button>
+                        <button type="button" class="btn btn-outline" onclick="schedulePost()">Schedule</button>
+                        <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Posts History -->
+        <div class="social-panel" style="margin-top: 2rem;">
+            <div class="panel-header">
+                <h2 class="panel-title">📊 Recent Posts</h2>
+                <button class="btn btn-outline" onclick="loadPosts()">Refresh</button>
+            </div>
+
+            <div class="posts-list" id="postsList">
+                <!-- Posts will be populated here -->
+            </div>
+
+            <div class="loading" id="postsLoading">
+                <div class="spinner"></div>
+                <p>Loading posts...</p>
+            </div>
+        </div>
+
+        <!-- Scheduled Posts -->
+        <div class="social-panel" style="margin-top: 2rem;">
+            <div class="panel-header">
+                <h2 class="panel-title">⏰ Scheduled Posts</h2>
+            </div>
+
+            <div class="scheduled-posts" id="scheduledPosts">
+                <!-- Scheduled posts will be populated here -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        class SocialMediaManager {
+            constructor() {
+                this.baseUrl = '/api/v1';
+                this.tokenKey = 'threadstorm_access_token';
+                this.selectedPlatforms = new Set();
+                this.connectedAccounts = {};
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupEventListeners();
+                this.loadAccounts();
+                this.loadPosts();
+                this.loadScheduledPosts();
+                this.updateCharacterCount();
+            }
+            
+            setupEventListeners() {
+                // Character count
+                document.getElementById('postContent').addEventListener('input', () => this.updateCharacterCount());
+                
+                // Quick post form
+                document.getElementById('quickPostForm').addEventListener('submit', (e) => this.handleQuickPost(e));
+            }
+            
+            updateCharacterCount() {
+                const content = document.getElementById('postContent').value;
+                const count = content.length;
+                const limit = 500;
+                
+                const countElement = document.getElementById('characterCount');
+                countElement.textContent = `${count}/${limit}`;
+                
+                if (count > limit * 0.9) {
+                    countElement.classList.add('character-limit');
+                } else {
+                    countElement.classList.remove('character-limit');
+                }
+            }
+            
+            async loadAccounts() {
+                try {
+                    this.showLoading('accountsLoading', true);
+                    
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/social/accounts`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.connectedAccounts = data.accounts;
+                        this.renderAccounts();
+                        this.renderPlatformSelector();
+                    } else {
+                        throw new Error('Failed to load accounts');
+                    }
+                } catch (error) {
+                    console.error('Error loading accounts:', error);
+                    this.showAlert('Failed to load accounts', 'error');
+                } finally {
+                    this.showLoading('accountsLoading', false);
+                }
+            }
+            
+            renderAccounts() {
+                const accountGrid = document.getElementById('accountGrid');
+                
+                const accounts = [
+                    { platform: 'threads', name: 'Threads', icon: '🧵' },
+                    { platform: 'instagram', name: 'Instagram', icon: '📷' },
+                    { platform: 'twitter', name: 'Twitter', icon: '🐦' },
+                    { platform: 'linkedin', name: 'LinkedIn', icon: '💼' },
+                    { platform: 'facebook', name: 'Facebook', icon: '📘' }
+                ];
+                
+                accountGrid.innerHTML = accounts.map(account => {
+                    const connected = this.connectedAccounts.find(acc => acc.platform === account.platform);
+                    const isConnected = connected && connected.connected;
+                    
+                    return `
+                        <div class="account-card ${isConnected ? 'connected' : 'disconnected'}">
+                            <div class="account-icon">${account.icon}</div>
+                            <div class="account-name">${account.name}</div>
+                            <div class="account-status ${isConnected ? 'connected' : 'disconnected'}">
+                                ${isConnected ? 'Connected' : 'Not Connected'}
+                            </div>
+                            ${isConnected ? 
+                                `<div class="account-username">${connected.username}</div>
+                                 <button class="connect-btn disconnect" onclick="socialManager.disconnectAccount('${account.platform}')">
+                                     Disconnect
+                                 </button>` :
+                                `<button class="connect-btn connect" onclick="socialManager.connectAccount('${account.platform}')">
+                                     Connect
+                                 </button>`
+                            }
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            renderPlatformSelector() {
+                const platformSelector = document.getElementById('platformSelector');
+                
+                const platforms = [
+                    { platform: 'threads', name: 'Threads', icon: '🧵' },
+                    { platform: 'instagram', name: 'Instagram', icon: '📷' },
+                    { platform: 'twitter', name: 'Twitter', icon: '🐦' },
+                    { platform: 'linkedin', name: 'LinkedIn', icon: '💼' },
+                    { platform: 'facebook', name: 'Facebook', icon: '📘' }
+                ];
+                
+                platformSelector.innerHTML = platforms.map(platform => {
+                    const connected = this.connectedAccounts.find(acc => acc.platform === platform.platform);
+                    const isConnected = connected && connected.connected;
+                    
+                    return `
+                        <div class="platform-option ${isConnected ? '' : 'disabled'}" 
+                             data-platform="${platform.platform}"
+                             onclick="${isConnected ? 'socialManager.togglePlatform(this)' : ''}">
+                            <div class="platform-icon">${platform.icon}</div>
+                            <div class="platform-name">${platform.name}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            togglePlatform(element) {
+                const platform = element.dataset.platform;
+                
+                if (this.selectedPlatforms.has(platform)) {
+                    this.selectedPlatforms.delete(platform);
+                    element.classList.remove('selected');
+                } else {
+                    this.selectedPlatforms.add(platform);
+                    element.classList.add('selected');
+                }
+            }
+            
+            async connectAccount(platform) {
+                try {
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/social/connect/${platform}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({})
+                    });
+                    
+                    if (response.ok) {
+                        this.showAlert(`${platform} account connected successfully!`, 'success');
+                        this.loadAccounts();
+                    } else {
+                        throw new Error('Failed to connect account');
+                    }
+                } catch (error) {
+                    console.error('Error connecting account:', error);
+                    this.showAlert(`Failed to connect ${platform} account`, 'error');
+                }
+            }
+            
+            async disconnectAccount(platform) {
+                if (confirm(`Are you sure you want to disconnect your ${platform} account?`)) {
+                    try {
+                        const token = localStorage.getItem(this.tokenKey);
+                        const response = await fetch(`${this.baseUrl}/social/connect/${platform}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+                        
+                        if (response.ok) {
+                            this.showAlert(`${platform} account disconnected successfully!`, 'success');
+                            this.loadAccounts();
+                        } else {
+                            throw new Error('Failed to disconnect account');
+                        }
+                    } catch (error) {
+                        console.error('Error disconnecting account:', error);
+                        this.showAlert(`Failed to disconnect ${platform} account`, 'error');
+                    }
+                }
+            }
+            
+            async handleQuickPost(e) {
+                e.preventDefault();
+                
+                const content = document.getElementById('postContent').value.trim();
+                
+                if (!content) {
+                    this.showAlert('Please enter some content', 'error');
+                    return;
+                }
+                
+                if (this.selectedPlatforms.size === 0) {
+                    this.showAlert('Please select at least one platform', 'error');
+                    return;
+                }
+                
+                try {
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/social/post`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            content: content,
+                            platforms: Array.from(this.selectedPlatforms)
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok && data.success) {
+                        this.showAlert(`Posted to ${data.results.length} platform(s) successfully!`, 'success');
+                        this.clearForm();
+                        this.loadPosts();
+                    } else {
+                        throw new Error(data.error || 'Failed to post');
+                    }
+                } catch (error) {
+                    console.error('Error posting:', error);
+                    this.showAlert(error.message || 'Failed to post content', 'error');
+                }
+            }
+            
+            async loadPosts() {
+                try {
+                    this.showLoading('postsLoading', true);
+                    
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/social/posts`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.renderPosts(data.posts);
+                    } else {
+                        throw new Error('Failed to load posts');
+                    }
+                } catch (error) {
+                    console.error('Error loading posts:', error);
+                    this.showAlert('Failed to load posts', 'error');
+                } finally {
+                    this.showLoading('postsLoading', false);
+                }
+            }
+            
+            renderPosts(posts) {
+                const postsList = document.getElementById('postsList');
+                
+                if (posts.length === 0) {
+                    postsList.innerHTML = '<p style="color: #666; text-align: center;">No posts yet</p>';
+                    return;
+                }
+                
+                postsList.innerHTML = posts.map(post => `
+                    <div class="post-item">
+                        <div class="post-header">
+                            <div class="post-platforms">
+                                ${post.platforms.map(platform => 
+                                    `<span class="platform-badge ${platform}">${platform}</span>`
+                                ).join('')}
+                            </div>
+                            <button class="btn btn-secondary" onclick="socialManager.deletePost('${post.id}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
+                                Delete
+                            </button>
+                        </div>
+                        <div class="post-content">${post.content}</div>
+                        <div class="post-meta">
+                            <div>${new Date(post.published_at).toLocaleDateString()}</div>
+                            <div class="engagement-stats">
+                                <div class="stat">
+                                    <span class="stat-icon">❤️</span>
+                                    <span>${post.engagement.likes}</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-icon">💬</span>
+                                    <span>${post.engagement.comments}</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-icon">🔄</span>
+                                    <span>${post.engagement.shares}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            async loadScheduledPosts() {
+                try {
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/social/scheduled`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.renderScheduledPosts(data.scheduled_posts);
+                    }
+                } catch (error) {
+                    console.error('Error loading scheduled posts:', error);
+                }
+            }
+            
+            renderScheduledPosts(scheduledPosts) {
+                const scheduledPostsContainer = document.getElementById('scheduledPosts');
+                
+                if (scheduledPosts.length === 0) {
+                    scheduledPostsContainer.innerHTML = '<p style="color: #666; text-align: center;">No scheduled posts</p>';
+                    return;
+                }
+                
+                scheduledPostsContainer.innerHTML = scheduledPosts.map(post => `
+                    <div class="scheduled-post">
+                        <div class="scheduled-time">
+                            Scheduled for: ${new Date(post.schedule_time).toLocaleString()}
+                        </div>
+                        <div class="post-content">${post.content}</div>
+                        <div class="post-platforms">
+                            ${post.platforms.map(platform => 
+                                `<span class="platform-badge ${platform}">${platform}</span>`
+                            ).join('')}
+                        </div>
+                        <button class="btn btn-secondary" onclick="socialManager.cancelScheduledPost('${post.id}')" style="margin-top: 0.5rem;">
+                            Cancel
+                        </button>
+                    </div>
+                `).join('');
+            }
+            
+            async deletePost(postId) {
+                if (confirm('Are you sure you want to delete this post?')) {
+                    try {
+                        const token = localStorage.getItem(this.tokenKey);
+                        const response = await fetch(`${this.baseUrl}/social/posts/${postId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+                        
+                        if (response.ok) {
+                            this.showAlert('Post deleted successfully!', 'success');
+                            this.loadPosts();
+                        } else {
+                            throw new Error('Failed to delete post');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting post:', error);
+                        this.showAlert('Failed to delete post', 'error');
+                    }
+                }
+            }
+            
+            async cancelScheduledPost(postId) {
+                if (confirm('Are you sure you want to cancel this scheduled post?')) {
+                    try {
+                        const token = localStorage.getItem(this.tokenKey);
+                        const response = await fetch(`${this.baseUrl}/social/scheduled/${postId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+                        
+                        if (response.ok) {
+                            this.showAlert('Scheduled post cancelled!', 'success');
+                            this.loadScheduledPosts();
+                        } else {
+                            throw new Error('Failed to cancel scheduled post');
+                        }
+                    } catch (error) {
+                        console.error('Error cancelling scheduled post:', error);
+                        this.showAlert('Failed to cancel scheduled post', 'error');
+                    }
+                }
+            }
+            
+            schedulePost() {
+                alert('Scheduling feature coming soon!');
+            }
+            
+            clearForm() {
+                document.getElementById('postContent').value = '';
+                this.selectedPlatforms.clear();
+                document.querySelectorAll('.platform-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                this.updateCharacterCount();
+            }
+            
+            showLoading(elementId, show) {
+                document.getElementById(elementId).style.display = show ? 'block' : 'none';
+            }
+            
+            showAlert(message, type) {
+                const alert = document.getElementById('alert');
+                alert.textContent = message;
+                alert.className = `alert alert-${type}`;
+                alert.style.display = 'block';
+                
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        // Global functions
+        function refreshAccounts() {
+            socialManager.loadAccounts();
+        }
+        
+        function loadPosts() {
+            socialManager.loadPosts();
+        }
+        
+        function schedulePost() {
+            socialManager.schedulePost();
+        }
+        
+        function clearForm() {
+            socialManager.clearForm();
+        }
+        
+        // Initialize social media manager
+        let socialManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            socialManager = new SocialMediaManager();
+        });
+    </script>
+</body>
+</html>
