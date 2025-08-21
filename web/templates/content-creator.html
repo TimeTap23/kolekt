@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Creator - Kolekt</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css?v=2.4.2">
+    <link rel="stylesheet" href="/static/css/dashboard.css?v=2.3.0">
+    
+    <style>
+        .content-creator-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .creator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .content-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .platform-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .platform-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .platform-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .platform-option.selected {
+            border-color: #667eea;
+            background: #e3f2fd;
+        }
+        
+        .platform-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .platform-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .content-preview {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            min-height: 300px;
+            white-space: pre-wrap;
+            font-family: inherit;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: #007bff;
+            border: 2px solid #007bff;
+        }
+        
+        .btn-outline:hover {
+            background: #007bff;
+            color: white;
+        }
+        
+        .ai-assist {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .ai-assist h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+        }
+        
+        .ai-assist p {
+            margin: 0 0 1rem 0;
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+        
+        .ai-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .ai-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .ai-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .scheduling-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .scheduling-section h4 {
+            margin: 0 0 1rem 0;
+            color: #333;
+        }
+        
+        .schedule-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .schedule-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .schedule-option input {
+            margin: 0;
+        }
+        
+        .schedule-option label {
+            font-size: 0.875rem;
+            color: #666;
+        }
+        
+        .draft-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .draft-item {
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .draft-item:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .draft-item.selected {
+            border-color: #667eea;
+            background: #e3f2fd;
+        }
+        
+        .draft-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .draft-preview {
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .draft-meta {
+            font-size: 0.75rem;
+            color: #999;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .word-count {
+            text-align: right;
+            font-size: 0.875rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        
+        .character-limit {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo-container">
+                <div class="logo-icon">K</div>
+                <span class="logo-text">kolekt.io</span>
+            </a>
+            
+            <nav class="nav">
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/content-creator" class="nav-link active">Content</a>
+                <a href="/formatter" class="nav-link">Formatter</a>
+                <a href="/templates" class="nav-link">Templates</a>
+                <a href="/analytics" class="nav-link">Analytics</a>
+                <a href="/pricing" class="nav-link">Pricing</a>
+                <a href="/profile" class="nav-link">Profile</a>
+            </nav>
+            
+            <div class="header-actions">
+                <div class="user-menu">
+                    <button class="user-menu-btn" onclick="toggleUserMenu()">
+                        <div class="user-avatar">
+                            <span id="userInitials">U</span>
+                        </div>
+                        <span id="userName">User</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="/profile" class="dropdown-item">Profile</a>
+                        <a href="#settings" class="dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" onclick="kolektAuth.logout()">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content-creator-container">
+        <div class="welcome-section">
+            <h1>Content Creator</h1>
+            <p>Create, edit, and schedule your content across all platforms</p>
+        </div>
+
+        <!-- Alert Messages -->
+        <div id="alert" class="alert"></div>
+
+        <div class="creator-grid">
+            <!-- Content Creation Panel -->
+            <div class="content-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">✍️ Create Content</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn-outline" onclick="loadFromTemplate()">Load Template</button>
+                        <button class="btn btn-secondary" onclick="saveDraft()">Save Draft</button>
+                    </div>
+                </div>
+
+                <!-- AI Assistance -->
+                <div class="ai-assist">
+                    <h4>🤖 AI Assistant</h4>
+                    <p>Need help with your content? Let AI assist you!</p>
+                    <div class="ai-buttons">
+                        <button class="ai-btn" onclick="generateContent()">Generate Content</button>
+                        <button class="ai-btn" onclick="optimizeContent()">Optimize</button>
+                        <button class="ai-btn" onclick="generateHashtags()">Add Hashtags</button>
+                        <button class="ai-btn" onclick="suggestTitle()">Suggest Title</button>
+                    </div>
+                </div>
+
+                <!-- Content Form -->
+                <form id="contentForm">
+                    <div class="form-group">
+                        <label for="contentTitle" class="form-label">Content Title</label>
+                        <input type="text" id="contentTitle" name="title" class="form-input" placeholder="Enter a compelling title...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contentBody" class="form-label">Content</label>
+                        <textarea id="contentBody" name="content" class="form-textarea" placeholder="Write your content here..."></textarea>
+                        <div class="word-count" id="wordCount">0 words</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contentType" class="form-label">Content Type</label>
+                        <select id="contentType" name="type" class="form-select">
+                            <option value="post">Social Media Post</option>
+                            <option value="thread">Thread</option>
+                            <option value="story">Story</option>
+                            <option value="article">Article</option>
+                            <option value="announcement">Announcement</option>
+                        </select>
+                    </div>
+
+                    <!-- Platform Selection -->
+                    <div class="form-group">
+                        <label class="form-label">Target Platforms</label>
+                        <div class="platform-selector">
+                            <div class="platform-option" data-platform="threads">
+                                <div class="platform-icon">🧵</div>
+                                <div class="platform-name">Threads</div>
+                            </div>
+                            <div class="platform-option" data-platform="instagram">
+                                <div class="platform-icon">📷</div>
+                                <div class="platform-name">Instagram</div>
+                            </div>
+                            <div class="platform-option" data-platform="twitter">
+                                <div class="platform-icon">🐦</div>
+                                <div class="platform-name">Twitter</div>
+                            </div>
+                            <div class="platform-option" data-platform="linkedin">
+                                <div class="platform-icon">💼</div>
+                                <div class="platform-name">LinkedIn</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scheduling Section -->
+                    <div class="scheduling-section">
+                        <h4>📅 Scheduling</h4>
+                        <div class="schedule-options">
+                            <div class="schedule-option">
+                                <input type="radio" id="publishNow" name="schedule" value="now" checked>
+                                <label for="publishNow">Publish Now</label>
+                            </div>
+                            <div class="schedule-option">
+                                <input type="radio" id="scheduleLater" name="schedule" value="later">
+                                <label for="scheduleLater">Schedule Later</label>
+                            </div>
+                        </div>
+                        
+                        <div id="scheduleOptions" style="display: none;">
+                            <div class="form-group">
+                                <label for="scheduleDate" class="form-label">Date & Time</label>
+                                <input type="datetime-local" id="scheduleDate" name="scheduleDate" class="form-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-success">Publish Content</button>
+                        <button type="button" class="btn btn-primary" onclick="previewContent()">Preview</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Preview Panel -->
+            <div class="content-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">👁️ Preview</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn-outline" onclick="refreshPreview()">Refresh</button>
+                    </div>
+                </div>
+
+                <div class="loading" id="previewLoading">
+                    <div class="spinner"></div>
+                    <p>Generating preview...</p>
+                </div>
+
+                <div class="content-preview" id="contentPreview">
+                    Your content preview will appear here...
+                </div>
+
+                <!-- Drafts Section -->
+                <div style="margin-top: 2rem;">
+                    <h3 style="margin-bottom: 1rem;">📝 Recent Drafts</h3>
+                    <div class="draft-list" id="draftList">
+                        <!-- Drafts will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        class ContentCreator {
+            constructor() {
+                this.baseUrl = '/api/v1';
+                this.tokenKey = 'threadstorm_access_token';
+                this.selectedPlatforms = new Set();
+                this.currentDraft = null;
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupEventListeners();
+                this.loadDrafts();
+                this.updateWordCount();
+            }
+            
+            setupEventListeners() {
+                // Platform selection
+                document.querySelectorAll('.platform-option').forEach(option => {
+                    option.addEventListener('click', () => this.togglePlatform(option));
+                });
+                
+                // Schedule options
+                document.getElementById('scheduleLater').addEventListener('change', () => {
+                    document.getElementById('scheduleOptions').style.display = 'block';
+                });
+                
+                document.getElementById('publishNow').addEventListener('change', () => {
+                    document.getElementById('scheduleOptions').style.display = 'none';
+                });
+                
+                // Content form
+                document.getElementById('contentForm').addEventListener('submit', (e) => this.handleSubmit(e));
+                
+                // Word count
+                document.getElementById('contentBody').addEventListener('input', () => this.updateWordCount());
+            }
+            
+            togglePlatform(option) {
+                const platform = option.dataset.platform;
+                
+                if (this.selectedPlatforms.has(platform)) {
+                    this.selectedPlatforms.delete(platform);
+                    option.classList.remove('selected');
+                } else {
+                    this.selectedPlatforms.add(platform);
+                    option.classList.add('selected');
+                }
+            }
+            
+            updateWordCount() {
+                const content = document.getElementById('contentBody').value;
+                const words = content.trim().split(/\s+/).filter(word => word.length > 0);
+                const wordCount = words.length;
+                
+                document.getElementById('wordCount').textContent = `${wordCount} words`;
+                
+                // Check character limits for different platforms
+                const limits = {
+                    twitter: 280,
+                    threads: 500,
+                    instagram: 2200,
+                    linkedin: 3000
+                };
+                
+                let limitWarning = '';
+                this.selectedPlatforms.forEach(platform => {
+                    if (limits[platform] && content.length > limits[platform]) {
+                        limitWarning += ` ${platform.toUpperCase()}: ${content.length}/${limits[platform]} chars`;
+                    }
+                });
+                
+                if (limitWarning) {
+                    document.getElementById('wordCount').innerHTML = `${wordCount} words<span class="character-limit">${limitWarning}</span>`;
+                }
+            }
+            
+            async handleSubmit(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(e.target);
+                const contentData = {
+                    title: formData.get('title'),
+                    content: formData.get('content'),
+                    type: formData.get('type'),
+                    platforms: Array.from(this.selectedPlatforms),
+                    schedule: formData.get('schedule'),
+                    scheduleDate: formData.get('scheduleDate')
+                };
+                
+                if (!contentData.content.trim()) {
+                    this.showAlert('Please enter some content', 'error');
+                    return;
+                }
+                
+                if (this.selectedPlatforms.size === 0) {
+                    this.showAlert('Please select at least one platform', 'error');
+                    return;
+                }
+                
+                try {
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/content/create`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(contentData)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        this.showAlert('Content created successfully!', 'success');
+                        this.clearForm();
+                        this.loadDrafts();
+                    } else {
+                        throw new Error(data.error || 'Failed to create content');
+                    }
+                } catch (error) {
+                    console.error('Error creating content:', error);
+                    this.showAlert(error.message || 'Failed to create content', 'error');
+                }
+            }
+            
+            async generateContent() {
+                const title = document.getElementById('contentTitle').value;
+                const type = document.getElementById('contentType').value;
+                
+                if (!title.trim()) {
+                    this.showAlert('Please enter a title first', 'error');
+                    return;
+                }
+                
+                try {
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/ai/generate-content`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            topic: title,
+                            platform: 'threads',
+                            tone: 'engaging',
+                            length: 'medium'
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        document.getElementById('contentBody').value = data.content;
+                        this.updateWordCount();
+                        this.showAlert('Content generated successfully!', 'success');
+                    } else {
+                        throw new Error(data.error || 'Failed to generate content');
+                    }
+                } catch (error) {
+                    console.error('Error generating content:', error);
+                    this.showAlert(error.message || 'Failed to generate content', 'error');
+                }
+            }
+            
+            async optimizeContent() {
+                const content = document.getElementById('contentBody').value;
+                
+                if (!content.trim()) {
+                    this.showAlert('Please enter some content first', 'error');
+                    return;
+                }
+                
+                try {
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/ai/optimize-content`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            content: content,
+                            target_platform: 'threads',
+                            optimization_type: 'engagement'
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        document.getElementById('contentBody').value = data.optimized_content;
+                        this.updateWordCount();
+                        this.showAlert('Content optimized successfully!', 'success');
+                    } else {
+                        throw new Error(data.error || 'Failed to optimize content');
+                    }
+                } catch (error) {
+                    console.error('Error optimizing content:', error);
+                    this.showAlert(error.message || 'Failed to optimize content', 'error');
+                }
+            }
+            
+            async generateHashtags() {
+                const content = document.getElementById('contentBody').value;
+                
+                if (!content.trim()) {
+                    this.showAlert('Please enter some content first', 'error');
+                    return;
+                }
+                
+                try {
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/ai/generate-hashtags`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            content: content,
+                            platform: 'threads',
+                            count: 5
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        const hashtags = data.hashtags.join(' ');
+                        const currentContent = document.getElementById('contentBody').value;
+                        document.getElementById('contentBody').value = currentContent + '\n\n' + hashtags;
+                        this.updateWordCount();
+                        this.showAlert('Hashtags added successfully!', 'success');
+                    } else {
+                        throw new Error(data.error || 'Failed to generate hashtags');
+                    }
+                } catch (error) {
+                    console.error('Error generating hashtags:', error);
+                    this.showAlert(error.message || 'Failed to generate hashtags', 'error');
+                }
+            }
+            
+            suggestTitle() {
+                const content = document.getElementById('contentBody').value;
+                
+                if (!content.trim()) {
+                    this.showAlert('Please enter some content first', 'error');
+                    return;
+                }
+                
+                // Simple title suggestion based on first sentence
+                const firstSentence = content.split('.')[0];
+                const words = firstSentence.split(' ').slice(0, 6);
+                const suggestedTitle = words.join(' ') + '...';
+                
+                document.getElementById('contentTitle').value = suggestedTitle;
+                this.showAlert('Title suggested!', 'success');
+            }
+            
+            async saveDraft() {
+                const formData = new FormData(document.getElementById('contentForm'));
+                const draftData = {
+                    title: formData.get('title'),
+                    content: formData.get('content'),
+                    type: formData.get('type'),
+                    platforms: Array.from(this.selectedPlatforms)
+                };
+                
+                if (!draftData.content.trim()) {
+                    this.showAlert('Please enter some content first', 'error');
+                    return;
+                }
+                
+                try {
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/content/drafts`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(draftData)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        this.showAlert('Draft saved successfully!', 'success');
+                        this.loadDrafts();
+                    } else {
+                        throw new Error(data.error || 'Failed to save draft');
+                    }
+                } catch (error) {
+                    console.error('Error saving draft:', error);
+                    this.showAlert(error.message || 'Failed to save draft', 'error');
+                }
+            }
+            
+            async loadDrafts() {
+                try {
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/content/drafts`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const drafts = await response.json();
+                        this.renderDrafts(drafts);
+                    }
+                } catch (error) {
+                    console.error('Error loading drafts:', error);
+                }
+            }
+            
+            renderDrafts(drafts) {
+                const draftList = document.getElementById('draftList');
+                
+                if (drafts.length === 0) {
+                    draftList.innerHTML = '<p style="color: #666; text-align: center;">No drafts yet</p>';
+                    return;
+                }
+                
+                draftList.innerHTML = drafts.map(draft => `
+                    <div class="draft-item" onclick="contentCreator.loadDraft('${draft.id}')">
+                        <div class="draft-title">${draft.title || 'Untitled'}</div>
+                        <div class="draft-preview">${draft.content.substring(0, 100)}...</div>
+                        <div class="draft-meta">${new Date(draft.created_at).toLocaleDateString()} • ${draft.platforms.join(', ')}</div>
+                    </div>
+                `).join('');
+            }
+            
+            loadDraft(draftId) {
+                // Load draft content into form
+                // This would fetch the specific draft and populate the form
+                this.showAlert('Draft loaded!', 'success');
+            }
+            
+            previewContent() {
+                const title = document.getElementById('contentTitle').value;
+                const content = document.getElementById('contentBody').value;
+                const type = document.getElementById('contentType').value;
+                
+                if (!content.trim()) {
+                    this.showAlert('Please enter some content first', 'error');
+                    return;
+                }
+                
+                const preview = `📝 ${title || 'Untitled'}\n\n${content}\n\n#${type} #content`;
+                document.getElementById('contentPreview').textContent = preview;
+            }
+            
+            refreshPreview() {
+                this.previewContent();
+            }
+            
+            clearForm() {
+                document.getElementById('contentForm').reset();
+                document.getElementById('contentBody').value = '';
+                this.selectedPlatforms.clear();
+                document.querySelectorAll('.platform-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                this.updateWordCount();
+            }
+            
+            showAlert(message, type) {
+                const alert = document.getElementById('alert');
+                alert.textContent = message;
+                alert.className = `alert alert-${type}`;
+                alert.style.display = 'block';
+                
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        // Global functions
+        function generateContent() {
+            contentCreator.generateContent();
+        }
+        
+        function optimizeContent() {
+            contentCreator.optimizeContent();
+        }
+        
+        function generateHashtags() {
+            contentCreator.generateHashtags();
+        }
+        
+        function suggestTitle() {
+            contentCreator.suggestTitle();
+        }
+        
+        function saveDraft() {
+            contentCreator.saveDraft();
+        }
+        
+        function loadFromTemplate() {
+            window.location.href = '/templates';
+        }
+        
+        function previewContent() {
+            contentCreator.previewContent();
+        }
+        
+        function refreshPreview() {
+            contentCreator.refreshPreview();
+        }
+        
+        // Initialize content creator
+        let contentCreator;
+        document.addEventListener('DOMContentLoaded', () => {
+            contentCreator = new ContentCreator();
+        });
+    </script>
+</body>
+</html>

@@ -176,6 +176,164 @@ async def update_notification_preferences(request: Request):
         logging.error(f"Error updating notification preferences: {e}")
         raise HTTPException(status_code=500, detail="Failed to update preferences")
 
+# Content Management endpoints
+@app.post("/api/v1/content/create")
+async def create_content(request: Request):
+    """Create new content"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        data = await request.json()
+        
+        # Validate required fields
+        if not data.get("content"):
+            raise HTTPException(status_code=400, detail="Content is required")
+        
+        if not data.get("platforms"):
+            raise HTTPException(status_code=400, detail="At least one platform is required")
+        
+        # For now, return success with mock content ID
+        # In production, this would save to database and potentially schedule posts
+        content_id = f"content_{int(time.time())}"
+        
+        return {
+            "success": True,
+            "content_id": content_id,
+            "message": "Content created successfully"
+        }
+    except Exception as e:
+        logging.error(f"Error creating content: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create content")
+
+@app.get("/api/v1/content/drafts")
+async def get_drafts(request: Request):
+    """Get user drafts"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        
+        # For now, return mock drafts
+        # In production, this would fetch from database
+        mock_drafts = [
+            {
+                "id": "draft_1",
+                "title": "Product Launch Announcement",
+                "content": "We're excited to announce the launch of our new product...",
+                "type": "announcement",
+                "platforms": ["threads", "instagram"],
+                "created_at": "2024-01-15T10:30:00Z"
+            },
+            {
+                "id": "draft_2", 
+                "title": "Weekly Tips Thread",
+                "content": "Here are 5 productivity tips that changed my life...",
+                "type": "thread",
+                "platforms": ["threads", "twitter"],
+                "created_at": "2024-01-14T15:45:00Z"
+            }
+        ]
+        
+        return mock_drafts
+    except Exception as e:
+        logging.error(f"Error getting drafts: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get drafts")
+
+@app.post("/api/v1/content/drafts")
+async def save_draft(request: Request):
+    """Save content draft"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        data = await request.json()
+        
+        # Validate required fields
+        if not data.get("content"):
+            raise HTTPException(status_code=400, detail="Content is required")
+        
+        # For now, return success
+        # In production, this would save to database
+        return {"success": True, "message": "Draft saved successfully"}
+    except Exception as e:
+        logging.error(f"Error saving draft: {e}")
+        raise HTTPException(status_code=500, detail="Failed to save draft")
+
+@app.get("/api/v1/content/{content_id}")
+async def get_content(content_id: str, request: Request):
+    """Get specific content"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        
+        # For now, return mock content
+        # In production, this would fetch from database
+        mock_content = {
+            "id": content_id,
+            "title": "Sample Content",
+            "content": "This is sample content for demonstration purposes.",
+            "type": "post",
+            "platforms": ["threads"],
+            "status": "draft",
+            "created_at": "2024-01-15T10:30:00Z"
+        }
+        
+        return mock_content
+    except Exception as e:
+        logging.error(f"Error getting content: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get content")
+
+@app.put("/api/v1/content/{content_id}")
+async def update_content(content_id: str, request: Request):
+    """Update content"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        data = await request.json()
+        
+        # For now, return success
+        # In production, this would update in database
+        return {"success": True, "message": "Content updated successfully"}
+    except Exception as e:
+        logging.error(f"Error updating content: {e}")
+        raise HTTPException(status_code=500, detail="Failed to update content")
+
+@app.delete("/api/v1/content/{content_id}")
+async def delete_content(content_id: str, request: Request):
+    """Delete content"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        
+        # For now, return success
+        # In production, this would delete from database
+        return {"success": True, "message": "Content deleted successfully"}
+    except Exception as e:
+        logging.error(f"Error deleting content: {e}")
+        raise HTTPException(status_code=500, detail="Failed to delete content")
+
 # Status endpoint
 @app.get("/api/v1/status")
 async def status():
@@ -416,6 +574,18 @@ async def forgot_password_page():
     except Exception as e:
         logging.error(f"Error loading forgot password page: {e}")
         return HTMLResponse(content="<html><body><h1>Reset Password</h1><p>Loading...</p></body></html>")
+
+# Content creator page
+@app.get("/content-creator")
+async def content_creator_page():
+    """Content creator page"""
+    try:
+        with open("web/templates/content-creator.html", "r") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        logging.error(f"Error loading content creator page: {e}")
+        return HTMLResponse(content="<html><body><h1>Content Creator</h1><p>Loading...</p></body></html>")
 
 if __name__ == "__main__":
     # Get port from environment or default to 8080
