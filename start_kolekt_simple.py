@@ -200,6 +200,18 @@ async def main_page():
         logging.error(f"Error loading main page: {e}")
         return HTMLResponse(content="<html><body><h1>Welcome to Kolekt</h1><p>Loading...</p></body></html>")
 
+# Pricing page
+@app.get("/pricing")
+async def pricing_page():
+    """Pricing page"""
+    try:
+        with open("web/templates/pricing.html", "r") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        logging.error(f"Error loading pricing page: {e}")
+        return HTMLResponse(content="<html><body><h1>Pricing</h1><p>Loading...</p></body></html>")
+
 if __name__ == "__main__":
     # Get port from environment or default to 8080
     port = int(os.getenv("PORT", 8080))

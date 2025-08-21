@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - Kolekt</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .feature-list li {
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        .feature-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-2xl font-bold text-gray-900">Kolekt</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/login" class="text-gray-600 hover:text-gray-900">Login</a>
+                    <a href="/signup" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="gradient-bg text-white py-20">
+        <div class="max-w-4xl mx-auto text-center px-4">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">Simple, Transparent Pricing</h1>
+            <p class="text-xl mb-8">Choose the plan that fits your social media needs. Upgrade anytime.</p>
+        </div>
+    </div>
+
+    <!-- Pricing Toggle -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center bg-gray-200 rounded-lg p-1">
+                <button id="monthly-toggle" class="px-4 py-2 rounded-md bg-white shadow-sm text-gray-900 font-medium">Monthly</button>
+                <button id="yearly-toggle" class="px-4 py-2 rounded-md text-gray-600 hover:text-gray-900">Yearly <span class="text-green-600 text-sm">(Save 20%)</span></button>
+            </div>
+        </div>
+
+        <!-- Subscription Plans -->
+        <div class="grid md:grid-cols-3 gap-8 mb-16">
+            <!-- Starter Plan -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 card-hover">
+                <div class="text-center">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Starter</h3>
+                    <div class="text-4xl font-bold text-gray-900 mb-2">
+                        <span id="starter-price">$12</span>
+                        <span class="text-lg text-gray-600">/month</span>
+                    </div>
+                    <p class="text-gray-600 mb-6">Perfect for individuals getting started</p>
+                </div>
+                <ul class="feature-list space-y-3 mb-8">
+                    <li>100 AI credits per month</li>
+                    <li>Up to 3 connected accounts</li>
+                    <li>Basic scheduling</li>
+                    <li>Basic analytics</li>
+                    <li>Email support</li>
+                </ul>
+                <button onclick="upgradePlan('starter')" class="w-full bg-gray-900 text-white py-3 rounded-lg hover:bg-gray-800 transition-colors">
+                    Get Started
+                </button>
+            </div>
+
+            <!-- Pro Plan -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 card-hover border-2 border-blue-500 relative">
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <span class="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-medium">Most Popular</span>
+                </div>
+                <div class="text-center">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Pro</h3>
+                    <div class="text-4xl font-bold text-gray-900 mb-2">
+                        <span id="pro-price">$29</span>
+                        <span class="text-lg text-gray-600">/month</span>
+                    </div>
+                    <p class="text-gray-600 mb-6">For growing creators and small teams</p>
+                </div>
+                <ul class="feature-list space-y-3 mb-8">
+                    <li>400 AI credits per month</li>
+                    <li>Up to 6 connected accounts</li>
+                    <li>Advanced analytics</li>
+                    <li>Content templates</li>
+                    <li>Priority support</li>
+                    <li>API access</li>
+                </ul>
+                <button onclick="upgradePlan('pro')" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                    Start Pro
+                </button>
+            </div>
+
+            <!-- Business Plan -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 card-hover">
+                <div class="text-center">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Business</h3>
+                    <div class="text-4xl font-bold text-gray-900 mb-2">
+                        <span id="business-price">$79</span>
+                        <span class="text-lg text-gray-600">/month</span>
+                    </div>
+                    <p class="text-gray-600 mb-6">For agencies and large teams</p>
+                </div>
+                <ul class="feature-list space-y-3 mb-8">
+                    <li>1500 AI credits per month</li>
+                    <li>Up to 10 connected accounts</li>
+                    <li>Team collaboration</li>
+                    <li>Priority support</li>
+                    <li>White-label options</li>
+                    <li>Custom integrations</li>
+                </ul>
+                <button onclick="upgradePlan('business')" class="w-full bg-gray-900 text-white py-3 rounded-lg hover:bg-gray-800 transition-colors">
+                    Start Business
+                </button>
+            </div>
+        </div>
+
+        <!-- Credit Packs Section -->
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Need More Credits?</h2>
+            <p class="text-xl text-gray-600 mb-8">Purchase additional AI credits anytime. No subscription required.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- 100 Credits -->
+            <div class="bg-white rounded-xl shadow-md p-6 text-center card-hover">
+                <div class="text-3xl font-bold text-gray-900 mb-2">100 Credits</div>
+                <div class="text-2xl font-bold text-blue-600 mb-4">$10</div>
+                <p class="text-gray-600 mb-6">Perfect for trying out AI features</p>
+                <button onclick="buyCredits('100')" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
+                    Buy Now
+                </button>
+            </div>
+
+            <!-- 300 Credits -->
+            <div class="bg-white rounded-xl shadow-md p-6 text-center card-hover border-2 border-green-500 relative">
+                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">Popular</span>
+                </div>
+                <div class="text-3xl font-bold text-gray-900 mb-2">300 Credits</div>
+                <div class="text-2xl font-bold text-blue-600 mb-4">$25</div>
+                <p class="text-gray-600 mb-6">Most popular choice</p>
+                <button onclick="buyCredits('300')" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
+                    Buy Now
+                </button>
+            </div>
+
+            <!-- 750 Credits -->
+            <div class="bg-white rounded-xl shadow-md p-6 text-center card-hover">
+                <div class="text-3xl font-bold text-gray-900 mb-2">750 Credits</div>
+                <div class="text-2xl font-bold text-blue-600 mb-4">$50</div>
+                <p class="text-gray-600 mb-6">Best value for power users</p>
+                <button onclick="buyCredits('750')" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
+                    Buy Now
+                </button>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="mt-20">
+            <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Frequently Asked Questions</h2>
+            <div class="max-w-3xl mx-auto space-y-6">
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">What are AI credits?</h3>
+                    <p class="text-gray-600">AI credits are used for content generation, hashtag suggestions, and other AI-powered features. Each AI generation costs 1 credit.</p>
+                </div>
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Can I change my plan anytime?</h3>
+                    <p class="text-gray-600">Yes! You can upgrade or downgrade your subscription at any time. Changes take effect immediately.</p>
+                </div>
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Do credits roll over?</h3>
+                    <p class="text-gray-600">Monthly credits reset each billing cycle. Purchased credit packs never expire and can be used anytime.</p>
+                </div>
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">What happens if I run out of credits?</h3>
+                    <p class="text-gray-600">You can purchase additional credit packs anytime. Your account will continue to work for posting and scheduling, just not for AI features.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2024 Kolekt. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Pricing toggle functionality
+        document.getElementById('monthly-toggle').addEventListener('click', function() {
+            document.getElementById('monthly-toggle').classList.add('bg-white', 'shadow-sm', 'text-gray-900');
+            document.getElementById('monthly-toggle').classList.remove('text-gray-600');
+            document.getElementById('yearly-toggle').classList.remove('bg-white', 'shadow-sm', 'text-gray-900');
+            document.getElementById('yearly-toggle').classList.add('text-gray-600');
+            
+            // Update prices to monthly
+            document.getElementById('starter-price').textContent = '$12';
+            document.getElementById('pro-price').textContent = '$29';
+            document.getElementById('business-price').textContent = '$79';
+        });
+
+        document.getElementById('yearly-toggle').addEventListener('click', function() {
+            document.getElementById('yearly-toggle').classList.add('bg-white', 'shadow-sm', 'text-gray-900');
+            document.getElementById('yearly-toggle').classList.remove('text-gray-600');
+            document.getElementById('monthly-toggle').classList.remove('bg-white', 'shadow-sm', 'text-gray-900');
+            document.getElementById('monthly-toggle').classList.add('text-gray-600');
+            
+            // Update prices to yearly (20% discount)
+            document.getElementById('starter-price').textContent = '$115';
+            document.getElementById('pro-price').textContent = '$279';
+            document.getElementById('business-price').textContent = '$759';
+        });
+
+        // Plan upgrade functionality
+        function upgradePlan(planId) {
+            // Check if user is logged in
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                window.location.href = '/login?redirect=pricing';
+                return;
+            }
+
+            // Call the upgrade endpoint
+            fetch('/api/v1/subscriptions/upgrade', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ plan_id: planId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.checkout_url) {
+                    window.location.href = data.checkout_url;
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to upgrade plan'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error upgrading plan. Please try again.');
+            });
+        }
+
+        // Credit purchase functionality
+        function buyCredits(packId) {
+            // Check if user is logged in
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                window.location.href = '/login?redirect=pricing';
+                return;
+            }
+
+            // Call the buy credits endpoint
+            fetch('/api/v1/subscriptions/buy-credits', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ pack_id: packId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.checkout_url) {
+                    window.location.href = data.checkout_url;
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to purchase credits'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error purchasing credits. Please try again.');
+            });
+        }
+    </script>
+</body>
+</html>
