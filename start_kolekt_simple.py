@@ -1043,6 +1043,18 @@ async def social_manager_page():
         logging.error(f"Error loading social manager page: {e}")
         return HTMLResponse(content="<html><body><h1>Social Media Manager</h1><p>Loading...</p></body></html>")
 
+# Account settings page
+@app.get("/account-settings")
+async def account_settings_page():
+    """Account settings page"""
+    try:
+        with open("web/templates/account-settings.html", "r") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        logging.error(f"Error loading account settings page: {e}")
+        return HTMLResponse(content="<html><body><h1>Account Settings</h1><p>Loading...</p></body></html>")
+
 if __name__ == "__main__":
     # Get port from environment or default to 8080
     port = int(os.getenv("PORT", 8080))

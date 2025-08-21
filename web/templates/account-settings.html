@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings - Kolekt</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css?v=2.4.2">
+    <link rel="stylesheet" href="/static/css/dashboard.css?v=2.3.0">
+    
+    <style>
+        .settings-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .settings-sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+        
+        .settings-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .settings-nav-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .settings-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: #666;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .settings-nav-link:hover {
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .settings-nav-link.active {
+            background: #e3f2fd;
+            color: #1976d2;
+            font-weight: 600;
+        }
+        
+        .settings-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .settings-section {
+            display: none;
+        }
+        
+        .settings-section.active {
+            display: block;
+        }
+        
+        .section-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .section-description {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: #007bff;
+            border: 2px solid #007bff;
+        }
+        
+        .btn-outline:hover {
+            background: #007bff;
+            color: white;
+        }
+        
+        .subscription-card {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .subscription-card.current {
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+        
+        .subscription-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .subscription-plan {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .subscription-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .subscription-status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .subscription-status.cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .subscription-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+        
+        .detail-label {
+            color: #666;
+            font-size: 0.875rem;
+        }
+        
+        .detail-value {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .billing-history {
+            margin-top: 2rem;
+        }
+        
+        .billing-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .billing-table th,
+        .billing-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .billing-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .billing-status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .billing-status.paid {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .billing-status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .billing-status.failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .api-key-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .api-key-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .api-key-input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.875rem;
+            background: white;
+        }
+        
+        .api-key-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .danger-zone {
+            border: 2px solid #dc3545;
+            border-radius: 8px;
+            padding: 1.5rem;
+            background: #fff5f5;
+            margin-top: 2rem;
+        }
+        
+        .danger-zone h3 {
+            color: #dc3545;
+            margin-bottom: 1rem;
+        }
+        
+        .danger-zone p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo-container">
+                <div class="logo-icon">K</div>
+                <span class="logo-text">kolekt.io</span>
+            </a>
+            
+            <nav class="nav">
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/content-creator" class="nav-link">Content</a>
+                <a href="/formatter" class="nav-link">Formatter</a>
+                <a href="/templates" class="nav-link">Templates</a>
+                <a href="/analytics" class="nav-link">Analytics</a>
+                <a href="/pricing" class="nav-link">Pricing</a>
+                <a href="/profile" class="nav-link">Profile</a>
+            </nav>
+            
+            <div class="header-actions">
+                <div class="user-menu">
+                    <button class="user-menu-btn" onclick="toggleUserMenu()">
+                        <div class="user-avatar">
+                            <span id="userInitials">U</span>
+                        </div>
+                        <span id="userName">User</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="/profile" class="dropdown-item">Profile</a>
+                        <a href="/account-settings" class="dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" onclick="kolektAuth.logout()">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="settings-container">
+        <div class="welcome-section">
+            <h1>Account Settings</h1>
+            <p>Manage your account, subscription, and preferences</p>
+        </div>
+
+        <!-- Alert Messages -->
+        <div id="alert" class="alert"></div>
+
+        <div class="settings-grid">
+            <!-- Settings Sidebar -->
+            <div class="settings-sidebar">
+                <nav class="settings-nav">
+                    <div class="settings-nav-item">
+                        <a href="#general" class="settings-nav-link active" onclick="showSection('general')">
+                            <span>⚙️</span>
+                            <span>General</span>
+                        </a>
+                    </div>
+                    <div class="settings-nav-item">
+                        <a href="#subscription" class="settings-nav-link" onclick="showSection('subscription')">
+                            <span>💳</span>
+                            <span>Subscription</span>
+                        </a>
+                    </div>
+                    <div class="settings-nav-item">
+                        <a href="#billing" class="settings-nav-link" onclick="showSection('billing')">
+                            <span>📄</span>
+                            <span>Billing</span>
+                        </a>
+                    </div>
+                    <div class="settings-nav-item">
+                        <a href="#security" class="settings-nav-link" onclick="showSection('security')">
+                            <span>🔒</span>
+                            <span>Security</span>
+                        </a>
+                    </div>
+                    <div class="settings-nav-item">
+                        <a href="#integrations" class="settings-nav-link" onclick="showSection('integrations')">
+                            <span>🔗</span>
+                            <span>Integrations</span>
+                        </a>
+                    </div>
+                    <div class="settings-nav-item">
+                        <a href="#api" class="settings-nav-link" onclick="showSection('api')">
+                            <span>🔑</span>
+                            <span>API Keys</span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Settings Content -->
+            <div class="settings-content">
+                <!-- General Settings -->
+                <div id="general" class="settings-section active">
+                    <div class="section-header">
+                        <h2 class="section-title">General Settings</h2>
+                        <p class="section-description">Manage your account information and preferences</p>
+                    </div>
+
+                    <form id="generalForm">
+                        <div class="form-group">
+                            <label for="displayName" class="form-label">Display Name</label>
+                            <input type="text" id="displayName" name="displayName" class="form-input" value="John Doe">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-input" value="john@example.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="timezone" class="form-label">Timezone</label>
+                            <select id="timezone" name="timezone" class="form-select">
+                                <option value="UTC">UTC</option>
+                                <option value="America/New_York" selected>Eastern Time</option>
+                                <option value="America/Chicago">Central Time</option>
+                                <option value="America/Denver">Mountain Time</option>
+                                <option value="America/Los_Angeles">Pacific Time</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="language" class="form-label">Language</label>
+                            <select id="language" name="language" class="form-select">
+                                <option value="en" selected>English</option>
+                                <option value="es">Spanish</option>
+                                <option value="fr">French</option>
+                                <option value="de">German</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+
+                <!-- Subscription Settings -->
+                <div id="subscription" class="settings-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Subscription Management</h2>
+                        <p class="section-description">Manage your subscription plan and billing</p>
+                    </div>
+
+                    <div class="subscription-card current">
+                        <div class="subscription-header">
+                            <div class="subscription-plan">Starter Plan</div>
+                            <div class="subscription-status active">Active</div>
+                        </div>
+                        <div class="subscription-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Monthly Cost:</span>
+                                <span class="detail-value">$12.00</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Next Billing:</span>
+                                <span class="detail-value">Feb 15, 2024</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">AI Credits:</span>
+                                <span class="detail-value">100/month</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Platforms:</span>
+                                <span class="detail-value">All</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <button class="btn btn-outline" onclick="openBillingPortal()">Manage Billing</button>
+                            <button class="btn btn-outline" onclick="upgradePlan()">Upgrade Plan</button>
+                            <button class="btn btn-secondary" onclick="cancelSubscription()">Cancel Subscription</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billing Settings -->
+                <div id="billing" class="settings-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Billing History</h2>
+                        <p class="section-description">View your billing history and download invoices</p>
+                    </div>
+
+                    <div class="billing-history">
+                        <table class="billing-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Jan 15, 2024</td>
+                                    <td>Starter Plan - Monthly</td>
+                                    <td>$12.00</td>
+                                    <td><span class="billing-status paid">Paid</span></td>
+                                    <td><button class="btn btn-sm btn-outline">Download</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Dec 15, 2023</td>
+                                    <td>Starter Plan - Monthly</td>
+                                    <td>$12.00</td>
+                                    <td><span class="billing-status paid">Paid</span></td>
+                                    <td><button class="btn btn-sm btn-outline">Download</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Nov 15, 2023</td>
+                                    <td>Starter Plan - Monthly</td>
+                                    <td>$12.00</td>
+                                    <td><span class="billing-status paid">Paid</span></td>
+                                    <td><button class="btn btn-sm btn-outline">Download</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div id="security" class="settings-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Security Settings</h2>
+                        <p class="section-description">Manage your account security and privacy</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Two-Factor Authentication</label>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span>Currently disabled</span>
+                            <button class="btn btn-outline" onclick="enable2FA()">Enable 2FA</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Login Sessions</label>
+                        <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <span>Current Session - Chrome on Mac</span>
+                                <span style="color: #28a745; font-size: 0.875rem;">Active</span>
+                            </div>
+                            <div style="font-size: 0.875rem; color: #666;">
+                                Last active: Just now • IP: 192.168.1.1
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-outline" onclick="changePassword()">Change Password</button>
+                    </div>
+                </div>
+
+                <!-- Integrations Settings -->
+                <div id="integrations" class="settings-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Integrations</h2>
+                        <p class="section-description">Connect your social media accounts and third-party services</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Social Media Accounts</label>
+                        <div style="display: grid; gap: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid #e9ecef; border-radius: 8px;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span>🧵</span>
+                                    <span>Threads</span>
+                                </div>
+                                <button class="btn btn-outline">Connect</button>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid #e9ecef; border-radius: 8px;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span>📷</span>
+                                    <span>Instagram</span>
+                                </div>
+                                <button class="btn btn-outline">Connect</button>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid #e9ecef; border-radius: 8px;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span>🐦</span>
+                                    <span>Twitter</span>
+                                </div>
+                                <button class="btn btn-outline">Connect</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Keys Settings -->
+                <div id="api" class="settings-section">
+                    <div class="section-header">
+                        <h2 class="section-title">API Keys</h2>
+                        <p class="section-description">Manage your API keys for integrations</p>
+                    </div>
+
+                    <div class="api-key-section">
+                        <label class="form-label">Your API Key</label>
+                        <div class="api-key-display">
+                            <input type="text" class="api-key-input" value="kol_sk_test_1234567890abcdef" readonly>
+                            <div class="api-key-actions">
+                                <button class="btn btn-sm btn-outline" onclick="copyApiKey()">Copy</button>
+                                <button class="btn btn-sm btn-secondary" onclick="regenerateApiKey()">Regenerate</button>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.875rem; color: #666; margin: 0;">
+                            Use this API key to integrate Kolekt with your applications. Keep it secure and never share it publicly.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        class AccountSettingsManager {
+            constructor() {
+                this.baseUrl = '/api/v1';
+                this.tokenKey = 'threadstorm_access_token';
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupEventListeners();
+                this.loadAccountData();
+            }
+            
+            setupEventListeners() {
+                document.getElementById('generalForm').addEventListener('submit', (e) => this.handleGeneralSubmit(e));
+            }
+            
+            async loadAccountData() {
+                try {
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/auth/profile`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const userData = await response.json();
+                        this.populateForm(userData);
+                    }
+                } catch (error) {
+                    console.error('Error loading account data:', error);
+                }
+            }
+            
+            populateForm(userData) {
+                document.getElementById('displayName').value = userData.name || '';
+                document.getElementById('email').value = userData.email || '';
+            }
+            
+            async handleGeneralSubmit(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    displayName: document.getElementById('displayName').value,
+                    email: document.getElementById('email').value,
+                    timezone: document.getElementById('timezone').value,
+                    language: document.getElementById('language').value
+                };
+                
+                try {
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/auth/profile`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    if (response.ok) {
+                        this.showAlert('Settings updated successfully!', 'success');
+                    } else {
+                        throw new Error('Failed to update settings');
+                    }
+                } catch (error) {
+                    console.error('Error updating settings:', error);
+                    this.showAlert('Failed to update settings', 'error');
+                }
+            }
+            
+            showAlert(message, type) {
+                const alert = document.getElementById('alert');
+                alert.textContent = message;
+                alert.className = `alert alert-${type}`;
+                alert.style.display = 'block';
+                
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        // Global functions
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.settings-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update navigation
+            document.querySelectorAll('.settings-nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+        }
+        
+        function openBillingPortal() {
+            // This would redirect to Stripe billing portal
+            alert('Redirecting to billing portal...');
+        }
+        
+        function upgradePlan() {
+            window.location.href = '/pricing';
+        }
+        
+        function cancelSubscription() {
+            if (confirm('Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your billing period.')) {
+                alert('Subscription cancellation coming soon!');
+            }
+        }
+        
+        function enable2FA() {
+            alert('Two-factor authentication setup coming soon!');
+        }
+        
+        function changePassword() {
+            window.location.href = '/profile';
+        }
+        
+        function copyApiKey() {
+            const apiKeyInput = document.querySelector('.api-key-input');
+            apiKeyInput.select();
+            document.execCommand('copy');
+            alert('API key copied to clipboard!');
+        }
+        
+        function regenerateApiKey() {
+            if (confirm('Are you sure you want to regenerate your API key? This will invalidate the current key.')) {
+                alert('API key regeneration coming soon!');
+            }
+        }
+        
+        // Initialize account settings manager
+        let accountSettingsManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            accountSettingsManager = new AccountSettingsManager();
+        });
+    </script>
+</body>
+</html>
