@@ -42,9 +42,17 @@ services:
     value: "YOUR_STRIPE_SECRET_KEY"
   - key: STRIPE_WEBHOOK_SECRET
     value: "YOUR_STRIPE_WEBHOOK_SECRET"
+  - key: STRIPE_PRICE_STARTER_MONTHLY
+    value: "price_xxx_starter_monthly"
   - key: STRIPE_PRICE_PRO_MONTHLY
     value: "price_xxx_pro_monthly"
   - key: STRIPE_PRICE_BUSINESS_MONTHLY
     value: "price_xxx_business_monthly"
+  - key: STRIPE_PRICE_CREDITS_100
+    value: "price_xxx_credits_100"
+  - key: STRIPE_PRICE_CREDITS_300
+    value: "price_xxx_credits_300"
+  - key: STRIPE_PRICE_CREDITS_750
+    value: "price_xxx_credits_750"
   - key: STRIPE_BILLING_PORTAL_RETURN_URL
     value: "https://www.kolekt.io/dashboard"

@@ -92,8 +92,12 @@ class Settings(BaseSettings):
     # Stripe Configuration
     STRIPE_SECRET_KEY: Optional[str] = Field(default=None, env="STRIPE_SECRET_KEY")
     STRIPE_WEBHOOK_SECRET: Optional[str] = Field(default=None, env="STRIPE_WEBHOOK_SECRET")
+    STRIPE_PRICE_STARTER_MONTHLY: Optional[str] = Field(default=None, env="STRIPE_PRICE_STARTER_MONTHLY")
     STRIPE_PRICE_PRO_MONTHLY: Optional[str] = Field(default=None, env="STRIPE_PRICE_PRO_MONTHLY")
     STRIPE_PRICE_BUSINESS_MONTHLY: Optional[str] = Field(default=None, env="STRIPE_PRICE_BUSINESS_MONTHLY")
+    STRIPE_PRICE_CREDITS_100: Optional[str] = Field(default=None, env="STRIPE_PRICE_CREDITS_100")
+    STRIPE_PRICE_CREDITS_300: Optional[str] = Field(default=None, env="STRIPE_PRICE_CREDITS_300")
+    STRIPE_PRICE_CREDITS_750: Optional[str] = Field(default=None, env="STRIPE_PRICE_CREDITS_750")
     STRIPE_BILLING_PORTAL_RETURN_URL: Optional[str] = Field(default=None, env="STRIPE_BILLING_PORTAL_RETURN_URL")
     
     class Config:
@@ -128,14 +132,35 @@ PLAN_LIMITS = {
 
 # Pricing configuration
 PRICING = {
+    'starter': {
+        'monthly': 1200,  # $12.00 in cents
+        'stripe_price_id': settings.STRIPE_PRICE_STARTER_MONTHLY
+    },
     'pro': {
-        'monthly': 999,  # $9.99 in cents
-        'yearly': 9990,  # $99.90 in cents (save 17%)
-        'stripe_price_id': 'price_1ABC123DEF456'
+        'monthly': 2900,  # $29.00 in cents
+        'stripe_price_id': settings.STRIPE_PRICE_PRO_MONTHLY
     },
     'business': {
-        'monthly': 2999,  # $29.99 in cents
-        'yearly': 29990,  # $299.90 in cents (save 17%)
-        'stripe_price_id': 'price_1ABC123DEF789'
+        'monthly': 7900,  # $79.00 in cents
+        'stripe_price_id': settings.STRIPE_PRICE_BUSINESS_MONTHLY
+    }
+}
+
+# Credit pack configuration
+CREDIT_PACKS = {
+    '100': {
+        'credits': 100,
+        'price': 1000,  # $10.00 in cents
+        'stripe_price_id': settings.STRIPE_PRICE_CREDITS_100
+    },
+    '300': {
+        'credits': 300,
+        'price': 2500,  # $25.00 in cents
+        'stripe_price_id': settings.STRIPE_PRICE_CREDITS_300
+    },
+    '750': {
+        'credits': 750,
+        'price': 5000,  # $50.00 in cents
+        'stripe_price_id': settings.STRIPE_PRICE_CREDITS_750
     }
 }

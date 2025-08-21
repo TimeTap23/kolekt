@@ -19,19 +19,28 @@ class StripeService:
             return
         stripe.api_key = settings.STRIPE_SECRET_KEY
 
-    def create_checkout_session(self, user_id: str, price_id: str, success_url: str, cancel_url: str) -> Dict[str, Any]:
+    def create_checkout_session(self, user_id: str, price_id: str, success_url: str, cancel_url: str, mode: str = "subscription") -> Dict[str, Any]:
         if not self.enabled:
-            return {"url": f"https://billing.mock/checkout?price={price_id}"}
-        session = stripe.checkout.Session.create(
-            mode="subscription",
-            line_items=[{"price": price_id, "quantity": 1}],
-            success_url=success_url,
-            cancel_url=cancel_url,
-            client_reference_id=user_id,
-            allow_promotion_codes=True,
-            payment_method_types=["card"],
-            metadata={"user_id": user_id}
-        )
+            return {"url": f"https://billing.mock/checkout?price={price_id}&mode={mode}"}
+        
+        session_params = {
+            "mode": mode,
+            "line_items": [{"price": price_id, "quantity": 1}],
+            "success_url": success_url,
+            "cancel_url": cancel_url,
+            "client_reference_id": user_id,
+            "allow_promotion_codes": True,
+            "payment_method_types": ["card"],
+            "metadata": {"user_id": user_id}
+        }
+        
+        # For one-time payments (credit packs), add payment_intent_data
+        if mode == "payment":
+            session_params["payment_intent_data"] = {
+                "metadata": {"user_id": user_id, "type": "credit_purchase"}
+            }
+        
+        session = stripe.checkout.Session.create(**session_params)
         return {"id": session.id, "url": session.url}
 
     def create_billing_portal(self, customer_id: str, return_url: str) -> Dict[str, Any]:

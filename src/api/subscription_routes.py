@@ -50,47 +50,75 @@ class UsageStats(BaseModel):
 
 # Available plans
 AVAILABLE_PLANS = {
-    "free": SubscriptionPlan(
-        id="free",
-        name="Free",
-        price=0.0,
-        features=["Basic content creation", "Threads posting", "5 posts per month"],
+    "starter": SubscriptionPlan(
+        id="starter",
+        name="Starter",
+        price=12.00,
+        features=["100 AI credits/month", "Up to 3 connected accounts", "Basic scheduling", "Basic analytics"],
         limits={
-            "content_creation": 10,
-            "posts_per_month": 5,
-            "api_calls_per_month": 100,
-            "storage_mb": 100
+            "ai_credits_per_month": 100,
+            "connected_accounts": 3,
+            "posts_per_month": 50,
+            "api_calls_per_month": 500,
+            "storage_mb": 500
         }
     ),
     "pro": SubscriptionPlan(
         id="pro",
         name="Pro",
-        price=9.99,
-        features=["Unlimited content creation", "All platforms", "Analytics", "Scheduling"],
+        price=29.00,
+        features=["400 AI credits/month", "Up to 6 connected accounts", "Advanced analytics", "Content templates"],
         limits={
-            "content_creation": -1,  # unlimited
-            "posts_per_month": 100,
-            "api_calls_per_month": 1000,
-            "storage_mb": 1000
+            "ai_credits_per_month": 400,
+            "connected_accounts": 6,
+            "posts_per_month": 200,
+            "api_calls_per_month": 2000,
+            "storage_mb": 2000
         }
     ),
     "business": SubscriptionPlan(
         id="business",
         name="Business",
-        price=29.99,
-        features=["Team collaboration", "Advanced analytics", "Priority support", "White-label"],
+        price=79.00,
+        features=["1500 AI credits/month", "Up to 10 connected accounts", "Team collaboration", "Priority support"],
         limits={
-            "content_creation": -1,  # unlimited
-            "posts_per_month": 500,
-            "api_calls_per_month": 5000,
-            "storage_mb": 5000
+            "ai_credits_per_month": 1500,
+            "connected_accounts": 10,
+            "posts_per_month": 1000,
+            "api_calls_per_month": 10000,
+            "storage_mb": 10000
         }
     )
 }
 
+# Credit packs
+CREDIT_PACKS = {
+    "100": {
+        "id": "100",
+        "name": "100 Credits",
+        "credits": 100,
+        "price": 10.00,
+        "description": "Perfect for trying out AI features"
+    },
+    "300": {
+        "id": "300", 
+        "name": "300 Credits",
+        "credits": 300,
+        "price": 25.00,
+        "description": "Most popular choice"
+    },
+    "750": {
+        "id": "750",
+        "name": "750 Credits", 
+        "credits": 750,
+        "price": 50.00,
+        "description": "Best value for power users"
+    }
+}
+
 from src.services.authentication import get_current_user
 from src.services.stripe_service import stripe_service
-from src.core.config import settings
+from src.core.config import settings, CREDIT_PACKS
 
 # Dependency to get current user (via JWT)
 async def get_current_user_id(current_user: Dict = Depends(get_current_user)) -> str:
@@ -109,6 +137,18 @@ async def get_available_plans():
         logger.error(f"Error getting plans: {e}")
         raise HTTPException(status_code=500, detail="Failed to get plans")
 
+@subscription_router.get("/credit-packs")
+async def get_credit_packs():
+    """Get all available credit packs"""
+    try:
+        return {
+            "success": True,
+            "credit_packs": list(CREDIT_PACKS.values())
+        }
+    except Exception as e:
+        logger.error(f"Error getting credit packs: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get credit packs")
+
 @subscription_router.get("/current")
 async def get_current_subscription(
     user_id: str = Depends(get_current_user_id)
@@ -125,7 +165,7 @@ async def get_current_subscription(
         subscription = UserSubscription(
             id="mock_subscription_id",
             user_id=user_id,
-            plan_id="free",
+            plan_id="starter",
             status="active",
             current_period_start=period_start,
             current_period_end=period_end,
@@ -164,7 +204,7 @@ async def get_usage_stats(
             posts_published=1,
             api_calls=25,
             storage_used=1024 * 1024 * 10,  # 10MB
-            limits=AVAILABLE_PLANS["free"].limits
+            limits=AVAILABLE_PLANS["starter"].limits
         )
         
         return {
@@ -191,6 +231,7 @@ async def upgrade_subscription(
         logger.info(f"User {user_id} upgrading to plan {plan_id}")
         # Map plan to Stripe price
         price_map = {
+            'starter': settings.STRIPE_PRICE_STARTER_MONTHLY,
             'pro': settings.STRIPE_PRICE_PRO_MONTHLY,
             'business': settings.STRIPE_PRICE_BUSINESS_MONTHLY
         }
@@ -286,6 +327,53 @@ async def stripe_webhook(request: Request):
         logger.error(f"Stripe webhook error: {e}")
         raise HTTPException(status_code=400, detail="Webhook error")
 
+@subscription_router.post("/buy-credits")
+async def buy_credit_pack(
+    pack_id: str,
+    user_id: str = Depends(get_current_user_id)
+):
+    """Purchase a credit pack"""
+    try:
+        if pack_id not in CREDIT_PACKS:
+            raise HTTPException(status_code=400, detail="Invalid credit pack ID")
+        
+        pack = CREDIT_PACKS[pack_id]
+        
+        logger.info(f"User {user_id} purchasing credit pack {pack_id}")
+        
+        # Map pack to Stripe price
+        price_map = {
+            '100': settings.STRIPE_PRICE_CREDITS_100,
+            '300': settings.STRIPE_PRICE_CREDITS_300,
+            '750': settings.STRIPE_PRICE_CREDITS_750
+        }
+        price_id = price_map.get(pack_id)
+        
+        success_url = "https://www.kolekt.io/dashboard?credits=success"
+        cancel_url = "https://www.kolekt.io/dashboard?credits=cancel"
+        
+        # Use payment mode for one-time purchases
+        session = stripe_service.create_checkout_session(
+            user_id, 
+            price_id or 'price_mock', 
+            success_url, 
+            cancel_url, 
+            mode="payment"
+        )
+        
+        return {
+            "success": True,
+            "message": f"Proceed to checkout for {pack['name']}",
+            "pack": pack,
+            "checkout_url": session.get('url')
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error purchasing credit pack: {e}")
+        raise HTTPException(status_code=500, detail="Failed to purchase credit pack")
+
 @subscription_router.get("/limits")
 async def get_user_limits(
     user_id: str = Depends(get_current_user_id)
@@ -296,9 +384,9 @@ async def get_user_limits(
         # In production, this would be based on actual subscription
         
         return {
-            "plan": "free",
-            "limits": AVAILABLE_PLANS["free"].limits,
-            "features": AVAILABLE_PLANS["free"].features
+            "plan": "starter",
+            "limits": AVAILABLE_PLANS["starter"].limits,
+            "features": AVAILABLE_PLANS["starter"].features
         }
         
     except Exception as e:
