@@ -1055,6 +1055,134 @@ async def account_settings_page():
         logging.error(f"Error loading account settings page: {e}")
         return HTMLResponse(content="<html><body><h1>Account Settings</h1><p>Loading...</p></body></html>")
 
+# Team management page
+@app.get("/team-management")
+async def team_management_page():
+    """Team management page"""
+    try:
+        with open("web/templates/team-management.html", "r") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        logging.error(f"Error loading team management page: {e}")
+        return HTMLResponse(content="<html><body><h1>Team Management</h1><p>Loading...</p></body></html>")
+
+# Team management endpoints (mocked)
+@app.get("/api/v1/teams/members")
+async def get_team_members(request: Request):
+    """Get team members"""
+    try:
+        # Mock team members data
+        members = [
+            {
+                "user_id": "1",
+                "name": "John Doe",
+                "email": "john@example.com",
+                "role": "owner"
+            },
+            {
+                "user_id": "2",
+                "name": "Jane Smith",
+                "email": "jane@example.com",
+                "role": "admin"
+            },
+            {
+                "user_id": "3",
+                "name": "Bob Wilson",
+                "email": "bob@example.com",
+                "role": "editor"
+            }
+        ]
+        return JSONResponse(content=members)
+    except Exception as e:
+        logging.error(f"Error getting team members: {e}")
+        return JSONResponse(content={"error": "Failed to get team members"}, status_code=500)
+
+@app.post("/api/v1/teams/invite")
+async def invite_team_member(request: Request):
+    """Invite a team member"""
+    try:
+        data = await request.json()
+        # Mock invitation response
+        return JSONResponse(content={
+            "success": True,
+            "message": f"Invitation sent to {data.get('email')}",
+            "invitation_id": "inv_123456"
+        })
+    except Exception as e:
+        logging.error(f"Error inviting team member: {e}")
+        return JSONResponse(content={"error": "Failed to send invitation"}, status_code=500)
+
+@app.delete("/api/v1/teams/members/{user_id}")
+async def remove_team_member(user_id: str, request: Request):
+    """Remove a team member"""
+    try:
+        # Mock removal response
+        return JSONResponse(content={
+            "success": True,
+            "message": f"Team member {user_id} removed successfully"
+        })
+    except Exception as e:
+        logging.error(f"Error removing team member: {e}")
+        return JSONResponse(content={"error": "Failed to remove team member"}, status_code=500)
+
+@app.get("/api/v1/teams/approvals")
+async def get_pending_approvals(request: Request):
+    """Get pending content approvals"""
+    try:
+        # Mock approvals data
+        approvals = [
+            {
+                "approval_id": "1",
+                "requester_name": "Jane Smith",
+                "content_preview": "New product launch announcement...",
+                "requested_at": "2 hours ago"
+            },
+            {
+                "approval_id": "2",
+                "requester_name": "Bob Wilson",
+                "content_preview": "Weekly newsletter content...",
+                "requested_at": "1 day ago"
+            }
+        ]
+        return JSONResponse(content=approvals)
+    except Exception as e:
+        logging.error(f"Error getting approvals: {e}")
+        return JSONResponse(content={"error": "Failed to get approvals"}, status_code=500)
+
+@app.post("/api/v1/teams/approvals/{approval_id}")
+async def update_approval(approval_id: str, request: Request):
+    """Update content approval status"""
+    try:
+        data = await request.json()
+        approved = data.get("approved", False)
+        # Mock approval response
+        return JSONResponse(content={
+            "success": True,
+            "message": f"Content {'approved' if approved else 'rejected'} successfully"
+        })
+    except Exception as e:
+        logging.error(f"Error updating approval: {e}")
+        return JSONResponse(content={"error": "Failed to update approval"}, status_code=500)
+
+@app.get("/api/v1/teams/analytics")
+async def get_team_analytics(request: Request):
+    """Get team analytics"""
+    try:
+        # Mock analytics data
+        analytics = {
+            "total_members": 3,
+            "active_members": 2,
+            "pending_approvals": 2,
+            "content_created": 15,
+            "engagement_rate": 0.045,
+            "top_performer": "John Doe"
+        }
+        return JSONResponse(content=analytics)
+    except Exception as e:
+        logging.error(f"Error getting team analytics: {e}")
+        return JSONResponse(content={"error": "Failed to get analytics"}, status_code=500)
+
 if __name__ == "__main__":
     # Get port from environment or default to 8080
     port = int(os.getenv("PORT", 8080))

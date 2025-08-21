@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Management - ThreadStorm</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .team-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .team-header {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-subtitle {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .team-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-card {
+            background: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4c51bf;
+        }
+
+        .stat-label {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .team-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .panel-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .member-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .member-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f7fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .member-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #4c51bf;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-name {
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 0.25rem;
+        }
+
+        .member-email {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .member-role {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .role-owner {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .role-admin {
+            background: #fef5e7;
+            color: #d69e2e;
+        }
+
+        .role-editor {
+            background: #e6fffa;
+            color: #319795;
+        }
+
+        .role-viewer {
+            background: #f7fafc;
+            color: #718096;
+        }
+
+        .member-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #4c51bf;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #434190;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #4c51bf;
+            border: 1px solid #4c51bf;
+        }
+
+        .btn-outline:hover {
+            background: #4c51bf;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c53030;
+        }
+
+        .btn-small {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .invite-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #1a202c;
+        }
+
+        .form-input, .form-select {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #4c51bf;
+            box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.1);
+        }
+
+        .approval-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .approval-card {
+            padding: 1.5rem;
+            background: #f7fafc;
+            border-radius: 12px;
+            border-left: 4px solid #f6ad55;
+        }
+
+        .approval-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .approval-title {
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .approval-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background: #fef5e7;
+            color: #d69e2e;
+        }
+
+        .approval-content {
+            color: #4a5568;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .approval-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-success {
+            background: #38a169;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #2f855a;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #718096;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #f0fff4;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #c53030;
+            border: 1px solid #feb2b2;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #718096;
+        }
+
+        @media (max-width: 768px) {
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .team-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="team-container">
+        <!-- Team Header -->
+        <div class="team-header">
+            <h1 class="team-title">Team Management</h1>
+            <p class="team-subtitle">Collaborate with your team on content creation and social media management</p>
+            
+            <div class="team-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalMembers">0</div>
+                    <div class="stat-label">Team Members</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeMembers">0</div>
+                    <div class="stat-label">Active Members</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pendingApprovals">0</div>
+                    <div class="stat-label">Pending Approvals</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="contentCreated">0</div>
+                    <div class="stat-label">Content Created</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
+        <!-- Team Grid -->
+        <div class="team-grid">
+            <!-- Team Members Panel -->
+            <div class="team-panel">
+                <div class="panel-title">
+                    <span>👥</span>
+                    Team Members
+                </div>
+                
+                <div class="member-list" id="memberList">
+                    <!-- Members will be populated by JavaScript -->
+                </div>
+                
+                <button class="btn btn-primary" onclick="showInviteModal()" style="margin-top: 1rem;">
+                    Invite Member
+                </button>
+            </div>
+
+            <!-- Content Approvals Panel -->
+            <div class="team-panel">
+                <div class="panel-title">
+                    <span>✅</span>
+                    Content Approvals
+                </div>
+                
+                <div class="approval-list" id="approvalList">
+                    <!-- Approvals will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invite Member Modal -->
+    <div id="inviteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Invite Team Member</h3>
+                <button class="close" onclick="hideInviteModal()">&times;</button>
+            </div>
+            
+            <form id="inviteForm" class="invite-form">
+                <div class="form-group">
+                    <label for="inviteEmail" class="form-label">Email Address</label>
+                    <input type="email" id="inviteEmail" name="email" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inviteRole" class="form-label">Role</label>
+                    <select id="inviteRole" name="role" class="form-select" required>
+                        <option value="viewer">Viewer</option>
+                        <option value="editor">Editor</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inviteMessage" class="form-label">Message (Optional)</label>
+                    <textarea id="inviteMessage" name="message" class="form-input" rows="3" placeholder="Add a personal message to your invitation..."></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button type="button" class="btn btn-outline" onclick="hideInviteModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Send Invitation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        class TeamManager {
+            constructor() {
+                this.baseUrl = '/api/v1';
+                this.tokenKey = 'threadstorm_access_token';
+                this.currentTeamId = null;
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.loadTeamData();
+            }
+
+            setupEventListeners() {
+                document.getElementById('inviteForm').addEventListener('submit', (e) => this.handleInvite(e));
+            }
+
+            async loadTeamData() {
+                try {
+                    // Load team info and members
+                    await this.loadTeamMembers();
+                    await this.loadPendingApprovals();
+                    await this.loadTeamAnalytics();
+                } catch (error) {
+                    console.error('Error loading team data:', error);
+                    this.showAlert('Error loading team data', 'error');
+                }
+            }
+
+            async loadTeamMembers() {
+                try {
+                    const response = await fetch(`${this.baseUrl}/teams/members`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem(this.tokenKey)}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const members = await response.json();
+                        this.renderMembers(members);
+                    } else {
+                        throw new Error('Failed to load team members');
+                    }
+                } catch (error) {
+                    console.error('Error loading team members:', error);
+                    // Use mock data for now
+                    this.renderMembers(this.getMockMembers());
+                }
+            }
+
+            renderMembers(members) {
+                const memberList = document.getElementById('memberList');
+                
+                if (members.length === 0) {
+                    memberList.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">👥</div>
+                            <h3>No team members yet</h3>
+                            <p>Invite your first team member to get started</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                memberList.innerHTML = members.map(member => `
+                    <div class="member-card">
+                        <div class="member-avatar">
+                            ${member.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div class="member-info">
+                            <div class="member-name">${member.name}</div>
+                            <div class="member-email">${member.email}</div>
+                        </div>
+                        <div class="member-role role-${member.role}">${member.role}</div>
+                        <div class="member-actions">
+                            ${member.role !== 'owner' ? `
+                                <button class="btn btn-outline btn-small" onclick="teamManager.changeRole('${member.user_id}', '${member.role}')">
+                                    Change Role
+                                </button>
+                                <button class="btn btn-danger btn-small" onclick="teamManager.removeMember('${member.user_id}')">
+                                    Remove
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            async loadPendingApprovals() {
+                try {
+                    const response = await fetch(`${this.baseUrl}/teams/approvals`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem(this.tokenKey)}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const approvals = await response.json();
+                        this.renderApprovals(approvals);
+                    } else {
+                        throw new Error('Failed to load approvals');
+                    }
+                } catch (error) {
+                    console.error('Error loading approvals:', error);
+                    // Use mock data for now
+                    this.renderApprovals(this.getMockApprovals());
+                }
+            }
+
+            renderApprovals(approvals) {
+                const approvalList = document.getElementById('approvalList');
+                
+                if (approvals.length === 0) {
+                    approvalList.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">✅</div>
+                            <h3>No pending approvals</h3>
+                            <p>All content has been reviewed and approved</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                approvalList.innerHTML = approvals.map(approval => `
+                    <div class="approval-card">
+                        <div class="approval-header">
+                            <div class="approval-title">Content Review Request</div>
+                            <div class="approval-status">Pending</div>
+                        </div>
+                        <div class="approval-content">
+                            <strong>Requested by:</strong> ${approval.requester_name}<br>
+                            <strong>Content:</strong> ${approval.content_preview}<br>
+                            <strong>Requested:</strong> ${approval.requested_at}
+                        </div>
+                        <div class="approval-actions">
+                            <button class="btn btn-success btn-small" onclick="teamManager.approveContent('${approval.approval_id}', true)">
+                                Approve
+                            </button>
+                            <button class="btn btn-danger btn-small" onclick="teamManager.approveContent('${approval.approval_id}', false)">
+                                Reject
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            async loadTeamAnalytics() {
+                try {
+                    const response = await fetch(`${this.baseUrl}/teams/analytics`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem(this.tokenKey)}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const analytics = await response.json();
+                        this.updateAnalytics(analytics);
+                    } else {
+                        throw new Error('Failed to load analytics');
+                    }
+                } catch (error) {
+                    console.error('Error loading analytics:', error);
+                    // Use mock data for now
+                    this.updateAnalytics(this.getMockAnalytics());
+                }
+            }
+
+            updateAnalytics(analytics) {
+                document.getElementById('totalMembers').textContent = analytics.total_members || 0;
+                document.getElementById('activeMembers').textContent = analytics.active_members || 0;
+                document.getElementById('pendingApprovals').textContent = analytics.pending_approvals || 0;
+                document.getElementById('contentCreated').textContent = analytics.content_created || 0;
+            }
+
+            async handleInvite(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(e.target);
+                const inviteData = {
+                    email: formData.get('email'),
+                    role: formData.get('role'),
+                    message: formData.get('message')
+                };
+
+                try {
+                    const response = await fetch(`${this.baseUrl}/teams/invite`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem(this.tokenKey)}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(inviteData)
+                    });
+
+                    if (response.ok) {
+                        this.showAlert('Invitation sent successfully!', 'success');
+                        hideInviteModal();
+                        e.target.reset();
+                    } else {
+                        throw new Error('Failed to send invitation');
+                    }
+                } catch (error) {
+                    console.error('Error sending invitation:', error);
+                    this.showAlert('Error sending invitation', 'error');
+                }
+            }
+
+            async removeMember(userId) {
+                if (!confirm('Are you sure you want to remove this team member?')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${this.baseUrl}/teams/members/${userId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem(this.tokenKey)}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        this.showAlert('Team member removed successfully', 'success');
+                        this.loadTeamMembers();
+                    } else {
+                        throw new Error('Failed to remove team member');
+                    }
+                } catch (error) {
+                    console.error('Error removing team member:', error);
+                    this.showAlert('Error removing team member', 'error');
+                }
+            }
+
+            async approveContent(approvalId, approved) {
+                try {
+                    const response = await fetch(`${this.baseUrl}/teams/approvals/${approvalId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem(this.tokenKey)}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ approved })
+                    });
+
+                    if (response.ok) {
+                        this.showAlert(`Content ${approved ? 'approved' : 'rejected'} successfully`, 'success');
+                        this.loadPendingApprovals();
+                    } else {
+                        throw new Error('Failed to update approval');
+                    }
+                } catch (error) {
+                    console.error('Error updating approval:', error);
+                    this.showAlert('Error updating approval', 'error');
+                }
+            }
+
+            showAlert(message, type) {
+                const alertContainer = document.getElementById('alertContainer');
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type}`;
+                alert.textContent = message;
+                
+                alertContainer.appendChild(alert);
+                
+                setTimeout(() => {
+                    alert.remove();
+                }, 5000);
+            }
+
+            // Mock data methods
+            getMockMembers() {
+                return [
+                    {
+                        user_id: '1',
+                        name: 'John Doe',
+                        email: 'john@example.com',
+                        role: 'owner'
+                    },
+                    {
+                        user_id: '2',
+                        name: 'Jane Smith',
+                        email: 'jane@example.com',
+                        role: 'admin'
+                    },
+                    {
+                        user_id: '3',
+                        name: 'Bob Wilson',
+                        email: 'bob@example.com',
+                        role: 'editor'
+                    }
+                ];
+            }
+
+            getMockApprovals() {
+                return [
+                    {
+                        approval_id: '1',
+                        requester_name: 'Jane Smith',
+                        content_preview: 'New product launch announcement...',
+                        requested_at: '2 hours ago'
+                    },
+                    {
+                        approval_id: '2',
+                        requester_name: 'Bob Wilson',
+                        content_preview: 'Weekly newsletter content...',
+                        requested_at: '1 day ago'
+                    }
+                ];
+            }
+
+            getMockAnalytics() {
+                return {
+                    total_members: 3,
+                    active_members: 2,
+                    pending_approvals: 2,
+                    content_created: 15
+                };
+            }
+        }
+
+        // Global functions for modal
+        function showInviteModal() {
+            document.getElementById('inviteModal').style.display = 'block';
+        }
+
+        function hideInviteModal() {
+            document.getElementById('inviteModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('inviteModal');
+            if (event.target === modal) {
+                hideInviteModal();
+            }
+        }
+
+        let teamManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            teamManager = new TeamManager();
+        });
+    </script>
+</body>
+</html>
