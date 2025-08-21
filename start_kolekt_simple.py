@@ -547,6 +547,237 @@ async def get_connected_accounts(request: Request):
         logging.error(f"Error getting connected accounts: {e}")
         raise HTTPException(status_code=500, detail="Failed to get connected accounts")
 
+# Analytics endpoints
+@app.get("/api/v1/analytics/overview")
+async def get_analytics_overview(request: Request):
+    """Get analytics overview for user"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        
+        # For now, return mock analytics data
+        # In production, this would use the AnalyticsBackendService
+        mock_analytics = {
+            "total_posts": 42,
+            "total_content_created": 67,
+            "ai_credits_used": 234,
+            "total_engagement": 1250,
+            "platform_usage": {
+                "threads": 15,
+                "instagram": 12,
+                "twitter": 8,
+                "linkedin": 7
+            },
+            "daily_activity": [
+                {"date": "2024-01-15", "posts": 2, "engagement": 45, "ai_credits": 5},
+                {"date": "2024-01-14", "posts": 1, "engagement": 32, "ai_credits": 3},
+                {"date": "2024-01-13", "posts": 3, "engagement": 78, "ai_credits": 8},
+                {"date": "2024-01-12", "posts": 0, "engagement": 0, "ai_credits": 0},
+                {"date": "2024-01-11", "posts": 2, "engagement": 56, "ai_credits": 4}
+            ],
+            "top_content": [
+                {
+                    "content_id": "content_1",
+                    "engagement": 234,
+                    "platform": "threads",
+                    "timestamp": "2024-01-13T10:30:00Z"
+                },
+                {
+                    "content_id": "content_2",
+                    "engagement": 189,
+                    "platform": "instagram",
+                    "timestamp": "2024-01-12T15:45:00Z"
+                }
+            ],
+            "engagement_rate": 15.6,
+            "growth_metrics": {
+                "posts_growth": 12.5,
+                "engagement_growth": 8.3
+            }
+        }
+        
+        return mock_analytics
+        
+    except Exception as e:
+        logging.error(f"Error getting analytics overview: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get analytics")
+
+@app.get("/api/v1/analytics/platform/{platform}")
+async def get_platform_analytics(platform: str, request: Request):
+    """Get analytics for a specific platform"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        
+        # For now, return mock platform analytics
+        mock_platform_data = {
+            "platform": platform,
+            "total_posts": 15 if platform == "threads" else 12,
+            "total_engagement": 450 if platform == "threads" else 380,
+            "avg_engagement_per_post": 30.0 if platform == "threads" else 31.7,
+            "best_performing_content": [
+                {
+                    "content_id": f"content_{platform}_1",
+                    "engagement": 234,
+                    "platform": platform,
+                    "timestamp": "2024-01-13T10:30:00Z"
+                }
+            ],
+            "posting_frequency": 0.5,
+            "engagement_trends": [
+                {"date": "2024-01-15", "engagement": 45, "posts": 1},
+                {"date": "2024-01-14", "engagement": 32, "posts": 1},
+                {"date": "2024-01-13", "engagement": 78, "posts": 2}
+            ]
+        }
+        
+        return mock_platform_data
+        
+    except Exception as e:
+        logging.error(f"Error getting platform analytics: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get platform analytics")
+
+@app.get("/api/v1/analytics/content/{content_id}")
+async def get_content_analytics(content_id: str, request: Request):
+    """Get analytics for specific content"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        
+        # For now, return mock content analytics
+        mock_content_data = {
+            "content_id": content_id,
+            "total_engagement": 234,
+            "platforms_published": ["threads", "instagram"],
+            "publish_date": "2024-01-13T10:30:00Z",
+            "last_engagement": "2024-01-15T14:20:00Z",
+            "engagement_breakdown": {
+                "threads": 156,
+                "instagram": 78
+            }
+        }
+        
+        return mock_content_data
+        
+    except Exception as e:
+        logging.error(f"Error getting content analytics: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get content analytics")
+
+@app.get("/api/v1/analytics/insights")
+async def get_analytics_insights(request: Request):
+    """Get actionable insights for user"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        
+        # For now, return mock insights
+        # In production, this would use the AnalyticsBackendService.generate_insights()
+        mock_insights = [
+            {
+                "type": "engagement",
+                "title": "Low Engagement Rate",
+                "message": "Your posts are getting low engagement. Try using more hashtags and engaging with your audience.",
+                "priority": "high"
+            },
+            {
+                "type": "frequency",
+                "title": "Low Posting Frequency",
+                "message": "You're posting less than once every 3 days. Consistent posting can improve engagement.",
+                "priority": "medium"
+            },
+            {
+                "type": "platform",
+                "title": "Platform Performance",
+                "message": "Threads is your best performing platform. Consider focusing more content there.",
+                "priority": "low"
+            }
+        ]
+        
+        return {"insights": mock_insights}
+        
+    except Exception as e:
+        logging.error(f"Error getting analytics insights: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get insights")
+
+@app.post("/api/v1/analytics/track")
+async def track_analytics_event(request: Request):
+    """Track an analytics event"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        data = await request.json()
+        
+        # Validate required fields
+        if not data.get("event_type"):
+            raise HTTPException(status_code=400, detail="Event type is required")
+        
+        # For now, just log the event
+        # In production, this would use the AnalyticsBackendService.track_event()
+        logging.info(f"Analytics event tracked: {data}")
+        
+        return {"success": True, "message": "Event tracked successfully"}
+        
+    except Exception as e:
+        logging.error(f"Error tracking analytics event: {e}")
+        raise HTTPException(status_code=500, detail="Failed to track event")
+
+@app.get("/api/v1/analytics/export")
+async def export_analytics_data(request: Request):
+    """Export analytics data"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        format_type = request.query_params.get("format", "json")
+        
+        # For now, return mock export data
+        # In production, this would use the AnalyticsBackendService.export_analytics_data()
+        if format_type == "json":
+            mock_export = {
+                "user_id": "user_123",
+                "export_date": datetime.utcnow().isoformat(),
+                "data": {
+                    "total_posts": 42,
+                    "total_engagement": 1250,
+                    "platform_usage": {
+                        "threads": 15,
+                        "instagram": 12,
+                        "twitter": 8,
+                        "linkedin": 7
+                    }
+                }
+            }
+            return mock_export
+        else:
+            raise HTTPException(status_code=400, detail="Unsupported format")
+        
+    except Exception as e:
+        logging.error(f"Error exporting analytics data: {e}")
+        raise HTTPException(status_code=500, detail="Failed to export data")
+
 # Status endpoint
 @app.get("/api/v1/status")
 async def status():

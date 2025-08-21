@@ -573,6 +573,193 @@
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', initializeAnalytics);
+        
+        // Enhanced Analytics Manager
+        class AnalyticsManager {
+            constructor() {
+                this.baseUrl = '/api/v1';
+                this.tokenKey = 'threadstorm_access_token';
+                this.currentDateRange = '30d';
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupEventListeners();
+                this.loadAnalytics();
+            }
+            
+            setupEventListeners() {
+                // Date range buttons
+                document.querySelectorAll('.date-btn').forEach(btn => {
+                    btn.addEventListener('click', () => this.changeDateRange(btn));
+                });
+            }
+            
+            changeDateRange(selectedBtn) {
+                // Update active button
+                document.querySelectorAll('.date-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                selectedBtn.classList.add('active');
+                
+                this.currentDateRange = selectedBtn.dataset.range;
+                this.loadAnalytics();
+            }
+            
+            async loadAnalytics() {
+                try {
+                    await Promise.all([
+                        this.loadOverview(),
+                        this.loadInsights()
+                    ]);
+                } catch (error) {
+                    console.error('Error loading analytics:', error);
+                }
+            }
+            
+            async loadOverview() {
+                try {
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/analytics/overview`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.updateOverviewMetrics(data);
+                    } else {
+                        throw new Error('Failed to load analytics overview');
+                    }
+                } catch (error) {
+                    console.error('Error loading overview:', error);
+                }
+            }
+            
+            updateOverviewMetrics(data) {
+                // Update metric cards
+                document.getElementById('totalPosts').textContent = data.total_posts || 0;
+                document.getElementById('totalEngagement').textContent = this.formatNumber(data.total_engagement || 0);
+                document.getElementById('avgEngagementRate').textContent = `${data.engagement_rate || 0}%`;
+                
+                // Update growth metrics
+                const growthMetrics = data.growth_metrics || {};
+                this.updateGrowthIndicator('totalPosts', growthMetrics.posts_growth);
+                this.updateGrowthIndicator('totalEngagement', growthMetrics.engagement_growth);
+            }
+            
+            updateGrowthIndicator(metricId, growth) {
+                const metricCard = document.getElementById(metricId).closest('.metric-card');
+                const changeElement = metricCard.querySelector('.metric-change');
+                
+                if (changeElement) {
+                    const isPositive = growth >= 0;
+                    changeElement.className = `metric-change ${isPositive ? 'positive' : 'negative'}`;
+                    changeElement.innerHTML = `
+                        <span>${isPositive ? '↗' : '↘'}</span>
+                        <span>${isPositive ? '+' : ''}${growth || 0}% from last period</span>
+                    `;
+                }
+            }
+            
+            async loadInsights() {
+                try {
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/analytics/insights`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.updateInsights(data.insights || []);
+                    } else {
+                        throw new Error('Failed to load insights');
+                    }
+                } catch (error) {
+                    console.error('Error loading insights:', error);
+                }
+            }
+            
+            updateInsights(insights) {
+                const insightsContainer = document.querySelector('.insights-list');
+                if (!insightsContainer) return;
+                
+                if (insights.length === 0) {
+                    insightsContainer.innerHTML = '<p style="color: #666; text-align: center;">No insights available</p>';
+                    return;
+                }
+                
+                insightsContainer.innerHTML = insights.map(insight => `
+                    <div class="insight-item">
+                        <div class="insight-icon" style="background: ${this.getInsightColor(insight.priority)};">
+                            ${this.getInsightIcon(insight.type)}
+                        </div>
+                        <div class="insight-content">
+                            <h4>${insight.title}</h4>
+                            <p>${insight.message}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            getInsightColor(priority) {
+                const colors = {
+                    'high': '#ffebee',
+                    'medium': '#fff3e0',
+                    'low': '#e8f5e8'
+                };
+                return colors[priority] || '#f5f5f5';
+            }
+            
+            getInsightIcon(type) {
+                const icons = {
+                    'engagement': '📊',
+                    'frequency': '⏰',
+                    'platform': '📱'
+                };
+                return icons[type] || '💡';
+            }
+            
+            formatNumber(num) {
+                return new Intl.NumberFormat().format(num);
+            }
+            
+            async trackEvent(eventType, metadata = {}) {
+                try {
+                    const token = localStorage.getItem(this.tokenKey);
+                    await fetch(`${this.baseUrl}/analytics/track`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            event_type: eventType,
+                            metadata: metadata
+                        })
+                    });
+                } catch (error) {
+                    console.error('Error tracking event:', error);
+                }
+            }
+        }
+        
+        // Global functions
+        function refreshAnalytics() {
+            if (window.analyticsManager) {
+                analyticsManager.loadAnalytics();
+            }
+        }
+        
+        // Initialize analytics manager
+        let analyticsManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            analyticsManager = new AnalyticsManager();
+        });
     </script>
 </body>
 </html>
