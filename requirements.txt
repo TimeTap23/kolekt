@@ -44,3 +44,6 @@ huggingface-hub>=0.17,<1.0
 
 # Billing
 stripe==6.9.0
+
+# Cache buster - force fresh build
+# Build timestamp: 2025-08-21
