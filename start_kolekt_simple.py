@@ -55,6 +55,16 @@ async def health_check():
     """Health check endpoint for load balancers"""
     return {"status": "healthy", "timestamp": datetime.utcnow().isoformat()}
 
+# Simple test endpoint
+@app.get("/test")
+async def test_endpoint():
+    """Simple test endpoint to verify app is running"""
+    return {
+        "message": "Kolekt is running!",
+        "timestamp": datetime.utcnow().isoformat(),
+        "environment": os.getenv("ENVIRONMENT", "unknown")
+    }
+
 # Status endpoint
 @app.get("/api/v1/status")
 async def status():
