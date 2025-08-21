@@ -258,6 +258,30 @@ async def analytics_page():
         logging.error(f"Error loading analytics page: {e}")
         return HTMLResponse(content="<html><body><h1>Analytics</h1><p>Loading...</p></body></html>")
 
+# Login page
+@app.get("/login")
+async def login_page():
+    """Login page"""
+    try:
+        with open("web/templates/login.html", "r") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        logging.error(f"Error loading login page: {e}")
+        return HTMLResponse(content="<html><body><h1>Sign In</h1><p>Loading...</p></body></html>")
+
+# Register page
+@app.get("/register")
+async def register_page():
+    """Register page"""
+    try:
+        with open("web/templates/register.html", "r") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        logging.error(f"Error loading register page: {e}")
+        return HTMLResponse(content="<html><body><h1>Sign Up</h1><p>Loading...</p></body></html>")
+
 if __name__ == "__main__":
     # Get port from environment or default to 8080
     port = int(os.getenv("PORT", 8080))
