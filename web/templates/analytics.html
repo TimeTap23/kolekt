@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Kolekt</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css?v=2.4.2">
+    <link rel="stylesheet" href="/static/css/dashboard.css?v=2.3.0">
+    
+    <style>
+        .analytics-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .metric-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .metric-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #666;
+            margin: 0;
+        }
+        
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            margin: 0.5rem 0;
+        }
+        
+        .metric-change {
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .metric-change.positive {
+            color: #28a745;
+        }
+        
+        .metric-change.negative {
+            color: #dc3545;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            grid-column: span 2;
+        }
+        
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        
+        .chart-placeholder {
+            height: 300px;
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+        
+        .content-performance {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            grid-column: span 2;
+        }
+        
+        .performance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .performance-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .performance-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .performance-table th,
+        .performance-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .performance-table th {
+            font-weight: 600;
+            color: #666;
+            background: #f8f9fa;
+        }
+        
+        .performance-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .engagement-rate {
+            font-weight: 600;
+        }
+        
+        .engagement-rate.high {
+            color: #28a745;
+        }
+        
+        .engagement-rate.medium {
+            color: #ffc107;
+        }
+        
+        .engagement-rate.low {
+            color: #dc3545;
+        }
+        
+        .platform-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .platform-threads {
+            background: #000000;
+            color: white;
+        }
+        
+        .platform-instagram {
+            background: #E4405F;
+            color: white;
+        }
+        
+        .platform-twitter {
+            background: #1DA1F2;
+            color: white;
+        }
+        
+        .insights-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .insight-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .insight-item:last-child {
+            border-bottom: none;
+        }
+        
+        .insight-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .insight-content h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+            color: #333;
+        }
+        
+        .insight-content p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .date-range {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .date-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e9ecef;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .date-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo-container">
+                <div class="logo-icon">K</div>
+                <span class="logo-text">kolekt.io</span>
+            </a>
+            
+            <nav class="nav">
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="#content" class="nav-link">Content</a>
+                <a href="#formatter" class="nav-link">Formatter</a>
+                <a href="#templates" class="nav-link">Templates</a>
+                <a href="#analytics" class="nav-link active">Analytics</a>
+                <a href="/pricing" class="nav-link">Pricing</a>
+                <a href="#settings" class="nav-link">Settings</a>
+            </nav>
+            
+            <div class="header-actions">
+                <div class="user-menu">
+                    <button class="user-menu-btn" onclick="toggleUserMenu()">
+                        <div class="user-avatar">
+                            <span id="userInitials">U</span>
+                        </div>
+                        <span id="userName">User</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#profile" class="dropdown-item">Profile</a>
+                        <a href="#settings" class="dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" onclick="kolektAuth.logout()">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="analytics-container">
+        <div class="welcome-section">
+            <h1>Analytics</h1>
+            <p>Track your content performance and gain insights</p>
+        </div>
+
+        <!-- Date Range Selector -->
+        <div class="date-range">
+            <button class="date-btn active" data-range="7d">Last 7 days</button>
+            <button class="date-btn" data-range="30d">Last 30 days</button>
+            <button class="date-btn" data-range="90d">Last 90 days</button>
+            <button class="date-btn" data-range="1y">Last year</button>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="analytics-grid">
+            <!-- Total Posts -->
+            <div class="metric-card">
+                <div class="metric-header">
+                    <h3 class="metric-title">Total Posts</h3>
+                    <div class="metric-icon" style="background: #e3f2fd; color: #1976d2;">📝</div>
+                </div>
+                <div class="metric-value" id="totalPosts">24</div>
+                <div class="metric-change positive">
+                    <span>↗</span>
+                    <span>+12% from last period</span>
+                </div>
+            </div>
+
+            <!-- Total Engagement -->
+            <div class="metric-card">
+                <div class="metric-header">
+                    <h3 class="metric-title">Total Engagement</h3>
+                    <div class="metric-icon" style="background: #e8f5e8; color: #2e7d32;">❤️</div>
+                </div>
+                <div class="metric-value" id="totalEngagement">1,247</div>
+                <div class="metric-change positive">
+                    <span>↗</span>
+                    <span>+8% from last period</span>
+                </div>
+            </div>
+
+            <!-- Avg Engagement Rate -->
+            <div class="metric-card">
+                <div class="metric-header">
+                    <h3 class="metric-title">Avg Engagement Rate</h3>
+                    <div class="metric-icon" style="background: #fff3e0; color: #f57c00;">📊</div>
+                </div>
+                <div class="metric-value" id="avgEngagementRate">5.2%</div>
+                <div class="metric-change positive">
+                    <span>↗</span>
+                    <span>+0.8% from last period</span>
+                </div>
+            </div>
+
+            <!-- Reach -->
+            <div class="metric-card">
+                <div class="metric-header">
+                    <h3 class="metric-title">Total Reach</h3>
+                    <div class="metric-icon" style="background: #f3e5f5; color: #7b1fa2;">👥</div>
+                </div>
+                <div class="metric-value" id="totalReach">23,891</div>
+                <div class="metric-change positive">
+                    <span>↗</span>
+                    <span>+15% from last period</span>
+                </div>
+            </div>
+
+            <!-- Engagement Chart -->
+            <div class="chart-container">
+                <h3 class="chart-title">Engagement Over Time</h3>
+                <div class="chart-placeholder">
+                    📈 Chart will be displayed here
+                    <br>
+                    <small>Integration with charting library coming soon</small>
+                </div>
+            </div>
+
+            <!-- Content Performance -->
+            <div class="content-performance">
+                <div class="performance-header">
+                    <h3 class="performance-title">Top Performing Content</h3>
+                    <select class="filter-select" id="platformFilter">
+                        <option value="all">All Platforms</option>
+                        <option value="threads">Threads</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="twitter">Twitter</option>
+                    </select>
+                </div>
+                <table class="performance-table">
+                    <thead>
+                        <tr>
+                            <th>Content</th>
+                            <th>Platform</th>
+                            <th>Engagement</th>
+                            <th>Engagement Rate</th>
+                            <th>Reach</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="performanceTableBody">
+                        <!-- Table rows will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- AI Insights -->
+            <div class="insights-section">
+                <h3 class="performance-title">AI-Powered Insights</h3>
+                <div class="insight-item">
+                    <div class="insight-icon" style="background: #e3f2fd; color: #1976d2;">💡</div>
+                    <div class="insight-content">
+                        <h4>Best Posting Time</h4>
+                        <p>Your content performs 23% better when posted between 2-4 PM on weekdays.</p>
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-icon" style="background: #e8f5e8; color: #2e7d32;">🎯</div>
+                    <div class="insight-content">
+                        <h4>Top Content Type</h4>
+                        <p>Behind-the-scenes content generates 40% more engagement than promotional posts.</p>
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-icon" style="background: #fff3e0; color: #f57c00;">📈</div>
+                    <div class="insight-content">
+                        <h4>Growth Opportunity</h4>
+                        <p>Your Threads content is outperforming other platforms by 35%. Consider focusing more content there.</p>
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-icon" style="background: #f3e5f5; color: #7b1fa2;">🔍</div>
+                    <div class="insight-content">
+                        <h4>Hashtag Performance</h4>
+                        <p>Posts with 3-5 hashtags perform 28% better than those with more or fewer hashtags.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Sample performance data
+        const performanceData = [
+            {
+                content: "🚀 BIG NEWS! We're excited to announce our new feature...",
+                platform: "threads",
+                engagement: 156,
+                engagementRate: 8.2,
+                reach: 1900,
+                date: "2024-01-15"
+            },
+            {
+                content: "Behind the scenes of our latest product development...",
+                platform: "instagram",
+                engagement: 89,
+                engagementRate: 6.1,
+                reach: 1450,
+                date: "2024-01-14"
+            },
+            {
+                content: "3 Key Trends Shaping Our Industry in 2024...",
+                platform: "linkedin",
+                engagement: 234,
+                engagementRate: 4.8,
+                reach: 4870,
+                date: "2024-01-13"
+            },
+            {
+                content: "Quick tip: How to improve your productivity...",
+                platform: "twitter",
+                engagement: 67,
+                engagementRate: 3.9,
+                reach: 1720,
+                date: "2024-01-12"
+            },
+            {
+                content: "Customer success story: How [Company] achieved...",
+                platform: "threads",
+                engagement: 123,
+                engagementRate: 7.5,
+                reach: 1640,
+                date: "2024-01-11"
+            }
+        ];
+
+        // Initialize analytics
+        function initializeAnalytics() {
+            renderPerformanceTable();
+            setupEventListeners();
+        }
+
+        // Render performance table
+        function renderPerformanceTable() {
+            const tbody = document.getElementById('performanceTableBody');
+            const platformFilter = document.getElementById('platformFilter').value;
+            
+            const filteredData = platformFilter === 'all' 
+                ? performanceData 
+                : performanceData.filter(item => item.platform === platformFilter);
+
+            tbody.innerHTML = filteredData.map(item => `
+                <tr>
+                    <td>${item.content.substring(0, 50)}${item.content.length > 50 ? '...' : ''}</td>
+                    <td><span class="platform-badge platform-${item.platform}">${item.platform}</span></td>
+                    <td>${item.engagement}</td>
+                    <td class="engagement-rate ${getEngagementRateClass(item.engagementRate)}">${item.engagementRate}%</td>
+                    <td>${item.reach.toLocaleString()}</td>
+                    <td>${formatDate(item.date)}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Get engagement rate class
+        function getEngagementRateClass(rate) {
+            if (rate >= 6) return 'high';
+            if (rate >= 4) return 'medium';
+            return 'low';
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Date range buttons
+            document.querySelectorAll('.date-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    updateMetrics(this.dataset.range);
+                });
+            });
+
+            // Platform filter
+            document.getElementById('platformFilter').addEventListener('change', renderPerformanceTable);
+        }
+
+        // Update metrics based on date range
+        function updateMetrics(range) {
+            // This would typically fetch new data from the API
+            // For now, we'll just show a loading state
+            const metrics = ['totalPosts', 'totalEngagement', 'avgEngagementRate', 'totalReach'];
+            
+            metrics.forEach(metric => {
+                const element = document.getElementById(metric);
+                element.textContent = 'Loading...';
+                
+                // Simulate API call delay
+                setTimeout(() => {
+                    const values = {
+                        '7d': ['24', '1,247', '5.2%', '23,891'],
+                        '30d': ['89', '4,567', '5.1%', '89,234'],
+                        '90d': ['267', '13,456', '5.0%', '267,890'],
+                        '1y': ['1,089', '54,321', '5.3%', '1,089,123']
+                    };
+                    
+                    const index = metrics.indexOf(metric);
+                    element.textContent = values[range][index];
+                }, 500);
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initializeAnalytics);
+    </script>
+</body>
+</html>

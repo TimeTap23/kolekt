@@ -121,6 +121,30 @@ async def generate_hashtags(
         logger.error(f"Error generating hashtags: {e}")
         raise HTTPException(status_code=500, detail="Failed to generate hashtags")
 
+@router.post("/format-content")
+async def format_content(
+    request: dict,
+    current_user: Dict[str, Any] = Depends(get_current_user)
+):
+    """Format content for different platforms"""
+    try:
+        logger.info(f"Formatting content for user {current_user.get('id')}")
+        
+        content = request.get("content", "")
+        format_type = request.get("format", "threads")
+        
+        if not content:
+            raise HTTPException(status_code=400, detail="Content is required")
+        
+        # Generate platform-specific formatting
+        formatted_content = ai_service._format_content_for_platform(content, format_type)
+        
+        return {"formatted_content": formatted_content}
+        
+    except Exception as e:
+        logger.error(f"Error formatting content: {e}")
+        raise HTTPException(status_code=500, detail="Failed to format content")
+
 @router.get("/models/available")
 async def get_available_models(
     current_user: Dict[str, Any] = Depends(get_current_user)

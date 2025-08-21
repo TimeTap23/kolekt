@@ -54,14 +54,8 @@
         </div>
     </div>
 
-    <!-- Pricing Toggle -->
+    <!-- Pricing Section -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="text-center mb-12">
-            <div class="inline-flex items-center bg-gray-200 rounded-lg p-1">
-                <button id="monthly-toggle" class="px-4 py-2 rounded-md bg-white shadow-sm text-gray-900 font-medium">Monthly</button>
-                <button id="yearly-toggle" class="px-4 py-2 rounded-md text-gray-600 hover:text-gray-900">Yearly <span class="text-green-600 text-sm">(Save 20%)</span></button>
-            </div>
-        </div>
 
         <!-- Subscription Plans -->
         <div class="grid md:grid-cols-3 gap-8 mb-16">
@@ -210,30 +204,6 @@
     </footer>
 
     <script>
-        // Pricing toggle functionality
-        document.getElementById('monthly-toggle').addEventListener('click', function() {
-            document.getElementById('monthly-toggle').classList.add('bg-white', 'shadow-sm', 'text-gray-900');
-            document.getElementById('monthly-toggle').classList.remove('text-gray-600');
-            document.getElementById('yearly-toggle').classList.remove('bg-white', 'shadow-sm', 'text-gray-900');
-            document.getElementById('yearly-toggle').classList.add('text-gray-600');
-            
-            // Update prices to monthly
-            document.getElementById('starter-price').textContent = '$12';
-            document.getElementById('pro-price').textContent = '$29';
-            document.getElementById('business-price').textContent = '$79';
-        });
-
-        document.getElementById('yearly-toggle').addEventListener('click', function() {
-            document.getElementById('yearly-toggle').classList.add('bg-white', 'shadow-sm', 'text-gray-900');
-            document.getElementById('yearly-toggle').classList.remove('text-gray-600');
-            document.getElementById('monthly-toggle').classList.remove('bg-white', 'shadow-sm', 'text-gray-900');
-            document.getElementById('monthly-toggle').classList.add('text-gray-600');
-            
-            // Update prices to yearly (20% discount)
-            document.getElementById('starter-price').textContent = '$115';
-            document.getElementById('pro-price').textContent = '$279';
-            document.getElementById('business-price').textContent = '$759';
-        });
 
         // Plan upgrade functionality
         function upgradePlan(planId) {

@@ -129,27 +129,107 @@ Content:"""
         
         return hashtags[:10]  # Limit to 10 hashtags
     
-    def _generate_hashtags(self, content: str) -> List[str]:
+    def _generate_hashtags(self, content: str, platform: str = "general") -> List[str]:
         """Generate relevant hashtags based on content"""
-        # Simple keyword-based hashtag generation
-        # In the future, this could use a more sophisticated model
-        common_hashtags = [
-            "#socialmedia", "#content", "#digital", "#marketing",
-            "#engagement", "#community", "#growth", "#strategy"
-        ]
+        if not self.client:
+            # Mock hashtags for testing
+            return ["#content", "#socialmedia", "#engagement", "#digitalmarketing"]
         
-        # Extract potential keywords from content
-        words = content.lower().split()
-        keywords = [word for word in words if len(word) > 4 and word.isalpha()]
+        try:
+            prompt = f"""
+            Generate 5-8 relevant hashtags for this content on {platform}:
+            
+            Content: {content}
+            
+            Return only the hashtags, one per line, starting with #.
+            """
+            
+            response = self.client.text_generation(
+                prompt,
+                model="meta-llama/Llama-3.1-8B-Instruct",
+                max_new_tokens=100,
+                temperature=0.7,
+                do_sample=True
+            )
+            
+            # Parse hashtags from response
+            hashtags = []
+            for line in response.split('\n'):
+                line = line.strip()
+                if line.startswith('#'):
+                    hashtags.append(line)
+            
+            return hashtags[:8]  # Limit to 8 hashtags
+            
+        except Exception as e:
+            logger.error(f"Error generating hashtags: {e}")
+            # Fallback to simple keyword-based generation
+            common_hashtags = [
+                "#socialmedia", "#content", "#digital", "#marketing",
+                "#engagement", "#community", "#growth", "#strategy"
+            ]
+            
+            # Extract potential keywords from content
+            words = content.lower().split()
+            keywords = [word for word in words if len(word) > 4 and word.isalpha()]
+            
+            hashtags = []
+            for keyword in keywords[:5]:  # Take top 5 keywords
+                hashtags.append(f"#{keyword}")
+            
+            # Add some common hashtags
+            hashtags.extend(common_hashtags[:3])
+            
+            return hashtags
+
+    def _format_content_for_platform(self, content: str, platform: str) -> str:
+        """Format content for specific platform"""
+        if not self.client:
+            # Mock formatting for testing
+            return self._mock_format_content(content, platform)
         
-        hashtags = []
-        for keyword in keywords[:5]:  # Take top 5 keywords
-            hashtags.append(f"#{keyword}")
-        
-        # Add some common hashtags
-        hashtags.extend(common_hashtags[:3])
-        
-        return hashtags
+        try:
+            platform_prompts = {
+                "threads": "Format this content for Threads with line breaks, emojis, and engaging language:",
+                "instagram": "Format this content for Instagram with engaging captions and relevant hashtags:",
+                "twitter": "Format this content for Twitter with concise, impactful messaging:",
+                "linkedin": "Format this content for LinkedIn with professional, thought leadership style:"
+            }
+            
+            prompt = f"""
+            {platform_prompts.get(platform, "Format this content:")}
+            
+            Original content: {content}
+            
+            Return only the formatted content.
+            """
+            
+            response = self.client.text_generation(
+                prompt,
+                model="meta-llama/Llama-3.1-8B-Instruct",
+                max_new_tokens=500,
+                temperature=0.8,
+                do_sample=True
+            )
+            
+            return response.strip()
+            
+        except Exception as e:
+            logger.error(f"Error formatting content: {e}")
+            return self._mock_format_content(content, platform)
+
+    def _mock_format_content(self, content: str, platform: str) -> str:
+        """Mock content formatting for testing"""
+        if platform == "threads":
+            return f"🧵 {content}\n\n✨ Key points:\n• Engaging content\n• Platform optimized\n• Ready to share!\n\n#ContentCreation #SocialMedia"
+        elif platform == "instagram":
+            return f"📸 {content}\n\n💡 Pro tip: Always engage with your audience!\n\n#Instagram #Content #Engagement"
+        elif platform == "twitter":
+            return f"💭 {content}\n\nWhat do you think? Share your thoughts below! 👇\n\n#Twitter #Discussion"
+        elif platform == "linkedin":
+            return f"💼 {content}\n\nKey insights:\n• Professional approach\n• Industry focused\n• Thought leadership\n\n#LinkedIn #Professional #Networking"
+        else:
+            return content
     
     def _create_platform_suggestions(self, content: str, target_platform: str) -> Dict[str, str]:
         """Create platform-specific suggestions"""

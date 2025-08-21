@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Formatter - Kolekt</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css?v=2.4.2">
+    <link rel="stylesheet" href="/static/css/dashboard.css?v=2.3.0">
+    
+    <style>
+        .formatter-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .formatter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .input-section, .output-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .format-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .format-option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .format-option:hover {
+            border-color: #007bff;
+            background: #f0f8ff;
+        }
+        
+        .format-option.active {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        
+        .format-option h4 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+        }
+        
+        .format-option p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .text-area {
+            width: 100%;
+            min-height: 300px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+        }
+        
+        .text-area:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        
+        .output-content {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 300px;
+            white-space: pre-wrap;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+        }
+        
+        .word-count {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo-container">
+                <div class="logo-icon">K</div>
+                <span class="logo-text">kolekt.io</span>
+            </a>
+            
+            <nav class="nav">
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="#content" class="nav-link">Content</a>
+                <a href="#formatter" class="nav-link active">Formatter</a>
+                <a href="#templates" class="nav-link">Templates</a>
+                <a href="#analytics" class="nav-link">Analytics</a>
+                <a href="/pricing" class="nav-link">Pricing</a>
+                <a href="#settings" class="nav-link">Settings</a>
+            </nav>
+            
+            <div class="header-actions">
+                <div class="user-menu">
+                    <button class="user-menu-btn" onclick="toggleUserMenu()">
+                        <div class="user-avatar">
+                            <span id="userInitials">U</span>
+                        </div>
+                        <span id="userName">User</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#profile" class="dropdown-item">Profile</a>
+                        <a href="#settings" class="dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" onclick="kolektAuth.logout()">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="formatter-container">
+        <div class="welcome-section">
+            <h1>Content Formatter</h1>
+            <p>Transform your content with AI-powered formatting tools</p>
+        </div>
+
+        <div class="formatter-grid">
+            <!-- Input Section -->
+            <div class="input-section">
+                <h3>Input Content</h3>
+                <textarea 
+                    id="inputContent" 
+                    class="text-area" 
+                    placeholder="Paste your content here...&#10;&#10;Example:&#10;Just finished reading an amazing book about productivity. The author shares some incredible insights about time management and focus. Highly recommend it to anyone looking to improve their daily routine."
+                ></textarea>
+                <div class="word-count" id="inputWordCount">0 words</div>
+                
+                <h4>Formatting Options</h4>
+                <div class="format-options">
+                    <div class="format-option active" data-format="threads">
+                        <h4>Threads Style</h4>
+                        <p>Optimized for Threads with line breaks and emojis</p>
+                    </div>
+                    <div class="format-option" data-format="instagram">
+                        <h4>Instagram Style</h4>
+                        <p>Hashtag-rich with engaging captions</p>
+                    </div>
+                    <div class="format-option" data-format="twitter">
+                        <h4>Twitter Style</h4>
+                        <p>Concise and impactful messaging</p>
+                    </div>
+                    <div class="format-option" data-format="linkedin">
+                        <h4>LinkedIn Style</h4>
+                        <p>Professional and thought leadership focused</p>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="formatContent()">Format Content</button>
+                    <button class="btn btn-secondary" onclick="clearContent()">Clear</button>
+                </div>
+            </div>
+
+            <!-- Output Section -->
+            <div class="output-section">
+                <h3>Formatted Output</h3>
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>AI is formatting your content...</p>
+                </div>
+                <div class="output-content" id="outputContent">
+                    Your formatted content will appear here...
+                </div>
+                <div class="word-count" id="outputWordCount">0 words</div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="copyToClipboard()">Copy to Clipboard</button>
+                    <button class="btn btn-secondary" onclick="saveToDraft()">Save as Draft</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Word count functionality
+        function updateWordCount(textareaId, countId) {
+            const textarea = document.getElementById(textareaId);
+            const countElement = document.getElementById(countId);
+            const words = textarea.value.trim().split(/\s+/).filter(word => word.length > 0);
+            countElement.textContent = `${words.length} words`;
+        }
+
+        // Format option selection
+        document.querySelectorAll('.format-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.format-option').forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Input word count
+        document.getElementById('inputContent').addEventListener('input', function() {
+            updateWordCount('inputContent', 'inputWordCount');
+        });
+
+        // Format content with AI
+        async function formatContent() {
+            const input = document.getElementById('inputContent').value.trim();
+            if (!input) {
+                alert('Please enter some content to format');
+                return;
+            }
+
+            const selectedFormat = document.querySelector('.format-option.active').dataset.format;
+            const loading = document.getElementById('loading');
+            const output = document.getElementById('outputContent');
+
+            loading.style.display = 'block';
+            output.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/v1/ai/format-content', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: input,
+                        format: selectedFormat
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    output.textContent = data.formatted_content;
+                    updateWordCount('outputContent', 'outputWordCount');
+                } else {
+                    output.textContent = `Error: ${data.detail || 'Failed to format content'}`;
+                }
+            } catch (error) {
+                output.textContent = `Error: ${error.message}`;
+            } finally {
+                loading.style.display = 'none';
+                output.style.display = 'block';
+            }
+        }
+
+        // Clear content
+        function clearContent() {
+            document.getElementById('inputContent').value = '';
+            document.getElementById('outputContent').textContent = 'Your formatted content will appear here...';
+            updateWordCount('inputContent', 'inputWordCount');
+            updateWordCount('outputContent', 'outputWordCount');
+        }
+
+        // Copy to clipboard
+        function copyToClipboard() {
+            const output = document.getElementById('outputContent');
+            const text = output.textContent;
+            
+            if (text && text !== 'Your formatted content will appear here...') {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Content copied to clipboard!');
+                }).catch(() => {
+                    alert('Failed to copy to clipboard');
+                });
+            }
+        }
+
+        // Save as draft
+        function saveToDraft() {
+            const output = document.getElementById('outputContent');
+            const text = output.textContent;
+            
+            if (text && text !== 'Your formatted content will appear here...') {
+                // Save to localStorage for now
+                const drafts = JSON.parse(localStorage.getItem('kolekt_drafts') || '[]');
+                drafts.push({
+                    content: text,
+                    timestamp: new Date().toISOString(),
+                    type: 'formatted'
+                });
+                localStorage.setItem('kolekt_drafts', JSON.stringify(drafts));
+                alert('Draft saved!');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateWordCount('inputContent', 'inputWordCount');
+            updateWordCount('outputContent', 'outputWordCount');
+        });
+    </script>
+</body>
+</html>

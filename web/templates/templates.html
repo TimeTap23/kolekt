@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Templates - Kolekt</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css?v=2.4.2">
+    <link rel="stylesheet" href="/static/css/dashboard.css?v=2.3.0">
+    
+    <style>
+        .templates-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .template-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .template-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .template-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .template-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+        }
+        
+        .template-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        
+        .template-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .template-content {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        .template-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .template-tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .template-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: #007bff;
+            border: 1px solid #007bff;
+        }
+        
+        .btn-outline:hover {
+            background: #007bff;
+            color: white;
+        }
+        
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e9ecef;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .filter-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        
+        .search-bar {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        .template-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .modal-body {
+            margin-bottom: 1.5rem;
+        }
+        
+        .template-preview {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo-container">
+                <div class="logo-icon">K</div>
+                <span class="logo-text">kolekt.io</span>
+            </a>
+            
+            <nav class="nav">
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="#content" class="nav-link">Content</a>
+                <a href="#formatter" class="nav-link">Formatter</a>
+                <a href="#templates" class="nav-link active">Templates</a>
+                <a href="#analytics" class="nav-link">Analytics</a>
+                <a href="/pricing" class="nav-link">Pricing</a>
+                <a href="#settings" class="nav-link">Settings</a>
+            </nav>
+            
+            <div class="header-actions">
+                <div class="user-menu">
+                    <button class="user-menu-btn" onclick="toggleUserMenu()">
+                        <div class="user-avatar">
+                            <span id="userInitials">U</span>
+                        </div>
+                        <span id="userName">User</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#profile" class="dropdown-item">Profile</a>
+                        <a href="#settings" class="dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" onclick="kolektAuth.logout()">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="templates-container">
+        <div class="welcome-section">
+            <h1>Content Templates</h1>
+            <p>Ready-to-use templates for different platforms and content types</p>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search templates..." id="searchInput">
+            </div>
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="threads">Threads</button>
+            <button class="filter-btn" data-filter="instagram">Instagram</button>
+            <button class="filter-btn" data-filter="twitter">Twitter</button>
+            <button class="filter-btn" data-filter="linkedin">LinkedIn</button>
+        </div>
+
+        <!-- Templates Grid -->
+        <div class="templates-grid" id="templatesGrid">
+            <!-- Template cards will be populated by JavaScript -->
+        </div>
+    </main>
+
+    <!-- Template Modal -->
+    <div class="template-modal" id="templateModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Template Title</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="template-preview" id="modalPreview"></div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="useTemplate()">Use Template</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Template data
+        const templates = [
+            {
+                id: 1,
+                title: "Product Launch",
+                description: "Perfect for announcing new products or features",
+                platform: "threads",
+                content: "🚀 BIG NEWS! We're excited to announce [Product Name]!\n\n✨ What makes it special:\n• [Key Feature 1]\n• [Key Feature 2]\n• [Key Feature 3]\n\n🎯 Perfect for [target audience]\n\nWhat do you think? Drop a ❤️ if you're as excited as we are!\n\n#ProductLaunch #Innovation #Tech",
+                tags: ["product", "launch", "announcement"]
+            },
+            {
+                id: 2,
+                title: "Behind the Scenes",
+                description: "Show your team and process to build connection",
+                platform: "instagram",
+                content: "Ever wonder what goes into creating [your product/service]? 🤔\n\nToday we're giving you a peek behind the curtain! 👀\n\nOur team has been working tirelessly to bring you the best experience possible. From brainstorming sessions to late-night coding marathons, every detail matters.\n\n💡 Pro tip: Transparency builds trust!\n\n#BehindTheScenes #TeamWork #Process #Transparency",
+                tags: ["behind-the-scenes", "team", "transparency"]
+            },
+            {
+                id: 3,
+                title: "Industry Insight",
+                description: "Share valuable knowledge and position as thought leader",
+                platform: "linkedin",
+                content: "3 Key Trends Shaping [Your Industry] in 2024:\n\n1️⃣ [Trend 1] - Why this matters and how it's changing the landscape\n\n2️⃣ [Trend 2] - The impact on businesses and consumers\n\n3️⃣ [Trend 3] - What to expect in the coming months\n\nMy take: [Your unique perspective]\n\nWhat trends are you seeing? Share your thoughts below! 👇\n\n#IndustryInsights #Trends #ThoughtLeadership",
+                tags: ["insights", "trends", "thought-leadership"]
+            },
+            {
+                id: 4,
+                title: "Quick Tip",
+                description: "Share actionable advice in a concise format",
+                platform: "twitter",
+                content: "💡 Quick Tip: [Actionable advice]\n\nWhy it works: [Brief explanation]\n\nTry it today and let me know the results! 👇\n\n#QuickTip #Productivity #Advice",
+                tags: ["tip", "advice", "productivity"]
+            },
+            {
+                id: 5,
+                title: "Customer Success",
+                description: "Highlight customer achievements and testimonials",
+                platform: "threads",
+                content: "🎉 Customer Success Story!\n\nWe love hearing how [Product/Service] helps our customers succeed!\n\n📈 [Customer Name] achieved [specific result] using our platform\n\n💬 \"[Customer quote]\"\n\nThis is why we do what we do! 🙏\n\n#CustomerSuccess #Testimonial #Results",
+                tags: ["customer-success", "testimonial", "results"]
+            },
+            {
+                id: 6,
+                title: "Question of the Day",
+                description: "Engage your audience with thought-provoking questions",
+                platform: "instagram",
+                content: "🤔 Question of the Day:\n\n[Engaging question related to your industry/niche]\n\nDrop your answer in the comments! 👇\n\nI'll share my thoughts in the comments too!\n\n#QuestionOfTheDay #Engagement #Community",
+                tags: ["question", "engagement", "community"]
+            }
+        ];
+
+        let currentFilter = 'all';
+        let currentTemplate = null;
+
+        // Initialize templates
+        function initializeTemplates() {
+            renderTemplates();
+            setupEventListeners();
+        }
+
+        // Render templates based on filter
+        function renderTemplates() {
+            const grid = document.getElementById('templatesGrid');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            const filteredTemplates = templates.filter(template => {
+                const matchesFilter = currentFilter === 'all' || template.platform === currentFilter;
+                const matchesSearch = template.title.toLowerCase().includes(searchTerm) ||
+                                    template.description.toLowerCase().includes(searchTerm) ||
+                                    template.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+                return matchesFilter && matchesSearch;
+            });
+
+            grid.innerHTML = filteredTemplates.map(template => `
+                <div class="template-card">
+                    <div class="template-header">
+                        <div class="template-icon" style="background: ${getPlatformColor(template.platform)}">
+                            ${getPlatformIcon(template.platform)}
+                        </div>
+                        <h3 class="template-title">${template.title}</h3>
+                    </div>
+                    <p class="template-description">${template.description}</p>
+                    <div class="template-content">${template.content.substring(0, 150)}${template.content.length > 150 ? '...' : ''}</div>
+                    <div class="template-tags">
+                        ${template.tags.map(tag => `<span class="template-tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="template-actions">
+                        <button class="btn btn-outline" onclick="previewTemplate(${template.id})">Preview</button>
+                        <button class="btn btn-primary" onclick="useTemplate(${template.id})">Use Template</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Get platform color
+        function getPlatformColor(platform) {
+            const colors = {
+                threads: '#000000',
+                instagram: '#E4405F',
+                twitter: '#1DA1F2',
+                linkedin: '#0077B5'
+            };
+            return colors[platform] || '#6c757d';
+        }
+
+        // Get platform icon
+        function getPlatformIcon(platform) {
+            const icons = {
+                threads: '🧵',
+                instagram: '📷',
+                twitter: '🐦',
+                linkedin: '💼'
+            };
+            return icons[platform] || '📝';
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    renderTemplates();
+                });
+            });
+
+            // Search input
+            document.getElementById('searchInput').addEventListener('input', renderTemplates);
+        }
+
+        // Preview template
+        function previewTemplate(templateId) {
+            const template = templates.find(t => t.id === templateId);
+            if (!template) return;
+
+            currentTemplate = template;
+            document.getElementById('modalTitle').textContent = template.title;
+            document.getElementById('modalPreview').textContent = template.content;
+            document.getElementById('templateModal').style.display = 'block';
+        }
+
+        // Use template
+        function useTemplate(templateId) {
+            const template = templates.find(t => t.id === templateId);
+            if (!template) return;
+
+            // Save to localStorage for use in content creator
+            const templateData = {
+                content: template.content,
+                platform: template.platform,
+                title: template.title,
+                timestamp: new Date().toISOString()
+            };
+
+            const savedTemplates = JSON.parse(localStorage.getItem('kolekt_used_templates') || '[]');
+            savedTemplates.push(templateData);
+            localStorage.setItem('kolekt_used_templates', JSON.stringify(savedTemplates));
+
+            // Close modal if open
+            closeModal();
+
+            // Redirect to content creator or show success message
+            alert('Template saved! You can now use it in the content creator.');
+            
+            // Optionally redirect to content creator
+            // window.location.href = '/dashboard#content';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('templateModal').style.display = 'none';
+            currentTemplate = null;
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('templateModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initializeTemplates);
+    </script>
+</body>
+</html>

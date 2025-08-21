@@ -222,6 +222,42 @@ async def pricing_page():
         logging.error(f"Error loading pricing page: {e}")
         return HTMLResponse(content="<html><body><h1>Pricing</h1><p>Loading...</p></body></html>")
 
+# Formatter page
+@app.get("/formatter")
+async def formatter_page():
+    """Content formatter page"""
+    try:
+        with open("web/templates/formatter.html", "r") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        logging.error(f"Error loading formatter page: {e}")
+        return HTMLResponse(content="<html><body><h1>Content Formatter</h1><p>Loading...</p></body></html>")
+
+# Templates page
+@app.get("/templates")
+async def templates_page():
+    """Content templates page"""
+    try:
+        with open("web/templates/templates.html", "r") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        logging.error(f"Error loading templates page: {e}")
+        return HTMLResponse(content="<html><body><h1>Content Templates</h1><p>Loading...</p></body></html>")
+
+# Analytics page
+@app.get("/analytics")
+async def analytics_page():
+    """Analytics page"""
+    try:
+        with open("web/templates/analytics.html", "r") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        logging.error(f"Error loading analytics page: {e}")
+        return HTMLResponse(content="<html><body><h1>Analytics</h1><p>Loading...</p></body></html>")
+
 if __name__ == "__main__":
     # Get port from environment or default to 8080
     port = int(os.getenv("PORT", 8080))
