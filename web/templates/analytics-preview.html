@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - Kolekt</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #1a202c;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: #667eea;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-ghost:hover {
+            background: #f7fafc;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Preview Section */
+        .preview-section {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: #1a202c;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .metric-card {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .metric-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: #718096;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .metric-change {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .metric-change.positive {
+            color: #38a169;
+        }
+
+        .metric-change.negative {
+            color: #e53e3e;
+        }
+
+        .dashboard-preview {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            margin: 1rem 0;
+        }
+
+        .chart-placeholder {
+            height: 200px;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .insights-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .insights-list li {
+            padding: 0.75rem;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid #667eea;
+            font-size: 0.9rem;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .features-list li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .features-list li::before {
+            content: "✓";
+            color: #38a169;
+            font-weight: bold;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 3rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            color: white;
+            margin: 2rem 0;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon">K</div>
+                <span>kolekt.io</span>
+            </a>
+            
+            <nav class="nav">
+                <a href="/formatter-preview" class="nav-link">Formatter</a>
+                <a href="/templates-preview" class="nav-link">Templates</a>
+                <a href="/analytics-preview" class="nav-link">Analytics</a>
+            </nav>
+            
+            <div class="auth-buttons">
+                <a href="/login" class="btn btn-ghost">Sign In</a>
+                <a href="/register" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Analytics Dashboard</h1>
+            <p>Track your content performance, understand your audience, and optimize your strategy with detailed insights and metrics.</p>
+        </div>
+    </section>
+
+    <!-- Preview Section -->
+    <section class="preview-section">
+        <div class="container">
+            <h2 class="preview-title">See Your Performance at a Glance</h2>
+            
+            <!-- Metrics Overview -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-number">2,847</div>
+                    <div class="metric-label">Total Posts</div>
+                    <div class="metric-change positive">
+                        <span>↗</span>
+                        <span>+12% this month</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-number">156K</div>
+                    <div class="metric-label">Total Engagement</div>
+                    <div class="metric-change positive">
+                        <span>↗</span>
+                        <span>+8% this month</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-number">4.2%</div>
+                    <div class="metric-label">Avg. Engagement Rate</div>
+                    <div class="metric-change positive">
+                        <span>↗</span>
+                        <span>+0.3% this month</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-number">89</div>
+                    <div class="metric-label">AI Credits Used</div>
+                    <div class="metric-change negative">
+                        <span>↘</span>
+                        <span>-5% this month</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Preview -->
+            <div class="dashboard-preview">
+                <h3 style="margin-bottom: 1rem; color: #1a202c;">Performance Trends</h3>
+                
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        📊 Interactive Chart: Engagement over time
+                    </div>
+                </div>
+
+                <h3 style="margin: 2rem 0 1rem 0; color: #1a202c;">AI-Powered Insights</h3>
+                <ul class="insights-list">
+                    <li><strong>🎯 Best Time to Post:</strong> Your content performs 23% better when posted between 2-4 PM</li>
+                    <li><strong>📈 Top Performing Content:</strong> "Productivity tips" threads get 40% more engagement</li>
+                    <li><strong>👥 Audience Growth:</strong> Your follower count increased by 15% this month</li>
+                    <li><strong>💡 Content Opportunity:</strong> Try more "how-to" content - your audience loves it</li>
+                </ul>
+            </div>
+
+            <!-- Features -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <h3>Real-time Tracking</h3>
+                    <p>Monitor your content performance as it happens with live updates and notifications.</p>
+                    <ul class="features-list">
+                        <li>Live engagement tracking</li>
+                        <li>Instant notifications</li>
+                        <li>Performance alerts</li>
+                    </ul>
+                </div>
+
+                <div class="metric-card">
+                    <h3>AI Insights</h3>
+                    <p>Get intelligent recommendations to improve your content strategy and engagement.</p>
+                    <ul class="features-list">
+                        <li>Smart recommendations</li>
+                        <li>Trend analysis</li>
+                        <li>Optimization tips</li>
+                    </ul>
+                </div>
+
+                <div class="metric-card">
+                    <h3>Detailed Reports</h3>
+                    <p>Export comprehensive reports to share with your team or clients.</p>
+                    <ul class="features-list">
+                        <li>Custom date ranges</li>
+                        <li>PDF exports</li>
+                        <li>Team sharing</li>
+                    </ul>
+                </div>
+
+                <div class="metric-card">
+                    <h3>Competitor Analysis</h3>
+                    <p>Benchmark your performance against industry standards and competitors.</p>
+                    <ul class="features-list">
+                        <li>Industry benchmarks</li>
+                        <li>Competitor tracking</li>
+                        <li>Market insights</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Ready to Optimize Your Content Strategy?</h2>
+            <p class="cta-subtitle">Join thousands of creators who are already using our analytics to grow their audience and increase engagement.</p>
+            <a href="/register" class="btn btn-primary btn-lg">Sign Up Now - It's Free</a>
+        </div>
+    </section>
+</body>
+</html>

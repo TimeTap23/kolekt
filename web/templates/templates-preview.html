@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Templates - Kolekt</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #1a202c;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: #667eea;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-ghost:hover {
+            background: #f7fafc;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Preview Section */
+        .preview-section {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: #1a202c;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .template-card {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .template-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .template-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .template-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1a202c;
+        }
+
+        .template-preview {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .template-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #718096;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .features-list li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .features-list li::before {
+            content: "✓";
+            color: #38a169;
+            font-weight: bold;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 3rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            color: white;
+            margin: 2rem 0;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .template-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon">K</div>
+                <span>kolekt.io</span>
+            </a>
+            
+            <nav class="nav">
+                <a href="/formatter-preview" class="nav-link">Formatter</a>
+                <a href="/templates-preview" class="nav-link">Templates</a>
+                <a href="/analytics-preview" class="nav-link">Analytics</a>
+            </nav>
+            
+            <div class="auth-buttons">
+                <a href="/login" class="btn btn-ghost">Sign In</a>
+                <a href="/register" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Ready-to-Use Content Templates</h1>
+            <p>Save time with professionally designed templates for every content type. Start with proven formats and customize to match your brand.</p>
+        </div>
+    </section>
+
+    <!-- Preview Section -->
+    <section class="preview-section">
+        <div class="container">
+            <h2 class="preview-title">Browse Our Template Library</h2>
+            
+            <div class="template-grid">
+                <!-- Product Launch Template -->
+                <div class="template-card">
+                    <div class="template-icon">🚀</div>
+                    <h3>Product Launch</h3>
+                    <div class="template-preview">
+                        <strong>🧵 Thread 1:</strong><br>
+                        🎉 BIG NEWS! We're launching something that will change everything...<br><br>
+                        After months of hard work, we're finally ready to share what we've been building.<br><br>
+                        Here's what you need to know 👇
+                    </div>
+                    <div class="template-stats">
+                        <span>📊 2.4k uses</span>
+                        <span>⭐ 4.8/5 rating</span>
+                    </div>
+                </div>
+
+                <!-- Book Review Template -->
+                <div class="template-card">
+                    <div class="template-icon">📚</div>
+                    <h3>Book Review</h3>
+                    <div class="template-preview">
+                        <strong>🧵 Thread 1:</strong><br>
+                        Just finished reading [Book Title] and WOW! 🤯<br><br>
+                        This book completely changed my perspective on [topic].<br><br>
+                        Here are the 3 biggest takeaways that blew my mind:
+                    </div>
+                    <div class="template-stats">
+                        <span>📊 1.8k uses</span>
+                        <span>⭐ 4.9/5 rating</span>
+                    </div>
+                </div>
+
+                <!-- Industry Insights Template -->
+                <div class="template-card">
+                    <div class="template-icon">💡</div>
+                    <h3>Industry Insights</h3>
+                    <div class="template-preview">
+                        <strong>🧵 Thread 1:</strong><br>
+                        The [industry] landscape is changing faster than ever.<br><br>
+                        Here's what I'm seeing that most people are missing:<br><br>
+                        🧵 A thread on the future of [industry]:
+                    </div>
+                    <div class="template-stats">
+                        <span>📊 3.1k uses</span>
+                        <span>⭐ 4.7/5 rating</span>
+                    </div>
+                </div>
+
+                <!-- Personal Story Template -->
+                <div class="template-card">
+                    <div class="template-icon">📖</div>
+                    <h3>Personal Story</h3>
+                    <div class="template-preview">
+                        <strong>🧵 Thread 1:</strong><br>
+                        I want to share something personal with you today.<br><br>
+                        It's about [topic] and how it changed my life forever.<br><br>
+                        This is the story I've never told publicly before:
+                    </div>
+                    <div class="template-stats">
+                        <span>📊 2.7k uses</span>
+                        <span>⭐ 4.9/5 rating</span>
+                    </div>
+                </div>
+
+                <!-- How-To Guide Template -->
+                <div class="template-card">
+                    <div class="template-icon">📝</div>
+                    <h3>How-To Guide</h3>
+                    <div class="template-preview">
+                        <strong>🧵 Thread 1:</strong><br>
+                        Want to [achieve goal]? Here's the exact process I used:<br><br>
+                        I've helped 500+ people do this successfully.<br><br>
+                        🧵 The complete step-by-step guide:
+                    </div>
+                    <div class="template-stats">
+                        <span>📊 4.2k uses</span>
+                        <span>⭐ 4.8/5 rating</span>
+                    </div>
+                </div>
+
+                <!-- Case Study Template -->
+                <div class="template-card">
+                    <div class="template-icon">📊</div>
+                    <h3>Case Study</h3>
+                    <div class="template-preview">
+                        <strong>🧵 Thread 1:</strong><br>
+                        How [Company] went from $0 to $1M in 12 months.<br><br>
+                        This is the exact strategy they used.<br><br>
+                        🧵 The complete breakdown:
+                    </div>
+                    <div class="template-stats">
+                        <span>📊 1.5k uses</span>
+                        <span>⭐ 4.6/5 rating</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="template-grid">
+                <div class="template-card">
+                    <h3>Save Time</h3>
+                    <p>Start with proven templates instead of building from scratch.</p>
+                    <ul class="features-list">
+                        <li>Ready-to-use formats</li>
+                        <li>Proven engagement patterns</li>
+                        <li>Quick customization</li>
+                    </ul>
+                </div>
+
+                <div class="template-card">
+                    <h3>Consistent Quality</h3>
+                    <p>Maintain professional standards across all your content.</p>
+                    <ul class="features-list">
+                        <li>Professional formatting</li>
+                        <li>Brand consistency</li>
+                        <li>Optimized for engagement</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Ready to Create Amazing Content?</h2>
+            <p class="cta-subtitle">Join thousands of creators who are already using our templates to save time and increase engagement.</p>
+            <a href="/register" class="btn btn-primary btn-lg">Sign Up Now - It's Free</a>
+        </div>
+    </section>
+</body>
+</html>

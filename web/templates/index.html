@@ -485,12 +485,12 @@
                     Professional AI-powered formatting to create compelling kolekts with intelligent chunking and engagement optimization.
                 </p>
                 <div class="hero-actions flex gap-md justify-center mt-lg">
-                    <button class="btn btn-primary btn-lg" onclick="openThreadsFormatter()">
-                        Start Creating
-                    </button>
-                    <button class="btn btn-ghost btn-lg" onclick="openTemplateLibrary()">
-                        Browse Templates
-                    </button>
+                                    <button class="btn btn-primary btn-lg" onclick="openFormatterPreview()">
+                    Start Creating
+                </button>
+                <button class="btn btn-ghost btn-lg" onclick="openTemplatesPreview()">
+                    Browse Templates
+                </button>
                 </div>
             </section>
 
@@ -498,7 +498,7 @@
             <section class="features-section mb-lg">
                 <div class="grid">
                     <!-- Threads Formatter -->
-                    <div class="feature-card" onclick="openThreadsFormatter()">
+                    <div class="feature-card" onclick="openFormatterPreview()">
                         <div class="feature-icon">⚡</div>
                         <h3>Threads Formatter</h3>
                         <p>
@@ -509,7 +509,7 @@
                     </div>
 
                     <!-- Template Library -->
-                    <div class="feature-card" onclick="openTemplateLibrary()">
+                    <div class="feature-card" onclick="openTemplatesPreview()">
                         <div class="feature-icon">📚</div>
                         <h3>Template Library</h3>
                         <p>
@@ -520,7 +520,7 @@
                     </div>
 
                     <!-- Analytics Dashboard -->
-                    <div class="feature-card" onclick="openAnalytics()">
+                    <div class="feature-card" onclick="openAnalyticsPreview()">
                         <div class="feature-icon">📊</div>
                         <h3>Analytics Dashboard</h3>
                         <p>
@@ -647,22 +647,16 @@
     
     <script>
         // Feature Functions - These will be handled by the KolektApp class
-        function openThreadsFormatter() {
-            if (window.kolektApp) {
-                window.kolektApp.openThreadsFormatter();
-            }
+        function openFormatterPreview() {
+            window.location.href = '/formatter-preview';
         }
         
-        function openTemplateLibrary() {
-            if (window.kolektApp) {
-                window.kolektApp.openTemplateLibrary();
-            }
+        function openTemplatesPreview() {
+            window.location.href = '/templates-preview';
         }
         
-        function openAnalytics() {
-            if (window.kolektApp) {
-                window.kolektApp.openAnalytics();
-            }
+        function openAnalyticsPreview() {
+            window.location.href = '/analytics-preview';
         }
         
         // Utility function for notifications

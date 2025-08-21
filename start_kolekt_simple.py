@@ -1067,6 +1067,40 @@ async def team_management_page():
         logging.error(f"Error loading team management page: {e}")
         return HTMLResponse(content="<html><body><h1>Team Management</h1><p>Loading...</p></body></html>")
 
+# Preview pages for homepage
+@app.get("/formatter-preview")
+async def formatter_preview_page():
+    """Formatter preview page"""
+    try:
+        with open("web/templates/formatter-preview.html", "r") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        logging.error(f"Error loading formatter preview page: {e}")
+        return HTMLResponse(content="<html><body><h1>Formatter Preview</h1><p>Loading...</p></body></html>")
+
+@app.get("/templates-preview")
+async def templates_preview_page():
+    """Templates preview page"""
+    try:
+        with open("web/templates/templates-preview.html", "r") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        logging.error(f"Error loading templates preview page: {e}")
+        return HTMLResponse(content="<html><body><h1>Templates Preview</h1><p>Loading...</p></body></html>")
+
+@app.get("/analytics-preview")
+async def analytics_preview_page():
+    """Analytics preview page"""
+    try:
+        with open("web/templates/analytics-preview.html", "r") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        logging.error(f"Error loading analytics preview page: {e}")
+        return HTMLResponse(content="<html><body><h1>Analytics Preview</h1><p>Loading...</p></body></html>")
+
 # Team management endpoints (mocked)
 @app.get("/api/v1/teams/members")
 async def get_team_members(request: Request):

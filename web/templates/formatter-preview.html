@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Formatter - Kolekt</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #1a202c;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: #667eea;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-ghost:hover {
+            background: #f7fafc;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Preview Section */
+        .preview-section {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: #1a202c;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .preview-card {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .preview-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1a202c;
+        }
+
+        .mock-ui {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 1rem;
+        }
+
+        .mock-textarea {
+            width: 100%;
+            height: 120px;
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: inherit;
+            resize: none;
+        }
+
+        .mock-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .mock-output {
+            background: #f0fff4;
+            border: 1px solid #9ae6b4;
+            border-radius: 6px;
+            padding: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .features-list li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .features-list li::before {
+            content: "✓";
+            color: #38a169;
+            font-weight: bold;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 3rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            color: white;
+            margin: 2rem 0;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .preview-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon">K</div>
+                <span>kolekt.io</span>
+            </a>
+            
+            <nav class="nav">
+                <a href="/formatter-preview" class="nav-link">Formatter</a>
+                <a href="/templates-preview" class="nav-link">Templates</a>
+                <a href="/analytics-preview" class="nav-link">Analytics</a>
+            </nav>
+            
+            <div class="auth-buttons">
+                <a href="/login" class="btn btn-ghost">Sign In</a>
+                <a href="/register" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>AI-Powered Content Formatter</h1>
+            <p>Transform your long-form content into engaging, optimized threads with intelligent chunking and professional formatting.</p>
+        </div>
+    </section>
+
+    <!-- Preview Section -->
+    <section class="preview-section">
+        <div class="container">
+            <h2 class="preview-title">See the Formatter in Action</h2>
+            
+            <div class="preview-grid">
+                <!-- Input Preview -->
+                <div class="preview-card">
+                    <h3>Input Your Content</h3>
+                    <div class="mock-ui">
+                        <textarea class="mock-textarea" readonly>Just finished reading an amazing book about productivity. The author shares some incredible insights about time management and focus. Highly recommend it to anyone looking to improve their daily routine. The key takeaway is that we need to prioritize deep work and eliminate distractions.</textarea>
+                    </div>
+                    <ul class="features-list">
+                        <li>Paste any long-form content</li>
+                        <li>AI analyzes your text</li>
+                        <li>Intelligent content chunking</li>
+                    </ul>
+                </div>
+
+                <!-- Output Preview -->
+                <div class="preview-card">
+                    <h3>Get Optimized Threads</h3>
+                    <div class="mock-ui">
+                        <div class="mock-output">
+                            <strong>🧵 Thread 1:</strong><br>
+                            Just finished reading an amazing book about productivity! 📚<br><br>
+                            The author shares some incredible insights about time management and focus that completely changed my perspective.<br><br>
+                            Highly recommend it to anyone looking to improve their daily routine.
+                        </div>
+                        <div class="mock-output" style="margin-top: 1rem;">
+                            <strong>🧵 Thread 2:</strong><br>
+                            The key takeaway? We need to prioritize deep work and eliminate distractions.<br><br>
+                            This simple shift can transform your productivity levels dramatically.<br><br>
+                            What's your biggest productivity challenge? 👇
+                        </div>
+                    </div>
+                    <ul class="features-list">
+                        <li>Professional formatting</li>
+                        <li>Engagement optimization</li>
+                        <li>Platform-specific styling</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="preview-grid">
+                <div class="preview-card">
+                    <h3>Smart Chunking</h3>
+                    <p>Our AI intelligently breaks down your content into optimal thread lengths for maximum engagement.</p>
+                    <ul class="features-list">
+                        <li>Context-aware splitting</li>
+                        <li>Maintains narrative flow</li>
+                        <li>Optimized for each platform</li>
+                    </ul>
+                </div>
+
+                <div class="preview-card">
+                    <h3>Professional Formatting</h3>
+                    <p>Add emojis, line breaks, and styling that makes your content stand out and drive engagement.</p>
+                    <ul class="features-list">
+                        <li>Automatic emoji suggestions</li>
+                        <li>Professional styling</li>
+                        <li>Brand consistency</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Ready to Transform Your Content?</h2>
+            <p class="cta-subtitle">Join thousands of creators who are already using Kolekt to create engaging threads.</p>
+            <a href="/register" class="btn btn-primary btn-lg">Sign Up Now - It's Free</a>
+        </div>
+    </section>
+</body>
+</html>
