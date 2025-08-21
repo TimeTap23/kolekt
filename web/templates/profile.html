@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings - Kolekt</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css?v=2.4.2">
+    <link rel="stylesheet" href="/static/css/dashboard.css?v=2.3.0">
+    
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .profile-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        
+        .profile-info h2 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.75rem;
+            color: #333;
+        }
+        
+        .profile-info p {
+            margin: 0;
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-input.error {
+            border-color: #dc3545;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: #007bff;
+            border: 2px solid #007bff;
+        }
+        
+        .btn-outline:hover {
+            background: #007bff;
+            color: white;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 0.5rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .subscription-info {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .subscription-plan {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subscription-details {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .danger-zone {
+            border: 2px solid #dc3545;
+            border-radius: 8px;
+            padding: 1.5rem;
+            background: #fff5f5;
+        }
+        
+        .danger-zone h3 {
+            color: #dc3545;
+            margin-bottom: 1rem;
+        }
+        
+        .danger-zone p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo-container">
+                <div class="logo-icon">K</div>
+                <span class="logo-text">kolekt.io</span>
+            </a>
+            
+            <nav class="nav">
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="#content" class="nav-link">Content</a>
+                <a href="/formatter" class="nav-link">Formatter</a>
+                <a href="/templates" class="nav-link">Templates</a>
+                <a href="/analytics" class="nav-link">Analytics</a>
+                <a href="/pricing" class="nav-link">Pricing</a>
+                <a href="/profile" class="nav-link active">Profile</a>
+            </nav>
+            
+            <div class="header-actions">
+                <div class="user-menu">
+                    <button class="user-menu-btn" onclick="toggleUserMenu()">
+                        <div class="user-avatar">
+                            <span id="userInitials">U</span>
+                        </div>
+                        <span id="userName">User</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="/profile" class="dropdown-item">Profile</a>
+                        <a href="#settings" class="dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" onclick="kolektAuth.logout()">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="profile-container">
+        <div class="welcome-section">
+            <h1>Profile Settings</h1>
+            <p>Manage your account and preferences</p>
+        </div>
+
+        <!-- Alert Messages -->
+        <div id="alert" class="alert"></div>
+
+        <!-- Profile Information -->
+        <div class="profile-section">
+            <h2 class="section-title">👤 Profile Information</h2>
+            
+            <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatar">
+                    U
+                </div>
+                <div class="profile-info">
+                    <h2 id="profileName">User Name</h2>
+                    <p id="profileEmail">user@example.com</p>
+                </div>
+            </div>
+
+            <form id="profileForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" id="firstName" name="firstName" class="form-input" required>
+                        <div class="error-message" id="firstNameError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" class="form-input" required>
+                        <div class="error-message" id="lastNameError"></div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-input" required>
+                        <div class="error-message" id="emailError"></div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="bio" class="form-label">Bio (Optional)</label>
+                        <textarea id="bio" name="bio" class="form-input" rows="3" placeholder="Tell us about yourself..."></textarea>
+                        <div class="error-message" id="bioError"></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="saveProfileBtn">Save Changes</button>
+            </form>
+        </div>
+
+        <!-- Subscription Information -->
+        <div class="profile-section">
+            <h2 class="section-title">💳 Subscription</h2>
+            
+            <div class="subscription-info">
+                <div class="subscription-plan" id="currentPlan">Starter Plan</div>
+                <div class="subscription-details" id="subscriptionDetails">
+                    $12/month • 100 AI credits/month
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <a href="/pricing" class="btn btn-outline">Upgrade Plan</a>
+                <a href="/billing" class="btn btn-secondary">Manage Billing</a>
+            </div>
+        </div>
+
+        <!-- Security Settings -->
+        <div class="profile-section">
+            <h2 class="section-title">🔒 Security</h2>
+            
+            <div class="form-grid">
+                <button class="btn btn-outline" onclick="showChangePasswordModal()">Change Password</button>
+                <button class="btn btn-outline" onclick="showTwoFactorModal()">Two-Factor Authentication</button>
+            </div>
+        </div>
+
+        <!-- Notification Preferences -->
+        <div class="profile-section">
+            <h2 class="section-title">🔔 Notifications</h2>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <input type="checkbox" id="emailNotifications" checked> Email Notifications
+                </label>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <input type="checkbox" id="marketingEmails"> Marketing Emails
+                </label>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <input type="checkbox" id="productUpdates" checked> Product Updates
+                </label>
+            </div>
+
+            <button class="btn btn-primary" onclick="saveNotificationPreferences()">Save Preferences</button>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="profile-section">
+            <div class="danger-zone">
+                <h3>⚠️ Danger Zone</h3>
+                <p>These actions cannot be undone. Please be careful.</p>
+                
+                <div class="form-grid">
+                    <button class="btn btn-danger" onclick="showDeleteAccountModal()">Delete Account</button>
+                    <button class="btn btn-secondary" onclick="exportUserData()">Export Data</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Change Password</h3>
+                <button class="close-btn" onclick="closeChangePasswordModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm">
+                    <div class="form-group">
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="password" id="currentPassword" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" id="newPassword" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+                        <input type="password" id="confirmNewPassword" class="form-input" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeChangePasswordModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="changePassword()">Change Password</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ProfileManager {
+            constructor() {
+                this.baseUrl = '/api/v1';
+                this.tokenKey = 'threadstorm_access_token';
+                this.userKey = 'threadstorm_user';
+                
+                this.init();
+            }
+            
+            init() {
+                this.loadUserProfile();
+                this.setupEventListeners();
+            }
+            
+            async loadUserProfile() {
+                try {
+                    const token = localStorage.getItem(this.tokenKey);
+                    if (!token) {
+                        window.location.href = '/login';
+                        return;
+                    }
+                    
+                    const response = await fetch(`${this.baseUrl}/auth/profile`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const user = await response.json();
+                        this.populateProfile(user);
+                    } else {
+                        throw new Error('Failed to load profile');
+                    }
+                } catch (error) {
+                    console.error('Error loading profile:', error);
+                    this.showAlert('Failed to load profile', 'error');
+                }
+            }
+            
+            populateProfile(user) {
+                // Update profile display
+                document.getElementById('profileName').textContent = user.name || 'User Name';
+                document.getElementById('profileEmail').textContent = user.email || 'user@example.com';
+                
+                // Update avatar
+                const avatar = document.getElementById('profileAvatar');
+                const initials = this.getInitials(user.name || 'User Name');
+                avatar.textContent = initials;
+                
+                // Populate form fields
+                const nameParts = (user.name || '').split(' ');
+                document.getElementById('firstName').value = nameParts[0] || '';
+                document.getElementById('lastName').value = nameParts.slice(1).join(' ') || '';
+                document.getElementById('email').value = user.email || '';
+                document.getElementById('bio').value = user.bio || '';
+                
+                // Update subscription info
+                document.getElementById('currentPlan').textContent = user.plan || 'Starter Plan';
+                document.getElementById('subscriptionDetails').textContent = this.getSubscriptionDetails(user.plan);
+                
+                // Update notification preferences
+                document.getElementById('emailNotifications').checked = user.email_notifications !== false;
+                document.getElementById('marketingEmails').checked = user.marketing_emails === true;
+                document.getElementById('productUpdates').checked = user.product_updates !== false;
+            }
+            
+            getInitials(name) {
+                return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+            }
+            
+            getSubscriptionDetails(plan) {
+                const plans = {
+                    'starter': '$12/month • 100 AI credits/month',
+                    'pro': '$29/month • 400 AI credits/month',
+                    'business': '$79/month • 1500 AI credits/month'
+                };
+                return plans[plan] || '$12/month • 100 AI credits/month';
+            }
+            
+            setupEventListeners() {
+                document.getElementById('profileForm').addEventListener('submit', (e) => this.handleProfileUpdate(e));
+            }
+            
+            async handleProfileUpdate(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    email: document.getElementById('email').value,
+                    bio: document.getElementById('bio').value
+                };
+                
+                try {
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/auth/profile`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    if (response.ok) {
+                        this.showAlert('Profile updated successfully!', 'success');
+                        this.loadUserProfile(); // Reload to get updated data
+                    } else {
+                        throw new Error('Failed to update profile');
+                    }
+                } catch (error) {
+                    console.error('Error updating profile:', error);
+                    this.showAlert('Failed to update profile', 'error');
+                }
+            }
+            
+            showAlert(message, type) {
+                const alert = document.getElementById('alert');
+                alert.textContent = message;
+                alert.className = `alert alert-${type}`;
+                alert.style.display = 'block';
+                
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        // Modal functions
+        function showChangePasswordModal() {
+            document.getElementById('changePasswordModal').style.display = 'block';
+        }
+        
+        function closeChangePasswordModal() {
+            document.getElementById('changePasswordModal').style.display = 'none';
+            document.getElementById('changePasswordForm').reset();
+        }
+        
+        function showTwoFactorModal() {
+            alert('Two-factor authentication coming soon!');
+        }
+        
+        function showDeleteAccountModal() {
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                alert('Account deletion coming soon!');
+            }
+        }
+        
+        function exportUserData() {
+            alert('Data export coming soon!');
+        }
+        
+        async function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmNewPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match!');
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('threadstorm_access_token');
+                const response = await fetch('/api/v1/auth/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        current_password: currentPassword,
+                        new_password: newPassword
+                    })
+                });
+                
+                if (response.ok) {
+                    alert('Password changed successfully!');
+                    closeChangePasswordModal();
+                } else {
+                    throw new Error('Failed to change password');
+                }
+            } catch (error) {
+                console.error('Error changing password:', error);
+                alert('Failed to change password. Please try again.');
+            }
+        }
+        
+        async function saveNotificationPreferences() {
+            const preferences = {
+                email_notifications: document.getElementById('emailNotifications').checked,
+                marketing_emails: document.getElementById('marketingEmails').checked,
+                product_updates: document.getElementById('productUpdates').checked
+            };
+            
+            try {
+                const token = localStorage.getItem('threadstorm_access_token');
+                const response = await fetch('/api/v1/auth/notification-preferences', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(preferences)
+                });
+                
+                if (response.ok) {
+                    alert('Notification preferences saved!');
+                } else {
+                    throw new Error('Failed to save preferences');
+                }
+            } catch (error) {
+                console.error('Error saving preferences:', error);
+                alert('Failed to save preferences. Please try again.');
+            }
+        }
+        
+        // Initialize profile manager
+        document.addEventListener('DOMContentLoaded', () => {
+            new ProfileManager();
+        });
+    </script>
+</body>
+</html>

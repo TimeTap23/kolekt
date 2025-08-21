@@ -65,6 +65,117 @@ async def test_endpoint():
         "environment": os.getenv("ENVIRONMENT", "unknown")
     }
 
+# Authentication endpoints
+@app.get("/api/v1/auth/profile")
+async def get_user_profile(request: Request):
+    """Get current user profile"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        
+        # For now, return mock user data
+        # In production, this would verify the JWT token
+        user_data = {
+            "id": "user_123",
+            "name": "John Doe",
+            "email": "john@example.com",
+            "bio": "Content creator and social media enthusiast",
+            "plan": "starter",
+            "email_notifications": True,
+            "marketing_emails": False,
+            "product_updates": True,
+            "created_at": "2024-01-01T00:00:00Z"
+        }
+        
+        return user_data
+    except Exception as e:
+        logging.error(f"Error getting user profile: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get profile")
+
+@app.put("/api/v1/auth/profile")
+async def update_user_profile(request: Request):
+    """Update user profile"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        data = await request.json()
+        
+        # For now, return success
+        # In production, this would update the user in the database
+        return {"success": True, "message": "Profile updated successfully"}
+    except Exception as e:
+        logging.error(f"Error updating user profile: {e}")
+        raise HTTPException(status_code=500, detail="Failed to update profile")
+
+@app.post("/api/v1/auth/change-password")
+async def change_password(request: Request):
+    """Change user password"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        data = await request.json()
+        
+        current_password = data.get("current_password")
+        new_password = data.get("new_password")
+        
+        if not current_password or not new_password:
+            raise HTTPException(status_code=400, detail="Missing password fields")
+        
+        # For now, return success
+        # In production, this would verify current password and update to new password
+        return {"success": True, "message": "Password changed successfully"}
+    except Exception as e:
+        logging.error(f"Error changing password: {e}")
+        raise HTTPException(status_code=500, detail="Failed to change password")
+
+@app.post("/api/v1/auth/forgot-password")
+async def forgot_password(request: Request):
+    """Send password reset email"""
+    try:
+        data = await request.json()
+        email = data.get("email")
+        
+        if not email:
+            raise HTTPException(status_code=400, detail="Email is required")
+        
+        # For now, return success
+        # In production, this would send a password reset email
+        return {"success": True, "message": "Password reset email sent"}
+    except Exception as e:
+        logging.error(f"Error sending password reset: {e}")
+        raise HTTPException(status_code=500, detail="Failed to send password reset")
+
+@app.put("/api/v1/auth/notification-preferences")
+async def update_notification_preferences(request: Request):
+    """Update notification preferences"""
+    try:
+        # Get token from Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        token = auth_header.split(" ")[1]
+        data = await request.json()
+        
+        # For now, return success
+        # In production, this would update user preferences in the database
+        return {"success": True, "message": "Preferences updated successfully"}
+    except Exception as e:
+        logging.error(f"Error updating notification preferences: {e}")
+        raise HTTPException(status_code=500, detail="Failed to update preferences")
+
 # Status endpoint
 @app.get("/api/v1/status")
 async def status():
@@ -281,6 +392,30 @@ async def register_page():
     except Exception as e:
         logging.error(f"Error loading register page: {e}")
         return HTMLResponse(content="<html><body><h1>Sign Up</h1><p>Loading...</p></body></html>")
+
+# Profile page
+@app.get("/profile")
+async def profile_page():
+    """Profile page"""
+    try:
+        with open("web/templates/profile.html", "r") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        logging.error(f"Error loading profile page: {e}")
+        return HTMLResponse(content="<html><body><h1>Profile</h1><p>Loading...</p></body></html>")
+
+# Forgot password page
+@app.get("/forgot-password")
+async def forgot_password_page():
+    """Forgot password page"""
+    try:
+        with open("web/templates/forgot-password.html", "r") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        logging.error(f"Error loading forgot password page: {e}")
+        return HTMLResponse(content="<html><body><h1>Reset Password</h1><p>Loading...</p></body></html>")
 
 if __name__ == "__main__":
     # Get port from environment or default to 8080
