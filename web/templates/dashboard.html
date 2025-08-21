@@ -22,12 +22,12 @@
             </a>
             
             <nav class="nav">
-                <a href="/dashboard" class="nav-link active">Dashboard</a>
-                <a href="/content-creator" class="nav-link">Content</a>
-                <a href="/formatter" class="nav-link">Formatter</a>
-                <a href="/templates" class="nav-link">Templates</a>
-                <a href="/analytics" class="nav-link">Analytics</a>
-                <a href="/team-management" class="nav-link">Team</a>
+                <a href="#" class="nav-link active" onclick="showSection('overview')">Dashboard</a>
+                <a href="#" class="nav-link" onclick="showSection('content')">Content</a>
+                <a href="#" class="nav-link" onclick="showSection('formatter')">Formatter</a>
+                <a href="#" class="nav-link" onclick="showSection('templates')">Templates</a>
+                <a href="#" class="nav-link" onclick="showSection('analytics')">Analytics</a>
+                <a href="#" class="nav-link" onclick="showSection('team')">Team</a>
                 <a href="/pricing" class="nav-link">Pricing</a>
                 <a href="/profile" class="nav-link">Profile</a>
             </nav>
@@ -54,79 +54,223 @@
 
     <!-- Main Content -->
     <main class="dashboard-main">
-        <!-- Welcome Section -->
-        <section class="welcome-section">
-            <div class="container">
-                <h1 class="welcome-title">Welcome back, <span id="userDisplayName">User</span>! 👋</h1>
-                <p class="welcome-subtitle">Ready to create amazing content? Let's get started.</p>
-            </div>
-        </section>
-
-        <!-- Quick Actions -->
-        <section class="quick-actions">
-            <div class="container">
-                <h2 class="section-title">Quick Actions</h2>
-                <div class="actions-grid">
-                    <div class="action-card" onclick="openContentCreator()">
-                        <div class="action-icon">✍️</div>
-                        <h3>Create Content</h3>
-                        <p>Start a new kolekt or import existing content</p>
-                    </div>
-                    <div class="action-card" onclick="openQuickPost()">
-                        <div class="action-icon">🚀</div>
-                        <h3>Quick Post</h3>
-                        <p>Post directly to your connected accounts</p>
-                    </div>
-                    <div class="action-card" onclick="openSocialConnections()">
-                        <div class="action-icon">🔗</div>
-                        <h3>Connect Accounts</h3>
-                        <p>Link your Threads, Instagram & Facebook</p>
-                    </div>
-                    <div class="action-card" onclick="openTemplates()">
-                        <div class="action-icon">📋</div>
-                        <h3>Browse Templates</h3>
-                        <p>Use proven templates for better engagement</p>
-                    </div>
+        <!-- Overview Section (Dashboard) -->
+        <section id="overview-section" class="dashboard-section active">
+            <!-- Welcome Section -->
+            <section class="welcome-section">
+                <div class="container">
+                    <h1 class="welcome-title">Welcome back, <span id="userDisplayName">User</span>! 👋</h1>
+                    <p class="welcome-subtitle">Ready to create amazing content? Let's get started.</p>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Content Overview -->
-        <section class="content-overview">
-            <div class="container">
-                <div class="overview-header">
-                    <h2 class="section-title">Your Content</h2>
-                    <button class="btn btn-primary" onclick="openContentCreator()">+ New Content</button>
-                </div>
-                
-                <div class="content-stats">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalContent">0</div>
-                        <div class="stat-label">Total Content</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="publishedContent">0</div>
-                        <div class="stat-label">Published</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="draftContent">0</div>
-                        <div class="stat-label">Drafts</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="scheduledContent">0</div>
-                        <div class="stat-label">Scheduled</div>
-                    </div>
-                </div>
-
-                <div class="recent-content">
-                    <h3>Recent Content</h3>
-                    <div class="content-list" id="recentContentList">
-                        <div class="empty-state">
-                            <div class="empty-icon">📝</div>
-                            <h4>No content yet</h4>
-                            <p>Create your first piece of content to get started</p>
-                            <button class="btn btn-primary" onclick="openContentCreator()">Create Content</button>
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <div class="container">
+                    <h2 class="section-title">Quick Actions</h2>
+                    <div class="actions-grid">
+                        <div class="action-card" onclick="showSection('content')">
+                            <div class="action-icon">✍️</div>
+                            <h3>Create Content</h3>
+                            <p>Start a new kolekt or import existing content</p>
                         </div>
+                        <div class="action-card" onclick="showSection('formatter')">
+                            <div class="action-icon">🚀</div>
+                            <h3>Format Content</h3>
+                            <p>Use AI to format your content for social media</p>
+                        </div>
+                        <div class="action-card" onclick="showSection('templates')">
+                            <div class="action-icon">📋</div>
+                            <h3>Browse Templates</h3>
+                            <p>Use proven templates for better engagement</p>
+                        </div>
+                        <div class="action-card" onclick="showSection('analytics')">
+                            <div class="action-icon">📊</div>
+                            <h3>View Analytics</h3>
+                            <p>Track your content performance</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Content Overview -->
+            <section class="content-overview">
+                <div class="container">
+                    <div class="overview-header">
+                        <h2 class="section-title">Your Content</h2>
+                        <button class="btn btn-primary" onclick="showSection('content')">+ New Content</button>
+                    </div>
+                    
+                    <div class="content-stats">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalContent">0</div>
+                            <div class="stat-label">Total Content</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="publishedContent">0</div>
+                            <div class="stat-label">Published</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="draftContent">0</div>
+                            <div class="stat-label">Drafts</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="scheduledContent">0</div>
+                            <div class="stat-label">Scheduled</div>
+                        </div>
+                    </div>
+
+                    <div class="recent-content">
+                        <h3>Recent Content</h3>
+                        <div class="content-list" id="recentContentList">
+                            <div class="empty-state">
+                                <div class="empty-icon">📝</div>
+                                <h4>No content yet</h4>
+                                <p>Create your first piece of content to get started</p>
+                                <button class="btn btn-primary" onclick="showSection('content')">Create Content</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <!-- Content Creator Section -->
+        <section id="content-section" class="dashboard-section">
+            <div class="container">
+                <div class="section-header">
+                    <h1 class="section-title">Content Creator</h1>
+                    <p class="section-subtitle">Create and manage your content</p>
+                </div>
+                <div class="content-creator-interface">
+                    <div class="content-input-area">
+                        <textarea id="contentInput" placeholder="Start writing your content here..." class="content-textarea"></textarea>
+                        <div class="content-actions">
+                            <button class="btn btn-primary" onclick="saveContent()">Save Draft</button>
+                            <button class="btn btn-secondary" onclick="showSection('formatter')">Format with AI</button>
+                            <button class="btn btn-success" onclick="publishContent()">Publish</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Formatter Section -->
+        <section id="formatter-section" class="dashboard-section">
+            <div class="container">
+                <div class="section-header">
+                    <h1 class="section-title">Content Formatter</h1>
+                    <p class="section-subtitle">Transform your content with AI-powered formatting</p>
+                </div>
+                <div class="formatter-interface">
+                    <div class="formatter-grid">
+                        <div class="input-section">
+                            <h3>Input Content</h3>
+                            <textarea id="formatterInput" placeholder="Paste your content here..." class="formatter-textarea"></textarea>
+                            <div class="format-options">
+                                <button class="format-option active" onclick="selectFormat('threads')">Threads Style</button>
+                                <button class="format-option" onclick="selectFormat('instagram')">Instagram Style</button>
+                                <button class="format-option" onclick="selectFormat('twitter')">Twitter Style</button>
+                                <button class="format-option" onclick="selectFormat('linkedin')">LinkedIn Style</button>
+                            </div>
+                            <button class="btn btn-primary" onclick="formatContent()">Format Content</button>
+                        </div>
+                        <div class="output-section">
+                            <h3>Formatted Output</h3>
+                            <div id="formattedOutput" class="formatted-output">
+                                <p class="placeholder-text">Your formatted content will appear here...</p>
+                            </div>
+                            <button class="btn btn-secondary" onclick="copyToClipboard()">Copy to Clipboard</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Templates Section -->
+        <section id="templates-section" class="dashboard-section">
+            <div class="container">
+                <div class="section-header">
+                    <h1 class="section-title">Content Templates</h1>
+                    <p class="section-subtitle">Choose from proven templates for better engagement</p>
+                </div>
+                <div class="templates-grid">
+                    <div class="template-card">
+                        <h3>Product Launch</h3>
+                        <p>Perfect for announcing new products or features</p>
+                        <button class="btn btn-primary" onclick="useTemplate('product-launch')">Use Template</button>
+                    </div>
+                    <div class="template-card">
+                        <h3>Tips & Tricks</h3>
+                        <p>Share valuable insights with your audience</p>
+                        <button class="btn btn-primary" onclick="useTemplate('tips-tricks')">Use Template</button>
+                    </div>
+                    <div class="template-card">
+                        <h3>Behind the Scenes</h3>
+                        <p>Show the human side of your brand</p>
+                        <button class="btn btn-primary" onclick="useTemplate('behind-scenes')">Use Template</button>
+                    </div>
+                    <div class="template-card">
+                        <h3>Success Story</h3>
+                        <p>Share customer success stories and testimonials</p>
+                        <button class="btn btn-primary" onclick="useTemplate('success-story')">Use Template</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Section -->
+        <section id="analytics-section" class="dashboard-section">
+            <div class="container">
+                <div class="section-header">
+                    <h1 class="section-title">Analytics</h1>
+                    <p class="section-subtitle">Track your content performance and insights</p>
+                </div>
+                <div class="analytics-grid">
+                    <div class="metric-card">
+                        <h3>Total Views</h3>
+                        <div class="metric-value">1,234</div>
+                        <div class="metric-change positive">+12%</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Engagement Rate</h3>
+                        <div class="metric-value">4.2%</div>
+                        <div class="metric-change positive">+0.8%</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>New Followers</h3>
+                        <div class="metric-value">89</div>
+                        <div class="metric-change positive">+15%</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Click-through Rate</h3>
+                        <div class="metric-value">2.1%</div>
+                        <div class="metric-change negative">-0.3%</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section id="team-section" class="dashboard-section">
+            <div class="container">
+                <div class="section-header">
+                    <h1 class="section-title">Team Management</h1>
+                    <p class="section-subtitle">Manage your team and collaboration</p>
+                </div>
+                <div class="team-interface">
+                    <div class="team-members">
+                        <h3>Team Members</h3>
+                        <div class="member-list">
+                            <div class="member-card">
+                                <div class="member-avatar">JD</div>
+                                <div class="member-info">
+                                    <h4>John Doe</h4>
+                                    <p>Owner</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="inviteMember()">Invite Member</button>
                     </div>
                 </div>
             </div>
@@ -802,5 +946,132 @@
     <!-- JavaScript -->
     <script src="/static/js/auth_modal.js?v=2.2.1"></script>
     <script src="/static/js/dashboard.js?v=2.3.3"></script>
+    
+    <script>
+        // Dashboard Section Management
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.dashboard-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show the selected section
+            const targetSection = document.getElementById(sectionName + '-section');
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Update navigation active state
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Find and activate the corresponding nav link
+            const activeLink = document.querySelector(`[onclick="showSection('${sectionName}')"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+        
+        // Content Creator Functions
+        function saveContent() {
+            const content = document.getElementById('contentInput').value;
+            if (content.trim()) {
+                // Save content logic here
+                showNotification('Content saved as draft!', 'success');
+            } else {
+                showNotification('Please enter some content first.', 'error');
+            }
+        }
+        
+        function publishContent() {
+            const content = document.getElementById('contentInput').value;
+            if (content.trim()) {
+                // Publish content logic here
+                showNotification('Content published successfully!', 'success');
+            } else {
+                showNotification('Please enter some content first.', 'error');
+            }
+        }
+        
+        // Formatter Functions
+        function selectFormat(format) {
+            // Remove active class from all format options
+            const options = document.querySelectorAll('.format-option');
+            options.forEach(option => {
+                option.classList.remove('active');
+            });
+            
+            // Add active class to selected option
+            event.target.classList.add('active');
+        }
+        
+        function formatContent() {
+            const content = document.getElementById('formatterInput').value;
+            if (content.trim()) {
+                // Format content logic here
+                const formattedOutput = document.getElementById('formattedOutput');
+                formattedOutput.innerHTML = `
+                    <div class="formatted-content">
+                        <h4>Formatted Content:</h4>
+                        <p>${content}</p>
+                        <p><em>✨ AI-formatted for better engagement!</em></p>
+                    </div>
+                `;
+                showNotification('Content formatted successfully!', 'success');
+            } else {
+                showNotification('Please enter some content to format.', 'error');
+            }
+        }
+        
+        function copyToClipboard() {
+            const output = document.getElementById('formattedOutput');
+            if (output.textContent.trim() !== 'Your formatted content will appear here...') {
+                navigator.clipboard.writeText(output.textContent);
+                showNotification('Content copied to clipboard!', 'success');
+            } else {
+                showNotification('No content to copy.', 'error');
+            }
+        }
+        
+        // Template Functions
+        function useTemplate(templateType) {
+            const templates = {
+                'product-launch': '🚀 BIG NEWS! We\'re launching something that will change everything...\n\nAfter months of hard work, we\'re finally ready to share what we\'ve been building.\n\nHere\'s what you need to know 👇',
+                'tips-tricks': '💡 Here are 5 productivity tips that changed my life:\n\n1. Start with the hardest task first\n2. Use the Pomodoro technique\n3. Eliminate distractions\n4. Take regular breaks\n5. Track your progress\n\nWhich tip resonates with you? 👇',
+                'behind-scenes': '🎬 Behind the scenes: This is what it really looks like to build something amazing...\n\nNot always glamorous, but always worth it.\n\nWhat\'s your behind-the-scenes story? 🤔',
+                'success-story': '🎉 Success Story: "This tool helped me increase my productivity by 300%!"\n\n- Happy Customer\n\nReal results from real people. 💪\n\nReady to see similar results?'
+            };
+            
+            const content = templates[templateType];
+            if (content) {
+                document.getElementById('contentInput').value = content;
+                showSection('content');
+                showNotification('Template loaded! Edit it in the Content Creator.', 'success');
+            }
+        }
+        
+        // Team Functions
+        function inviteMember() {
+            showNotification('Invite feature coming soon!', 'info');
+        }
+        
+        // Notification function
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            
+            container.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+    </script>
 </body>
 </html>

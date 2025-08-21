@@ -30,7 +30,7 @@ import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from datetime import datetime
 
 # Create FastAPI app
@@ -855,10 +855,15 @@ try:
 except Exception as e:
     logging.error(f"Error mounting static files: {e}")
 
-# Dashboard route
+# Dashboard route - requires authentication
 @app.get("/dashboard")
-async def dashboard():
-    """Main dashboard page"""
+async def dashboard(request: Request):
+    """Main dashboard page - requires authentication"""
+    # Check authentication
+    if not check_auth_token(request):
+        # Redirect to login page
+        return RedirectResponse(url="/login?redirect=/dashboard", status_code=302)
+    
     try:
         with open("web/templates/dashboard.html", "r") as f:
             content = f.read()
@@ -935,41 +940,67 @@ async def pricing_page():
         logging.error(f"Error loading pricing page: {e}")
         return HTMLResponse(content="<html><body><h1>Pricing</h1><p>Loading...</p></body></html>")
 
-# Formatter page
-@app.get("/formatter")
-async def formatter_page():
-    """Content formatter page"""
-    try:
-        with open("web/templates/formatter.html", "r") as f:
-            content = f.read()
-        return HTMLResponse(content=content)
-    except Exception as e:
-        logging.error(f"Error loading formatter page: {e}")
-        return HTMLResponse(content="<html><body><h1>Content Formatter</h1><p>Loading...</p></body></html>")
+# Authentication check function
+def check_auth_token(request: Request):
+    """Check if user has valid authentication token"""
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        return False
+    
+    token = auth_header.split(" ")[1]
+    # For now, just check if token exists (in production, validate against database)
+    return bool(token and len(token) > 10)
 
-# Templates page
-@app.get("/templates")
-async def templates_page():
-    """Content templates page"""
-    try:
-        with open("web/templates/templates.html", "r") as f:
-            content = f.read()
-        return HTMLResponse(content=content)
-    except Exception as e:
-        logging.error(f"Error loading templates page: {e}")
-        return HTMLResponse(content="<html><body><h1>Content Templates</h1><p>Loading...</p></body></html>")
+# Formatter page - removed (now integrated in dashboard)
+# @app.get("/formatter")
+# async def formatter_page(request: Request):
+#     """Content formatter page - requires authentication"""
+#     # Check authentication
+#     if not check_auth_token(request):
+#         # Redirect to login page
+#         return RedirectResponse(url="/login?redirect=/formatter", status_code=302)
+#     
+#     try:
+#         with open("web/templates/formatter.html", "r") as f:
+#             content = f.read()
+#         return HTMLResponse(content=content)
+#     except Exception as e:
+#         logging.error(f"Error loading formatter page: {e}")
+#         return HTMLResponse(content="<html><body><h1>Content Formatter</h1><p>Loading...</p></body></html>")
 
-# Analytics page
-@app.get("/analytics")
-async def analytics_page():
-    """Analytics page"""
-    try:
-        with open("web/templates/analytics.html", "r") as f:
-            content = f.read()
-        return HTMLResponse(content=content)
-    except Exception as e:
-        logging.error(f"Error loading analytics page: {e}")
-        return HTMLResponse(content="<html><body><h1>Analytics</h1><p>Loading...</p></body></html>")
+# Templates page - removed (now integrated in dashboard)
+# @app.get("/templates")
+# async def templates_page(request: Request):
+#     """Content templates page - requires authentication"""
+#     # Check authentication
+#     if not check_auth_token(request):
+#         # Redirect to login page
+#         return RedirectResponse(url="/login?redirect=/templates", status_code=302)
+#     
+#     try:
+#         with open("web/templates/templates.html", "r") as f:
+#             content = f.read()
+#         return HTMLResponse(content=content)
+#     except Exception as e:
+#         logging.error(f"Error loading templates page: {e}")
+#         return HTMLResponse(content="<html><body><h1>Content Templates</h1><p>Loading...</p></body></html>")
+
+# Analytics page - removed (now integrated in dashboard)
+# @app.get("/analytics")
+# async def analytics_page(request: Request):
+#     """Analytics page - requires authentication"""
+#     # Check authentication
+#     if not check_auth_token(request):
+#         # Redirect to login page
+#         return RedirectResponse(url="/login?redirect=/analytics", status_code=302)
+#     
+#     try:
+#         with open("web/templates/analytics.html", "r") as f:
+#             content = f.read()
+#         return HTMLResponse(content=content)
+#     except Exception as e:
+#         logging.error(f"Error loading analytics page: {e}")
+#         return HTMLResponse(content="<html><body><h1>Analytics</h1><p>Loading...</p></body></html>")
 
 # Login page
 @app.get("/login")
@@ -995,10 +1026,15 @@ async def register_page():
         logging.error(f"Error loading register page: {e}")
         return HTMLResponse(content="<html><body><h1>Sign Up</h1><p>Loading...</p></body></html>")
 
-# Profile page
+# Profile page - requires authentication
 @app.get("/profile")
-async def profile_page():
-    """Profile page"""
+async def profile_page(request: Request):
+    """Profile page - requires authentication"""
+    # Check authentication
+    if not check_auth_token(request):
+        # Redirect to login page
+        return RedirectResponse(url="/login?redirect=/profile", status_code=302)
+    
     try:
         with open("web/templates/profile.html", "r") as f:
             content = f.read()
@@ -1019,53 +1055,73 @@ async def forgot_password_page():
         logging.error(f"Error loading forgot password page: {e}")
         return HTMLResponse(content="<html><body><h1>Reset Password</h1><p>Loading...</p></body></html>")
 
-# Content creator page
-@app.get("/content-creator")
-async def content_creator_page():
-    """Content creator page"""
-    try:
-        with open("web/templates/content-creator.html", "r") as f:
-            content = f.read()
-        return HTMLResponse(content=content)
-    except Exception as e:
-        logging.error(f"Error loading content creator page: {e}")
-        return HTMLResponse(content="<html><body><h1>Content Creator</h1><p>Loading...</p></body></html>")
+# Content creator page - removed (now integrated in dashboard)
+# @app.get("/content-creator")
+# async def content_creator_page(request: Request):
+#     """Content creator page - requires authentication"""
+#     # Check authentication
+#     if not check_auth_token(request):
+#         # Redirect to login page
+#         return RedirectResponse(url="/login?redirect=/content-creator", status_code=302)
+#     
+#     try:
+#         with open("web/templates/content-creator.html", "r") as f:
+#             content = f.read()
+#         return HTMLResponse(content=content)
+#     except Exception as e:
+#         logging.error(f"Error loading content creator page: {e}")
+#         return HTMLResponse(content="<html><body><h1>Content Creator</h1><p>Loading...</p></body></html>")
 
-# Social manager page
-@app.get("/social-manager")
-async def social_manager_page():
-    """Social media manager page"""
-    try:
-        with open("web/templates/social-manager.html", "r") as f:
-            content = f.read()
-        return HTMLResponse(content=content)
-    except Exception as e:
-        logging.error(f"Error loading social manager page: {e}")
-        return HTMLResponse(content="<html><body><h1>Social Media Manager</h1><p>Loading...</p></body></html>")
+# Social manager page - removed (now integrated in dashboard)
+# @app.get("/social-manager")
+# async def social_manager_page(request: Request):
+#     """Social media manager page - requires authentication"""
+#     # Check authentication
+#     if not check_auth_token(request):
+#         # Redirect to login page
+#         return RedirectResponse(url="/login?redirect=/social-manager", status_code=302)
+#     
+#     try:
+#         with open("web/templates/social-manager.html", "r") as f:
+#             content = f.read()
+#         return HTMLResponse(content=content)
+#     except Exception as e:
+#         logging.error(f"Error loading social manager page: {e}")
+#         return HTMLResponse(content="<html><body><h1>Social Media Manager</h1><p>Loading...</p></body></html>")
 
-# Account settings page
-@app.get("/account-settings")
-async def account_settings_page():
-    """Account settings page"""
-    try:
-        with open("web/templates/account-settings.html", "r") as f:
-            content = f.read()
-        return HTMLResponse(content=content)
-    except Exception as e:
-        logging.error(f"Error loading account settings page: {e}")
-        return HTMLResponse(content="<html><body><h1>Account Settings</h1><p>Loading...</p></body></html>")
+# Account settings page - removed (now integrated in dashboard)
+# @app.get("/account-settings")
+# async def account_settings_page(request: Request):
+#     """Account settings page - requires authentication"""
+#     # Check authentication
+#     if not check_auth_token(request):
+#         # Redirect to login page
+#         return RedirectResponse(url="/login?redirect=/account-settings", status_code=302)
+#     
+#     try:
+#         with open("web/templates/account-settings.html", "r") as f:
+#             content = f.read()
+#         return HTMLResponse(content=content)
+#     except Exception as e:
+#         logging.error(f"Error loading account settings page: {e}")
+#         return HTMLResponse(content="<html><body><h1>Account Settings</h1><p>Loading...</p></body></html>")
 
-# Team management page
-@app.get("/team-management")
-async def team_management_page():
-    """Team management page"""
-    try:
-        with open("web/templates/team-management.html", "r") as f:
-            content = f.read()
-        return HTMLResponse(content=content)
-    except Exception as e:
-        logging.error(f"Error loading team management page: {e}")
-        return HTMLResponse(content="<html><body><h1>Team Management</h1><p>Loading...</p></body></html>")
+# Team management page - removed (now integrated in dashboard)
+# @app.get("/team-management")
+# async def team_management_page(request: Request):
+#     """Team management page - requires authentication"""
+#     # Check authentication
+#     if not check_auth_token(request):
+#         # Redirect to login page
+#         return RedirectResponse(url="/login?redirect=/team-management", status_code=302)
+#     
+#     try:
+#         with open("web/templates/team-management.html", "r") as f:
+#             content = f.read()
+#         return HTMLResponse(content=content)
+#     except Exception as e:
+#         logging.error(f"Error loading team management page: {e}")
+#         return HTMLResponse(content="<html><body><h1>Team Management</h1><p>Loading...</p></body></html>")
 
 # Preview pages for homepage
 @app.get("/formatter-preview")
