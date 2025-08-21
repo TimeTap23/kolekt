@@ -1525,17 +1525,13 @@ function openSocialConnections() {
 }
 
 function openTemplates() {
-    // Open the templates modal
-    if (window.dashboard) {
-        window.dashboard.openTemplatesModal();
-    }
+    // Navigate to templates page
+    window.location.href = '/templates';
 }
 
 function openAnalytics() {
-    // Open the analytics modal
-    if (window.dashboard) {
-        window.dashboard.openAnalyticsModal();
-    }
+    // Navigate to analytics page
+    window.location.href = '/analytics';
 }
 
 function connectThreads() {
