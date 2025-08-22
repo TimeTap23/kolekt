@@ -773,6 +773,15 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
             except Exception as e:
                 logger.error(f"Dev token profile lookup failed: {e}")
                 raise HTTPException(status_code=401, detail="Invalid authentication")
+        
+        # Admin token fallback for development
+        if token == "admin_token_mock":
+            return {
+                "user_id": "dd84e467-e10e-4cae-9592-3753133f9f64",
+                "email": "admin@kolekt.io",
+                "role": "admin",
+                "plan": "pro"
+            }
 
         # Production JWT verification
         user_info = await auth_service.verify_token(token)

@@ -68,26 +68,54 @@ class ContentStats(BaseModel):
 async def admin_login(email: str, password: str):
     """Simple admin login for development"""
     try:
-        # Check if user exists and is admin
-        response = supabase_service.client.table("profiles").select("*").eq("email", email).eq("role", "admin").execute()
-        
-        if not response.data:
-            raise HTTPException(status_code=401, detail="Invalid credentials")
-        
-        user = response.data[0]
-        
-        # For development, accept any password for admin users
-        # In production, you'd verify the password properly
-        
-        return {
-            "success": True,
-            "user": {
-                "id": user["id"],
-                "email": user["email"],
-                "name": user["name"],
-                "role": user["role"]
+        # For development, allow admin login with hardcoded credentials
+        if email == "admin@kolekt.io" and password == "admin123":
+            # Check if admin profile exists
+            profile_response = supabase_service.client.table("profiles").select("*").eq("email", email).execute()
+            
+            if profile_response.data:
+                user_profile = profile_response.data[0]
+                user_role = user_profile.get("role", "user")
+            else:
+                # Create admin profile if it doesn't exist
+                try:
+                    profile_data = {
+                        "id": "dd84e467-e10e-4cae-9592-3753133f9f64",  # Known admin user ID
+                        "email": email,
+                        "name": "Admin User",
+                        "role": "admin",
+                        "plan": "pro",
+                        "is_active": True,
+                        "is_verified": True,
+                        "created_at": datetime.now().isoformat(),
+                        "updated_at": datetime.now().isoformat()
+                    }
+                    supabase_service.client.table("profiles").insert(profile_data).execute()
+                    user_profile = profile_data
+                    user_role = "admin"
+                except Exception as e:
+                    logger.warning(f"Could not create admin profile: {e}")
+                    user_profile = {
+                        "id": "dd84e467-e10e-4cae-9592-3753133f9f64",
+                        "email": email,
+                        "name": "Admin User",
+                        "role": "admin"
+                    }
+                    user_role = "admin"
+            
+            return {
+                "success": True,
+                "user": {
+                    "id": user_profile["id"],
+                    "email": user_profile["email"],
+                    "name": user_profile.get("name", "Admin User"),
+                    "role": user_role
+                },
+                "access_token": "admin_token_mock",  # Mock token for development
+                "token_type": "bearer"
             }
-        }
+        else:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
         
     except HTTPException:
         raise
@@ -210,10 +238,16 @@ async def create_user(
             "updated_at": datetime.now().isoformat()
         }
         
-        profile_response = supabase_service.client.table("profiles").insert(profile_data).execute()
-        
-        if not profile_response.data:
-            raise HTTPException(status_code=500, detail="Failed to create user profile")
+        try:
+            profile_response = supabase_service.client.table("profiles").insert(profile_data).execute()
+        except Exception as e:
+            if "duplicate key" in str(e):
+                # Profile already exists, get the existing one
+                profile_response = supabase_service.client.table("profiles").select("*").eq("id", user_id).execute()
+                if not profile_response.data:
+                    raise HTTPException(status_code=500, detail="Failed to create user profile")
+            else:
+                raise HTTPException(status_code=500, detail="Failed to create user profile")
         
         # Create user settings
         settings_data = {
@@ -234,7 +268,7 @@ async def create_user(
             action="create_user",
             description=f"Admin created new user {email}",
             metadata={"target_user_id": user_id, "email": email, "plan": plan, "role": role},
-            user_id=current_user.id,
+            user_id=current_user.get("user_id"),
             severity="info"
         )
         
@@ -287,7 +321,7 @@ async def get_users(
             action="view_users",
             description=f"Admin viewed users list (page {page}, limit {limit})",
             metadata={"page": page, "limit": limit, "search": search},
-            user_id=current_user.id,
+            user_id=current_user.get("user_id"),
             severity="info"
         )
         
@@ -330,7 +364,7 @@ async def get_user(user_id: str, current_user = Depends(require_admin)):
             action="view_user",
             description=f"Admin viewed user details for {user_id}",
             metadata={"target_user_id": user_id},
-            user_id=current_user.id,
+            user_id=current_user.get("user_id"),
             severity="info"
         )
         
@@ -376,7 +410,7 @@ async def update_user(user_id: str, user_update: UserUpdate, current_user = Depe
             action="update_user",
             description=f"Admin updated user {user_id}",
             metadata={"target_user_id": user_id, "updates": update_data},
-            user_id=current_user.id,
+            user_id=current_user.get("user_id"),
             severity="info"
         )
         
@@ -423,7 +457,7 @@ async def delete_user(user_id: str, hard_delete: bool = False, current_user = De
             action="delete_user",
             description=action_description,
             metadata={"target_user_id": user_id, "hard_delete": hard_delete},
-            user_id=current_user.id,
+            user_id=current_user.get("user_id"),
             severity="warning"
         )
         
