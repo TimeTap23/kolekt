@@ -98,12 +98,10 @@
             color: var(--text-primary);
         }
         
-        .nav-menu {
+        .nav {
             display: flex;
-            list-style: none;
             gap: 2rem;
-            margin: 0;
-            padding: 0;
+            align-items: center;
         }
         
         .nav-link {
@@ -112,15 +110,93 @@
             font-weight: 500;
             transition: color 0.2s;
             font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
         }
         
         .nav-link:hover {
             color: var(--kolekt-purple);
+            background: var(--bg-card-hover);
         }
         
-        .auth-buttons {
+        .nav-link.active {
+            color: var(--kolekt-purple);
+            background: var(--bg-card-hover);
+        }
+        
+        .header-actions {
             display: flex;
-            gap: 1rem;
+            align-items: center;
+        }
+        
+        .user-menu {
+            position: relative;
+        }
+        
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .user-menu-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--kolekt-purple);
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--kolekt-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 200px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .user-dropdown.show {
+            display: block;
+        }
+        
+        .dropdown-item {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        
+        .dropdown-item:hover {
+            background: var(--bg-card-hover);
+        }
+        
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 0.5rem 0;
         }
 
         .btn {
@@ -327,18 +403,34 @@
             </a>
             
             <!-- Navigation -->
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="/formatter-preview" class="nav-link">Formatter</a></li>
-                    <li><a href="/templates-preview" class="nav-link">Templates</a></li>
-                    <li><a href="/analytics-preview" class="nav-link">Analytics</a></li>
-                </ul>
+            <nav class="nav">
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/content-creator" class="nav-link">Content</a>
+                <a href="/formatter" class="nav-link active">Formatter</a>
+                <a href="/templates" class="nav-link">Templates</a>
+                <a href="/analytics" class="nav-link">Analytics</a>
+                <a href="/social-manager" class="nav-link">Social</a>
+                <a href="/team-management" class="nav-link">Team</a>
+                <a href="/profile" class="nav-link">Profile</a>
             </nav>
             
-            <!-- Auth Buttons -->
-            <div class="auth-buttons">
-                <a href="/login" class="btn btn-ghost">Sign In</a>
-                <a href="/register" class="btn btn-primary">Get Started</a>
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <div class="user-menu">
+                    <button class="user-menu-btn" onclick="toggleUserMenu()">
+                        <div class="user-avatar">
+                            <span id="userInitials">U</span>
+                        </div>
+                        <span id="userName">User</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="/profile" class="dropdown-item">Profile</a>
+                        <a href="/account-settings" class="dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" onclick="kolektAuth.logout()">Sign Out</a>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -428,5 +520,57 @@
             <a href="/register" class="btn btn-primary btn-lg">Sign Up Now</a>
         </div>
     </section>
+
+    <!-- JavaScript -->
+    <script>
+        // User menu functionality
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const userMenu = document.querySelector('.user-menu');
+            const dropdown = document.getElementById('userDropdown');
+            
+            if (!userMenu.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Load user data
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                // User is logged in, show user menu
+                document.querySelector('.user-menu').style.display = 'block';
+                // Load user data from token or API
+                loadUserData();
+            } else {
+                // User is not logged in, show auth buttons
+                document.querySelector('.user-menu').style.display = 'none';
+            }
+        });
+
+        function loadUserData() {
+            // Load user data from API or token
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                // Decode JWT token to get user info
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    const userName = payload.name || payload.email || 'User';
+                    const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+                    
+                    document.getElementById('userName').textContent = userName;
+                    document.getElementById('userInitials').textContent = userInitials;
+                } catch (error) {
+                    console.error('Error loading user data:', error);
+                }
+            }
+        }
+    </script>
 </body>
 </html>
