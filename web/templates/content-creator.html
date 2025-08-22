@@ -13,6 +13,29 @@
     <link rel="stylesheet" href="/static/css/dashboard.css?v=2.3.0">
     
     <style>
+        /* Refined Kolekt Design System */
+        :root {
+            --kolekt-purple: #7A3FFF;
+            --kolekt-magenta: #E940A4;
+            --kolekt-orange: #FF6A3D;
+            --kolekt-gold: #FFB443;
+            --kolekt-gradient: linear-gradient(135deg, #7A3FFF 0%, #E940A4 50%, #FF6A3D 100%);
+            --kolekt-radial: radial-gradient(circle at center, #7A3FFF 0%, #E940A4 40%, #FF6A3D 75%, #FFB443 100%);
+            --kolekt-glow: rgba(122, 63, 255, 0.3);
+            --bg-dark: #0f0f23;
+            --bg-card: #1a1a2e;
+            --bg-card-hover: #252542;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6b7280;
+            --border-color: #2d2d44;
+        }
+
+        body {
+            background: var(--bg-dark) !important;
+            color: var(--text-primary);
+        }
+
         .content-creator-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -27,10 +50,17 @@
         }
         
         .content-panel {
-            background: white;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s;
+        }
+
+        .content-panel:hover {
+            border-color: var(--kolekt-purple);
+            transform: translateY(-2px);
         }
         
         .panel-header {
@@ -39,13 +69,13 @@
             align-items: center;
             margin-bottom: 1.5rem;
             padding-bottom: 1rem;
-            border-bottom: 1px solid #e9ecef;
+            border-bottom: 1px solid var(--border-color);
         }
         
         .panel-title {
             font-size: 1.25rem;
             font-weight: 600;
-            color: #333;
+            color: var(--text-primary);
             margin: 0;
         }
         
@@ -56,54 +86,159 @@
         .form-label {
             display: block;
             font-weight: 500;
-            color: #333;
+            color: var(--text-primary);
             margin-bottom: 0.5rem;
         }
         
         .form-input {
             width: 100%;
             padding: 0.75rem 1rem;
-            border: 2px solid #e9ecef;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
             font-size: 1rem;
+            background: var(--bg-card);
+            color: var(--text-primary);
             transition: border-color 0.3s ease;
         }
         
         .form-input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--kolekt-purple);
+            box-shadow: 0 0 0 3px rgba(122, 63, 255, 0.1);
         }
         
         .form-textarea {
             width: 100%;
             min-height: 200px;
             padding: 0.75rem 1rem;
-            border: 2px solid #e9ecef;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
             font-size: 1rem;
             font-family: inherit;
+            background: var(--bg-card);
+            color: var(--text-primary);
             resize: vertical;
             transition: border-color 0.3s ease;
         }
         
         .form-textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--kolekt-purple);
+            box-shadow: 0 0 0 3px rgba(122, 63, 255, 0.1);
         }
         
         .form-select {
             width: 100%;
             padding: 0.75rem 1rem;
-            border: 2px solid #e9ecef;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
             font-size: 1rem;
-            background: white;
+            background: var(--bg-card);
+            color: var(--text-primary);
             cursor: pointer;
         }
         
         .form-select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--kolekt-purple);
+            box-shadow: 0 0 0 3px rgba(122, 63, 255, 0.1);
+        }
+
+        /* AI Assistant Styles */
+        .ai-assistant {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ai-assistant-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .ai-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--kolekt-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .ai-suggestions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .ai-suggestion {
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ai-suggestion:hover {
+            background: var(--kolekt-purple);
+            color: white;
+            border-color: var(--kolekt-purple);
+        }
+
+        /* Content Templates */
+        .template-selector {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .template-card {
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .template-card:hover {
+            border-color: var(--kolekt-purple);
+            transform: translateY(-2px);
+        }
+
+        .template-card.selected {
+            border-color: var(--kolekt-purple);
+            background: rgba(122, 63, 255, 0.1);
+        }
+
+        .template-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .template-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
         
         .platform-selector {
@@ -453,12 +588,51 @@
                     </div>
                 </div>
 
-                <!-- Content Form -->
-                <form id="contentForm">
-                    <div class="form-group">
-                        <label for="contentTitle" class="form-label">Content Title</label>
-                        <input type="text" id="contentTitle" name="title" class="form-input" placeholder="Enter a compelling title...">
+                            <!-- AI Assistant -->
+            <div class="ai-assistant">
+                <div class="ai-assistant-header">
+                    <div class="ai-icon">🤖</div>
+                    <h3>AI Content Assistant</h3>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Get AI-powered suggestions to enhance your content</p>
+                <div class="ai-suggestions">
+                    <div class="ai-suggestion" onclick="suggestTitle()">Suggest Title</div>
+                    <div class="ai-suggestion" onclick="suggestHashtags()">Add Hashtags</div>
+                    <div class="ai-suggestion" onclick="optimizeContent()">Optimize Content</div>
+                    <div class="ai-suggestion" onclick="generateThread()">Generate Thread</div>
+                </div>
+            </div>
+
+            <!-- Content Templates -->
+            <div class="template-selector">
+                <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Content Templates</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Choose a template to get started quickly</p>
+                <div class="template-grid">
+                    <div class="template-card" onclick="selectTemplate('product-launch')">
+                        <div class="template-title">Product Launch</div>
+                        <div class="template-description">Announce new products with excitement</div>
                     </div>
+                    <div class="template-card" onclick="selectTemplate('educational')">
+                        <div class="template-title">Educational</div>
+                        <div class="template-description">Share knowledge and insights</div>
+                    </div>
+                    <div class="template-card" onclick="selectTemplate('storytelling')">
+                        <div class="template-title">Storytelling</div>
+                        <div class="template-description">Engage with personal stories</div>
+                    </div>
+                    <div class="template-card" onclick="selectTemplate('promotional')">
+                        <div class="template-title">Promotional</div>
+                        <div class="template-description">Promote offers and deals</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Form -->
+            <form id="contentForm">
+                <div class="form-group">
+                    <label for="contentTitle" class="form-label">Content Title</label>
+                    <input type="text" id="contentTitle" name="title" class="form-input" placeholder="Enter a compelling title...">
+                </div>
 
                     <div class="form-group">
                         <label for="contentBody" class="form-label">Content</label>
@@ -973,6 +1147,168 @@
             contentCreator.refreshPreview();
         }
         
+        // AI Assistant Functions
+        async function suggestTitle() {
+            const content = document.getElementById('contentBody').value;
+            if (!content) {
+                alert('Please write some content first to get title suggestions');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/v1/content/ai/suggest-title', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('contentTitle').value = data.title;
+                    showNotification('Title suggestion applied!', 'success');
+                }
+            } catch (error) {
+                showNotification('Failed to get title suggestion', 'error');
+            }
+        }
+
+        async function suggestHashtags() {
+            const content = document.getElementById('contentBody').value;
+            if (!content) {
+                alert('Please write some content first to get hashtag suggestions');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/v1/content/ai/suggest-hashtags', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    const currentContent = document.getElementById('contentBody').value;
+                    document.getElementById('contentBody').value = currentContent + '\n\n' + data.hashtags;
+                    showNotification('Hashtags added!', 'success');
+                }
+            } catch (error) {
+                showNotification('Failed to get hashtag suggestions', 'error');
+            }
+        }
+
+        async function optimizeContent() {
+            const content = document.getElementById('contentBody').value;
+            if (!content) {
+                alert('Please write some content first to optimize');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/v1/content/ai/optimize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('contentBody').value = data.optimized_content;
+                    showNotification('Content optimized!', 'success');
+                }
+            } catch (error) {
+                showNotification('Failed to optimize content', 'error');
+            }
+        }
+
+        async function generateThread() {
+            const content = document.getElementById('contentBody').value;
+            if (!content) {
+                alert('Please write some content first to generate a thread');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/v1/content/ai/generate-thread', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('contentBody').value = data.thread_content;
+                    showNotification('Thread generated!', 'success');
+                }
+            } catch (error) {
+                showNotification('Failed to generate thread', 'error');
+            }
+        }
+
+        // Template Functions
+        function selectTemplate(templateType) {
+            // Remove previous selection
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Add selection to clicked card
+            event.target.closest('.template-card').classList.add('selected');
+
+            // Load template content
+            const templates = {
+                'product-launch': {
+                    title: '🚀 Exciting Product Launch!',
+                    content: 'We\'re thrilled to announce our latest product that will revolutionize your workflow!\n\n✨ Key Features:\n• Feature 1\n• Feature 2\n• Feature 3\n\n🎉 Early bird pricing available now!\n\n#ProductLaunch #Innovation #Tech'
+                },
+                'educational': {
+                    title: '📚 Knowledge Share: [Topic]',
+                    content: 'Today I want to share some insights about [topic] that I\'ve learned through experience.\n\n🔍 Key Points:\n• Point 1\n• Point 2\n• Point 3\n\n💡 What\'s your experience with this?\n\n#Education #Learning #Insights'
+                },
+                'storytelling': {
+                    title: '📖 A Story About [Topic]',
+                    content: 'Let me share a personal story that taught me something valuable about [topic].\n\nOnce upon a time...\n\n🎯 The lesson I learned:\n[Your lesson here]\n\n🤔 Has something similar happened to you?\n\n#Storytelling #PersonalGrowth #LifeLessons'
+                },
+                'promotional': {
+                    title: '🎁 Special Offer Alert!',
+                    content: 'Don\'t miss out on this incredible opportunity!\n\n🔥 What\'s on offer:\n• Offer details\n• Limited time\n• Special pricing\n\n⚡ Act fast - this won\'t last long!\n\n#SpecialOffer #LimitedTime #Deals'
+                }
+            };
+
+            const template = templates[templateType];
+            if (template) {
+                document.getElementById('contentTitle').value = template.title;
+                document.getElementById('contentBody').value = template.content;
+                showNotification(`Template "${templateType}" loaded!`, 'success');
+            }
+        }
+
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+                background: ${type === 'success' ? 'var(--kolekt-purple)' : '#ef4444'};
+            `;
+
+            document.body.appendChild(notification);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
         // Initialize content creator
         let contentCreator;
         document.addEventListener('DOMContentLoaded', () => {
