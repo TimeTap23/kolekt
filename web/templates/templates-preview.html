@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
         * {
             margin: 0;
@@ -389,7 +389,9 @@
             <div class="preview-nav">
                 <span class="preview-badge">Preview</span>
                 <a href="/dashboard" class="btn btn-ghost">
-                    <i class="fas fa-arrow-left"></i>
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" style="margin-right: 8px;">
+                        <path d="M15 10H5M5 10L10 5M5 10L10 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                     Back to Dashboard
                 </a>
             </div>
@@ -402,7 +404,9 @@
                             <span id="userInitials">U</span>
                         </div>
                         <span id="userName">User</span>
-                        <i class="fas fa-chevron-down"></i>
+                        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true" style="margin-left: 8px;">
+                            <path d="M5 7l5 6 5-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
                     </button>
                     <div class="user-dropdown" id="userDropdown">
                         <a href="/profile" class="dropdown-item">Profile</a>
