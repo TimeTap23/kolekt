@@ -16,36 +16,35 @@
     <!-- Header -->
     <header class="header">
         <div class="header-content">
-            <a href="/" class="logo-container">
-                <div class="logo-icon">K</div>
-                <span class="logo-text">kolekt.io</span>
-            </a>
+            <div class="header-left">
+                <div class="logo">
+                    <img src="/static/images/logo.png" alt="Kolekt Logo" class="logo-img">
+                    <span class="logo-text">Kolekt</span>
+                </div>
+            </div>
             
-            <nav class="nav">
-                <a href="#" class="nav-link active" onclick="showSection('overview')">Dashboard</a>
-                <a href="#" class="nav-link" onclick="showSection('content')">Content</a>
-                <a href="#" class="nav-link" onclick="showSection('formatter')">Formatter</a>
-                <a href="#" class="nav-link" onclick="showSection('templates')">Templates</a>
-                <a href="#" class="nav-link" onclick="showSection('analytics')">Analytics</a>
-                <a href="#" class="nav-link" onclick="showSection('team')">Team</a>
-                <a href="/pricing" class="nav-link">Pricing</a>
-                <a href="/profile" class="nav-link">Profile</a>
+            <nav class="header-nav">
+                <a href="/dashboard" class="nav-link active">Dashboard</a>
+                <a href="/content-creator" class="nav-link">Content Creator</a>
+                <a href="/analytics" class="nav-link">Analytics</a>
+                <a href="/team-management" class="nav-link">Team</a>
+                <a href="/system-health" class="nav-link">System Health</a>
+                <a href="/announcements" class="nav-link">Announcements</a>
             </nav>
             
             <div class="header-actions">
                 <div class="user-menu">
                     <button class="user-menu-btn" onclick="toggleUserMenu()">
-                        <div class="user-avatar">
-                            <span id="userInitials">U</span>
-                        </div>
-                        <span id="userName">User</span>
-                        <i class="fas fa-chevron-down"></i>
+                        <img src="/static/images/avatar.png" alt="User Avatar" class="user-avatar">
+                        <span class="user-name">Admin</span>
+                        <span class="dropdown-arrow">▼</span>
                     </button>
                     <div class="user-dropdown" id="userDropdown">
                         <a href="/profile" class="dropdown-item">Profile</a>
-                        <a href="/account-settings" class="dropdown-item">Settings</a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item" onclick="kolektAuth.logout()">Sign Out</a>
+                        <a href="/settings" class="dropdown-item">Settings</a>
+                        <a href="/admin" class="dropdown-item">Admin Panel</a>
+                        <hr class="dropdown-divider">
+                        <a href="/logout" class="dropdown-item">Logout</a>
                     </div>
                 </div>
             </div>

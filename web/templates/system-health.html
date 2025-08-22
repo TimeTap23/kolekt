@@ -296,6 +296,83 @@
         .auto-refresh input[type="checkbox"] {
             accent-color: var(--kolekt-purple);
         }
+
+        /* Mobile Responsive Design */
+        @media (max-width: 768px) {
+            .health-container {
+                padding: 1rem;
+            }
+            
+            .health-header {
+                padding: 1.5rem;
+            }
+            
+            .health-title {
+                font-size: 1.5rem;
+            }
+            
+            .health-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .health-card {
+                padding: 1rem;
+            }
+            
+            .metric-row {
+                padding: 0.5rem 0;
+            }
+            
+            .metric-value {
+                font-size: 1.25rem;
+            }
+            
+            .alerts-panel {
+                padding: 1rem;
+            }
+            
+            .alert-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .performance-chart {
+                padding: 1rem;
+            }
+            
+            .chart-placeholder {
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .health-container {
+                padding: 0.5rem;
+            }
+            
+            .health-header {
+                padding: 1rem;
+            }
+            
+            .health-title {
+                font-size: 1.25rem;
+            }
+            
+            .health-card {
+                padding: 0.75rem;
+            }
+            
+            .metric-value {
+                font-size: 1.1rem;
+            }
+            
+            .chart-placeholder {
+                height: 150px;
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>

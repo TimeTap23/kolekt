@@ -415,6 +415,102 @@
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(122, 63, 255, 0.3);
         }
+
+        /* Mobile Responsive Design */
+        @media (max-width: 768px) {
+            .announcements-container {
+                padding: 1rem;
+            }
+            
+            .announcements-header {
+                padding: 1.5rem;
+            }
+            
+            .announcements-title {
+                font-size: 1.5rem;
+            }
+            
+            .announcements-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .announcements-list {
+                padding: 1rem;
+            }
+            
+            .list-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .announcement-item {
+                padding: 0.75rem;
+            }
+            
+            .announcement-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .announcement-meta {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .announcement-actions {
+                flex-wrap: wrap;
+                gap: 0.25rem;
+            }
+            
+            .stats-card {
+                padding: 1rem;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .announcements-container {
+                padding: 0.5rem;
+            }
+            
+            .announcements-header {
+                padding: 1rem;
+            }
+            
+            .announcements-title {
+                font-size: 1.25rem;
+            }
+            
+            .announcements-list {
+                padding: 0.75rem;
+            }
+            
+            .announcement-item {
+                padding: 0.5rem;
+            }
+            
+            .stats-card {
+                padding: 0.75rem;
+            }
+            
+            .modal-content {
+                width: 98%;
+                margin: 5% auto;
+                padding: 1rem;
+            }
+            
+            .modal-title {
+                font-size: 1.25rem;
+            }
+        }
     </style>
 </head>
 <body>
