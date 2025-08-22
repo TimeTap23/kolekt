@@ -82,7 +82,7 @@ class KolektAdmin {
         }
 
         try {
-            const response = await fetch(`${this.baseUrl}/api/v1/admin${endpoint}`, options);
+            const response = await fetch(`${this.baseUrl}/admin${endpoint}`, options);
             
             if (!response.ok) {
                 if (response.status === 401) {

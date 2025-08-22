@@ -200,6 +200,16 @@ async def content_guidelines():
     }
 
 
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_dashboard(request: Request):
+    """Admin dashboard page"""
+    try:
+        return templates.TemplateResponse("admin_dashboard.html", {"request": request})
+    except Exception as e:
+        logger.error(f"Error rendering admin dashboard: {e}")
+        return HTMLResponse(content="<h1>Admin Dashboard</h1><p>Loading...</p>")
+
+
 if __name__ == "__main__":
     import uvicorn
     
