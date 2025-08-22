@@ -250,11 +250,12 @@
 
         /* Preview Section */
         .preview-section {
-            background: white;
+            background: var(--bg-card);
             border-radius: 20px;
             padding: 3rem;
             margin: 2rem 0;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
         }
 
         .preview-title {
@@ -262,7 +263,7 @@
             font-size: 2rem;
             font-weight: 600;
             margin-bottom: 2rem;
-            color: #1a202c;
+            color: var(--text-primary);
         }
 
         .metrics-grid {
@@ -273,22 +274,22 @@
         }
 
         .metric-card {
-            background: #f7fafc;
+            background: var(--bg-card-hover);
             border-radius: 12px;
             padding: 2rem;
             text-align: center;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
         }
 
         .metric-number {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #667eea;
+            color: var(--kolekt-purple);
             margin-bottom: 0.5rem;
         }
 
         .metric-label {
-            color: #718096;
+            color: var(--text-secondary);
             font-size: 0.9rem;
             font-weight: 500;
         }
@@ -303,37 +304,37 @@
         }
 
         .metric-change.positive {
-            color: #38a169;
+            color: #10b981;
         }
 
         .metric-change.negative {
-            color: #e53e3e;
+            color: #ef4444;
         }
 
         .dashboard-preview {
-            background: #f7fafc;
+            background: var(--bg-card-hover);
             border-radius: 12px;
             padding: 2rem;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
             margin-bottom: 2rem;
         }
 
         .chart-container {
-            background: white;
+            background: var(--bg-card);
             border-radius: 8px;
             padding: 1.5rem;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
             margin: 1rem 0;
         }
 
         .chart-placeholder {
             height: 200px;
-            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-hover) 100%);
             border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #718096;
+            color: var(--text-secondary);
             font-size: 0.9rem;
         }
 
@@ -344,11 +345,12 @@
 
         .insights-list li {
             padding: 0.75rem;
-            background: white;
+            background: var(--bg-card);
             border-radius: 6px;
             margin-bottom: 0.5rem;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid var(--kolekt-purple);
             font-size: 0.9rem;
+            color: var(--text-primary);
         }
 
         .features-list {

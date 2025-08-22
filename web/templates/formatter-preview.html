@@ -250,11 +250,12 @@
 
         /* Preview Section */
         .preview-section {
-            background: white;
+            background: var(--bg-card);
             border-radius: 20px;
             padding: 3rem;
             margin: 2rem 0;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
         }
 
         .preview-title {
@@ -262,7 +263,7 @@
             font-size: 2rem;
             font-weight: 600;
             margin-bottom: 2rem;
-            color: #1a202c;
+            color: var(--text-primary);
         }
 
         .preview-grid {
@@ -273,40 +274,45 @@
         }
 
         .preview-card {
-            background: #f7fafc;
+            background: var(--bg-card-hover);
             border-radius: 12px;
             padding: 2rem;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
         }
 
         .preview-card h3 {
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 1rem;
-            color: #1a202c;
+            color: var(--text-primary);
         }
 
         .mock-ui {
-            background: white;
+            background: var(--bg-card);
             border-radius: 8px;
             padding: 1.5rem;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
             margin-bottom: 1rem;
         }
 
         .mock-textarea {
             width: 100%;
             height: 120px;
-            background: #f7fafc;
-            border: 1px solid #e2e8f0;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
             border-radius: 6px;
             padding: 1rem;
             font-family: inherit;
             resize: none;
+            color: var(--text-primary);
+        }
+
+        .mock-textarea::placeholder {
+            color: var(--text-secondary);
         }
 
         .mock-button {
-            background: #667eea;
+            background: var(--kolekt-gradient);
             color: white;
             border: none;
             padding: 0.75rem 1.5rem;
@@ -316,12 +322,13 @@
         }
 
         .mock-output {
-            background: #f0fff4;
-            border: 1px solid #9ae6b4;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
             border-radius: 6px;
             padding: 1rem;
             font-size: 0.9rem;
             line-height: 1.5;
+            color: var(--text-primary);
         }
 
         .features-list {
