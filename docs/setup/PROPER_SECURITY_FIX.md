@@ -33,6 +33,8 @@ First, we need to create a function that allows us to execute SQL statements pro
 -- Create the exec_sql function
 CREATE OR REPLACE FUNCTION exec_sql(sql text)
 RETURNS json AS $$
+DECLARE
+  result json;
 BEGIN
   -- Only allow service role to execute this function
   IF auth.role() != 'service_role' THEN
@@ -40,7 +42,8 @@ BEGIN
   END IF;
   
   -- Execute the SQL and return results as JSON
-  RETURN (SELECT json_agg(row_to_json(t)) FROM (SELECT * FROM (EXECUTE sql) t) t);
+  EXECUTE 'SELECT json_agg(row_to_json(t)) FROM (' || sql || ') t' INTO result;
+  RETURN COALESCE(result, '[]'::json);
 EXCEPTION
   WHEN OTHERS THEN
     -- Return error information as JSON
