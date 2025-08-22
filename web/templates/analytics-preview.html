@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -98,30 +99,21 @@
             color: var(--text-primary);
         }
         
-        .nav {
+        .preview-nav {
             display: flex;
-            gap: 2rem;
             align-items: center;
+            gap: 1rem;
         }
         
-        .nav-link {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-weight: 500;
-            transition: color 0.2s;
-            font-size: 1rem;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-        }
-        
-        .nav-link:hover {
-            color: var(--kolekt-purple);
-            background: var(--bg-card-hover);
-        }
-        
-        .nav-link.active {
-            color: var(--kolekt-purple);
-            background: var(--bg-card-hover);
+        .preview-badge {
+            background: var(--kolekt-gradient);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .header-actions {
@@ -429,17 +421,14 @@
                 <span class="logo-text">kolekt.io</span>
             </a>
             
-            <!-- Navigation -->
-            <nav class="nav">
-                <a href="/dashboard" class="nav-link">Dashboard</a>
-                <a href="/content-creator" class="nav-link">Content</a>
-                <a href="/formatter" class="nav-link">Formatter</a>
-                <a href="/templates" class="nav-link">Templates</a>
-                <a href="/analytics" class="nav-link active">Analytics</a>
-                <a href="/social-manager" class="nav-link">Social</a>
-                <a href="/team-management" class="nav-link">Team</a>
-                <a href="/profile" class="nav-link">Profile</a>
-            </nav>
+            <!-- Preview Navigation -->
+            <div class="preview-nav">
+                <span class="preview-badge">Preview</span>
+                <a href="/dashboard" class="btn btn-ghost">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Dashboard
+                </a>
+            </div>
             
             <!-- Header Actions -->
             <div class="header-actions">
