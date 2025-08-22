@@ -15,11 +15,32 @@
             box-sizing: border-box;
         }
 
+        /* Refined Kolekt Design System */
+        :root {
+            --kolekt-purple: #7A3FFF;
+            --kolekt-magenta: #E940A4;
+            --kolekt-orange: #FF6A3D;
+            --kolekt-gold: #FFB443;
+            --kolekt-gradient: linear-gradient(135deg, #7A3FFF 0%, #E940A4 50%, #FF6A3D 100%);
+            --kolekt-radial: radial-gradient(circle at center, #7A3FFF 0%, #E940A4 40%, #FF6A3D 75%, #FFB443 100%);
+            --kolekt-glow: rgba(122, 63, 255, 0.3);
+            --bg-dark: #0f0f23;
+            --bg-card: #1a1a2e;
+            --bg-card-hover: #252542;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6b7280;
+            --border-color: #2d2d44;
+        }
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark) !important;
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
             min-height: 100vh;
-            color: #e2e8f0;
         }
 
         .container {
@@ -30,61 +51,73 @@
 
         /* Header */
         .header {
-            background: rgba(15, 15, 35, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             position: sticky;
             top: 0;
             z-index: 100;
         }
-
+        
         .header-content {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 1rem 2rem;
+            justify-content: space-between;
+            padding: 1.5rem 0;
             max-width: 1200px;
             margin: 0 auto;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
         }
-
-        .logo {
+        
+        .logo-container {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 1rem;
             text-decoration: none;
-            color: #e2e8f0;
-            font-weight: 700;
-            font-size: 1.5rem;
+            color: var(--text-primary);
         }
-
+        
         .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 10px;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: var(--kolekt-gradient);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: 700;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px var(--kolekt-glow);
         }
-
-        .nav {
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .nav-menu {
             display: flex;
+            list-style: none;
             gap: 2rem;
+            margin: 0;
+            padding: 0;
         }
-
+        
         .nav-link {
             text-decoration: none;
-            color: #a0aec0;
+            color: var(--text-secondary);
             font-weight: 500;
             transition: color 0.2s;
+            font-size: 1rem;
         }
-
+        
         .nav-link:hover {
-            color: #667eea;
+            color: var(--kolekt-purple);
         }
-
+        
         .auth-buttons {
             display: flex;
             gap: 1rem;
@@ -103,23 +136,26 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--kolekt-gradient);
             color: white;
+            border: none;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 25px var(--kolekt-glow);
         }
 
         .btn-ghost {
             background: transparent;
-            color: #4a5568;
-            border: 1px solid #e2e8f0;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
         }
 
         .btn-ghost:hover {
-            background: #f7fafc;
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-color: var(--kolekt-purple);
         }
 
         /* Hero Section */
@@ -275,17 +311,22 @@
     <!-- Header -->
     <header class="header">
         <div class="header-content">
-            <a href="/" class="logo">
+            <!-- Logo -->
+            <a href="/" class="logo-container">
                 <div class="logo-icon">K</div>
-                <span>kolekt.io</span>
+                <span class="logo-text">kolekt.io</span>
             </a>
             
-            <nav class="nav">
-                <a href="/formatter-preview" class="nav-link">Formatter</a>
-                <a href="/templates-preview" class="nav-link">Templates</a>
-                <a href="/analytics-preview" class="nav-link">Analytics</a>
+            <!-- Navigation -->
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="/formatter-preview" class="nav-link">Formatter</a></li>
+                    <li><a href="/templates-preview" class="nav-link">Templates</a></li>
+                    <li><a href="/analytics-preview" class="nav-link">Analytics</a></li>
+                </ul>
             </nav>
             
+            <!-- Auth Buttons -->
             <div class="auth-buttons">
                 <a href="/login" class="btn btn-ghost">Sign In</a>
                 <a href="/register" class="btn btn-primary">Get Started</a>
