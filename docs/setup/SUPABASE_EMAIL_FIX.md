@@ -1,52 +1,115 @@
 # 🔧 Fixing Supabase Email Domain Restrictions
 
 ## 🚨 **Current Issue**
-Your Supabase project is blocking common email providers like Gmail, Yahoo, and others. This prevents users from registering with their normal email addresses.
+Your Supabase project has **custom email domain validation** that is blocking common email providers like Gmail, Yahoo, and others. This prevents users from registering with their normal email addresses.
+
+**Test Results:**
+- ❌ `gmail.com` - BLOCKED
+- ❌ `yahoo.com` - BLOCKED  
+- ❌ `icloud.com` - BLOCKED
+- ❌ `example.com` - BLOCKED
+- ✅ `outlook.com` - ALLOWED
+- ✅ `hotmail.com` - ALLOWED
+- ✅ `aol.com` - ALLOWED
 
 ## 📋 **Step-by-Step Fix**
 
 ### **1. Access Your Supabase Dashboard**
 1. Go to [https://supabase.com/dashboard](https://supabase.com/dashboard)
 2. Select your project: `cnloucmzugnkwszqdxjl`
-3. Navigate to **Authentication** in the left sidebar
+3. Navigate to **SQL Editor** in the left sidebar
 
-### **2. Fix Email Settings**
-Go to **Authentication > Settings** and configure:
+### **2. Find and Remove Email Domain Restrictions**
 
-#### **Email Confirmations (For Testing)**
-- ✅ **Enable email confirmations**: `OFF` (temporarily for testing)
-- ✅ **Enable email change confirmations**: `OFF`
-- ✅ **Enable phone confirmations**: `OFF`
-- ✅ **Enable phone change confirmations**: `OFF`
+#### **Check for Custom Functions**
+In the SQL Editor, run this query to find email validation functions:
 
-#### **Site URL & Redirect URLs**
-- **Site URL**: `http://localhost:8000` (for local development)
-- **Redirect URLs**: Add these URLs:
-  ```
-  http://localhost:8000/auth/callback
-  http://localhost:8000/api/v1/auth/callback
-  https://your-production-domain.com/auth/callback
-  https://your-production-domain.com/api/v1/auth/callback
-  ```
+```sql
+SELECT 
+    routine_name,
+    routine_definition
+FROM information_schema.routines 
+WHERE routine_type = 'FUNCTION' 
+AND routine_definition ILIKE '%email%'
+AND routine_definition ILIKE '%domain%';
+```
 
-### **3. Check Email Domain Restrictions**
-Go to **Authentication > Policies** and check:
+#### **Check for Database Triggers**
+Run this query to find triggers that might validate emails:
 
-#### **Email Domain Allowlist**
-If you have email domain restrictions:
-- **Remove all domain restrictions** or add these common domains:
-  ```
-  gmail.com
-  outlook.com
-  hotmail.com
-  yahoo.com
-  ymail.com
-  aol.com
-  icloud.com
-  me.com
-  mac.com
-  protonmail.com
-  ```
+```sql
+SELECT 
+    trigger_name,
+    event_manipulation,
+    action_statement
+FROM information_schema.triggers 
+WHERE trigger_name ILIKE '%email%'
+OR action_statement ILIKE '%email%';
+```
+
+#### **Check for RLS Policies**
+Run this query to find RLS policies that might restrict emails:
+
+```sql
+SELECT 
+    schemaname,
+    tablename,
+    policyname,
+    permissive,
+    roles,
+    cmd,
+    qual,
+    with_check
+FROM pg_policies 
+WHERE qual ILIKE '%email%'
+OR with_check ILIKE '%email%';
+```
+
+### **3. Remove Email Domain Validation**
+
+#### **If You Find a Custom Function**
+Look for functions with names like:
+- `validate_email_domain`
+- `check_email_allowed`
+- `email_domain_validation`
+- `restrict_email_domains`
+
+**Delete the function:**
+```sql
+DROP FUNCTION IF EXISTS your_email_validation_function_name();
+```
+
+#### **If You Find a Trigger**
+Look for triggers that validate emails on the `auth.users` table.
+
+**Delete the trigger:**
+```sql
+DROP TRIGGER IF EXISTS your_email_validation_trigger ON auth.users;
+```
+
+#### **If You Find RLS Policies**
+Look for policies that restrict email domains.
+
+**Delete the policy:**
+```sql
+DROP POLICY IF EXISTS your_email_restriction_policy ON auth.users;
+```
+
+### **4. Check for Email Validation in Database Functions**
+
+#### **Search for Email Validation Logic**
+Run this query to find any SQL that validates email domains:
+
+```sql
+SELECT 
+    routine_name,
+    routine_definition
+FROM information_schema.routines 
+WHERE routine_definition ILIKE '%gmail.com%'
+OR routine_definition ILIKE '%yahoo.com%'
+OR routine_definition ILIKE '%icloud.com%'
+OR routine_definition ILIKE '%example.com%';
+```
 
 #### **Email Templates**
 Go to **Authentication > Email Templates** and verify:
