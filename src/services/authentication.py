@@ -71,7 +71,7 @@ class AuthenticationService:
         }
     
     async def register_user(self, email: str, password: str, name: str = None) -> Dict:
-        """Register a new user with direct database creation"""
+        """Register a new user with Supabase Auth"""
         try:
             # Validate input
             if not email or not password:
@@ -85,81 +85,72 @@ class AuthenticationService:
             if existing_user:
                 raise HTTPException(status_code=400, detail="User already exists")
             
-            # Create user directly in database (bypassing Supabase Auth for now)
-            user_id = str(uuid.uuid4())
-            hashed_password = pwd_context.hash(password)
+            # Create user in Supabase Auth
+            auth_response = await self.supabase.sign_up(email, password, {"name": name or email.split('@')[0]})
             
-            # Create user profile directly (without password_hash - stored separately)
-            profile_data = {
-                "id": user_id,
-                "email": email,
-                "name": name or email.split('@')[0],
-                "role": "user",
-                "plan": "free",
-                "created_at": datetime.now().isoformat(),
-                "updated_at": datetime.now().isoformat(),
-                "is_verified": True,  # Mark as verified since we're bypassing email validation
-                "last_login": None,
-                "login_count": 0
-            }
+            if auth_response.get("success") and auth_response.get("user"):
+                user_id = auth_response["user"].id
+                
+                # Create user profile
+                profile_data = {
+                    "id": user_id,
+                    "email": email,
+                    "name": name or email.split('@')[0],
+                    "role": "user",
+                    "plan": "free",
+                    "created_at": datetime.now().isoformat(),
+                    "updated_at": datetime.now().isoformat(),
+                    "is_verified": auth_response["user"].email_confirmed_at is not None,
+                    "last_login": None,
+                    "login_count": 0
+                }
+                
+                await self.supabase.client.table('profiles').insert(profile_data).execute()
             
-            await self.supabase.client.table('profiles').insert(profile_data).execute()
-            
-            # Store password hash in auth table (if it exists)
-            try:
-                auth_data = {
-                    "user_id": user_id,
-                    "password_hash": hashed_password,
+                # Create user settings
+                settings_data = {
+                    "id": user_id,  # Use id instead of user_id for user_settings
+                    "notifications_enabled": True,
+                    "theme": "cyberpunk",
                     "created_at": datetime.now().isoformat(),
                     "updated_at": datetime.now().isoformat()
                 }
                 
-                await self.supabase.client.table('user_auth').insert(auth_data).execute()
-            except Exception as e:
-                logger.warning(f"Could not store password hash (table may not exist): {e}")
-                # Continue without storing password hash for now
-            
-            # Create user settings
-            settings_data = {
-                "id": user_id,  # Use id instead of user_id for user_settings
-                "notifications_enabled": True,
-                "theme": "cyberpunk",
-                "created_at": datetime.now().isoformat(),
-                "updated_at": datetime.now().isoformat()
-            }
-            
-            await self.supabase.client.table('user_settings').insert(settings_data).execute()
-            
-            # Create default permissions for new user
-            try:
-                await self._create_default_permissions(user_id)
-            except Exception as e:
-                logger.warning(f"Could not create default permissions: {e}")
-            
-            # Log registration
-            try:
-                await observability_service.log_event(
-                    'auth',
-                    'user_registered',
-                    f"New user registered: {email}",
-                    {'user_id': user_id, 'email': email},
-                    user_id=user_id
-                )
-            except Exception as e:
-                logger.warning(f"Could not log registration event: {e}")
-            
-            # Send welcome email (placeholder)
-            try:
-                await self._send_welcome_email(email, name)
-            except Exception as e:
-                logger.warning(f"Could not send welcome email: {e}")
-            
-            return {
-                "success": True,
-                "user_id": user_id,
-                "email": email,
-                "message": "User registered successfully."
-            }
+                await self.supabase.client.table('user_settings').insert(settings_data).execute()
+                
+                # Create default permissions for new user
+                try:
+                    await self._create_default_permissions(user_id)
+                except Exception as e:
+                    logger.warning(f"Could not create default permissions: {e}")
+                
+                # Log registration
+                try:
+                    await observability_service.log_event(
+                        'auth',
+                        'user_registered',
+                        f"New user registered: {email}",
+                        {'user_id': user_id, 'email': email},
+                        user_id=user_id
+                    )
+                except Exception as e:
+                    logger.warning(f"Could not log registration event: {e}")
+                
+                # Send welcome email (placeholder)
+                try:
+                    await self._send_welcome_email(email, name)
+                except Exception as e:
+                    logger.warning(f"Could not send welcome email: {e}")
+                
+                return {
+                    "success": True,
+                    "user_id": user_id,
+                    "email": email,
+                    "message": "User registered successfully. Please check your email to verify your account."
+                }
+            else:
+                error_msg = auth_response.get("error", "Failed to create user")
+                raise HTTPException(status_code=400, detail=error_msg)
                 
         except HTTPException:
             raise
