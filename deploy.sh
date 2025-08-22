@@ -44,9 +44,9 @@ if ! doctl auth list &> /dev/null; then
     exit 1
 fi
 
-# Function to get app ID
-get_app_id() {
-    local app_name="kolekt"
+       # Function to get app ID
+       get_app_id() {
+           local app_name="threadstorm-v6"
     local app_id=$(doctl apps list --format ID,Spec.Name --no-header | grep "$app_name" | awk '{print $1}')
     
     if [ -z "$app_id" ]; then

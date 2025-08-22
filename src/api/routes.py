@@ -13,7 +13,7 @@ from src.services.templates import TemplateLibrary, TemplateCategory
 from src.services.threads_api import threads_service, ThreadsResponse
 from src.services.analytics import AnalyticsService
 from src.api.auth_routes import auth_router
-from src.api.admin_routes import admin_router
+from src.api.admin_routes_new import admin_router_new as admin_router
 from src.api.templates import templates_router
 from src.api.curation_routes import curation_router
 from src.api.content_routes import content_router

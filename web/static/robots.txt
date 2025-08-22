@@ -1,0 +1,21 @@
+User-agent: *
+Disallow: /admin
+Disallow: /api/v1/admin
+Disallow: /dashboard
+Disallow: /api/v1/auth
+Disallow: /login
+Disallow: /register
+Disallow: /api/v1/analytics
+Disallow: /api/v1/system
+Disallow: /api/v1/announcements
+
+# Allow main pages
+Allow: /
+Allow: /formatter-preview
+Allow: /templates-preview
+Allow: /analytics-preview
+Allow: /static/
+Allow: /health
+
+# Sitemap
+Sitemap: https://threadstorm-v6-kuo7e.ondigitalocean.app/sitemap.xml
