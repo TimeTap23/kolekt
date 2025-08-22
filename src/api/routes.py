@@ -23,6 +23,9 @@ from src.api.subscription_routes import subscription_router
 from src.api.ai_routes import ai_router
 from src.api.import_routes import import_router
 from src.api.connections_routes import connections_router
+from src.api.analytics_routes import analytics_router
+from src.api.health_routes import health_router
+from src.api.announcements_routes import announcements_router
 
 # Create main API router
 api_router = APIRouter()
@@ -39,6 +42,9 @@ api_router.include_router(subscription_router, prefix="/subscription", tags=["Su
 api_router.include_router(ai_router, prefix="/ai", tags=["AI Assistant"])
 api_router.include_router(import_router, prefix="/import", tags=["Content Import"])
 api_router.include_router(connections_router, prefix="/connections", tags=["Social Connections"]) 
+api_router.include_router(analytics_router, prefix="/analytics", tags=["Analytics"]) 
+api_router.include_router(health_router, prefix="/system", tags=["System Health"]) 
+api_router.include_router(announcements_router, prefix="/announcements", tags=["Announcements"]) 
 
 # Initialize services
 formatter = ThreadsFormatter()

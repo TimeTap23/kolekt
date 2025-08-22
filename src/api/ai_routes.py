@@ -17,6 +17,8 @@ from src.services.authentication import get_current_user, require_admin
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
+# Export alias for inclusion consistency
+ai_router = router
 
 class ContentOptimizationRequest(BaseModel):
     """Request model for content optimization"""
@@ -120,6 +122,72 @@ async def generate_hashtags(
     except Exception as e:
         logger.error(f"Error generating hashtags: {e}")
         raise HTTPException(status_code=500, detail="Failed to generate hashtags")
+
+# ----- Frontend compatibility alias endpoints -----
+
+class SimpleContentRequest(BaseModel):
+    content: str
+
+
+@router.post("/suggest-title")
+async def suggest_title(
+    payload: SimpleContentRequest,
+    current_user: Dict[str, Any] = Depends(get_current_user)
+):
+    try:
+        text = (payload.content or "").strip()
+        if not text:
+            raise HTTPException(status_code=400, detail="content is required")
+        first_sentence = text.split(".")[0]
+        words = first_sentence.split()[:6]
+        title = (" ".join(words) + ("..." if len(words) == 6 else "")).strip()
+        return {"success": True, "title": title or "Untitled"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"suggest_title failed: {e}")
+        raise HTTPException(status_code=500, detail="Failed to suggest title")
+
+
+@router.post("/suggest-hashtags")
+async def suggest_hashtags_alias(
+    payload: HashtagGenerationRequest,
+    current_user: Dict[str, Any] = Depends(get_current_user)
+):
+    # Delegate to existing implementation
+    return await generate_hashtags(payload, current_user)
+
+
+@router.post("/optimize")
+async def optimize_alias(
+    payload: ContentOptimizationRequest,
+    current_user: Dict[str, Any] = Depends(get_current_user)
+):
+    # Delegate to existing implementation
+    return await optimize_content(payload, current_user)
+
+
+@router.post("/generate-thread")
+async def generate_thread(
+    payload: SimpleContentRequest,
+    current_user: Dict[str, Any] = Depends(get_current_user)
+):
+    try:
+        text = (payload.content or "").strip()
+        if not text:
+            raise HTTPException(status_code=400, detail="content is required")
+        # Naive thread splitter: ~260 chars per chunk
+        chunks: List[str] = []
+        step = 260
+        for i in range(0, len(text), step):
+            chunks.append(text[i:i+step])
+        thread = "\n\n".join(f"{i+1}/{len(chunks)} {c}" for i, c in enumerate(chunks))
+        return {"success": True, "thread_content": thread}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"generate_thread failed: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate thread")
 
 @router.post("/format-content")
 async def format_content(
