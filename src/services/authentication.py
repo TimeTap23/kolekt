@@ -35,7 +35,7 @@ class AuthenticationService:
     
     def __init__(self):
         self.supabase = SupabaseService()
-        self.jwt_secret = settings.SECRET_KEY
+        self.jwt_secret = settings.JWT_SECRET  # Use new JWT signing key
         self.jwt_algorithm = "HS256"
         self.access_token_expire_minutes = 30
         self.refresh_token_expire_days = 7

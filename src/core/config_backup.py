@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     HOST: str = Field(default="127.0.0.1", env="HOST")
     PORT: int = Field(default=8000, env="PORT")
     SECRET_KEY: str = Field(..., env="SECRET_KEY")
+    JWT_SECRET: str = Field(..., env="JWT_SECRET")  # New JWT signing key from Supabase
     
     # Database - Supabase
     SUPABASE_URL: str = Field(..., env="SUPABASE_URL")

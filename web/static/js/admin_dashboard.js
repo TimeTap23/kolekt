@@ -108,7 +108,7 @@ class KolektAdmin {
 
     async loadDashboard() {
         try {
-            const data = await this.apiCall('/dashboard');
+            const data = await this.apiCall('/api/v1/admin/dashboard');
             this.renderDashboardStats(data.stats);
             await this.loadRecentActivity();
         } catch (error) {
@@ -234,9 +234,9 @@ class KolektAdmin {
         try {
             // Get recent users, content, and connections
             const [users, content, connections] = await Promise.all([
-                this.apiCall('/users?limit=5').catch(() => ({ users: [] })),
-                this.apiCall('/content').catch(() => ({ recent_content: [] })),
-                this.apiCall('/social-connections').catch(() => ({ connections: [] }))
+                this.apiCall('/api/v1/admin/users?limit=5').catch(() => ({ users: [] })),
+                this.apiCall('/api/v1/admin/content').catch(() => ({ recent_content: [] })),
+                this.apiCall('/api/v1/admin/social-connections').catch(() => ({ connections: [] }))
             ]);
 
             const recentUsers = users.users?.slice(0, 3) || [];
@@ -285,7 +285,7 @@ class KolektAdmin {
         const usersTable = document.getElementById('usersTable');
         
         try {
-            const data = await this.apiCall('/users?limit=50');
+            const data = await this.apiCall('/api/v1/admin/users?limit=50');
             this.renderUsersTable(data.users || []);
         } catch (error) {
             usersTable.innerHTML = '<p class="error-message">Failed to load users: ' + error.message + '</p>';
@@ -361,7 +361,7 @@ class KolektAdmin {
         const userData = Object.fromEntries(formData.entries());
 
         try {
-            const response = await this.apiCall('/users', 'POST', userData);
+            const response = await this.apiCall('/api/v1/admin/users', 'POST', userData);
             this.showSuccess('User created successfully!');
             this.closeModal('createUserModal');
             this.loadUsers(); // Refresh the users table
@@ -372,7 +372,7 @@ class KolektAdmin {
 
     async viewUser(userId) {
         try {
-            const user = await this.apiCall(`/users/${userId}`);
+            const user = await this.apiCall(`/api/v1/admin/users/${userId}`);
             this.renderUserDetails(user);
             document.getElementById('viewUserModal').classList.remove('hidden');
         } catch (error) {
@@ -422,7 +422,7 @@ class KolektAdmin {
 
     async editUser(userId) {
         try {
-            const user = await this.apiCall(`/users/${userId}`);
+            const user = await this.apiCall(`/api/v1/admin/users/${userId}`);
             this.populateEditForm(user);
             document.getElementById('editUserModal').classList.remove('hidden');
         } catch (error) {
@@ -450,7 +450,7 @@ class KolektAdmin {
         delete userData.id;
 
         try {
-            const response = await this.apiCall(`/users/${userId}`, 'PUT', userData);
+            const response = await this.apiCall(`/api/v1/admin/users/${userId}`, 'PUT', userData);
             this.showSuccess('User updated successfully!');
             this.closeModal('editUserModal');
             this.loadUsers(); // Refresh the users table
@@ -470,7 +470,7 @@ class KolektAdmin {
         }
 
         try {
-            await this.apiCall(`/users/${userId}`, 'DELETE');
+            await this.apiCall(`/api/v1/admin/users/${userId}`, 'DELETE');
             this.showSuccess('User deleted successfully!');
             this.closeModal('editUserModal');
             this.loadUsers(); // Refresh the users table
@@ -490,7 +490,7 @@ class KolektAdmin {
         const contentStats = document.getElementById('contentStats');
         
         try {
-            const data = await this.apiCall('/content');
+            const data = await this.apiCall('/api/v1/admin/content');
             this.renderContentStats(data.stats, data.recent_content || []);
         } catch (error) {
             contentStats.innerHTML = '<p class="error-message">Failed to load content statistics: ' + error.message + '</p>';
@@ -561,7 +561,7 @@ class KolektAdmin {
         const connectionsStats = document.getElementById('connectionsStats');
         
         try {
-            const data = await this.apiCall('/social-connections');
+            const data = await this.apiCall('/api/v1/admin/social-connections');
             this.renderConnectionsStats(data.stats, data.connections || []);
         } catch (error) {
             connectionsStats.innerHTML = '<p class="error-message">Failed to load connection statistics: ' + error.message + '</p>';
@@ -634,7 +634,7 @@ class KolektAdmin {
         const analyticsOverview = document.getElementById('analyticsOverview');
         
         try {
-            const data = await this.apiCall('/analytics/overview');
+            const data = await this.apiCall('/api/v1/admin/analytics/overview');
             this.renderAnalytics(data.analytics);
         } catch (error) {
             analyticsOverview.innerHTML = '<p class="error-message">Failed to load analytics: ' + error.message + '</p>';
@@ -701,7 +701,7 @@ class KolektAdmin {
         const announcementsList = document.getElementById('announcementsList');
         
         try {
-            const data = await this.apiCall('/announcements');
+            const data = await this.apiCall('/api/v1/admin/announcements');
             this.renderAnnouncements(data.announcements || []);
         } catch (error) {
             announcementsList.innerHTML = '<p class="error-message">Failed to load announcements: ' + error.message + '</p>';
@@ -761,7 +761,7 @@ class KolektAdmin {
         const systemHealth = document.getElementById('systemHealth');
         
         try {
-            const data = await this.apiCall('/system/health');
+            const data = await this.apiCall('/api/v1/admin/system/health');
             this.renderSystemHealth(data.health);
         } catch (error) {
             systemHealth.innerHTML = '<p class="error-message">Failed to load system health: ' + error.message + '</p>';
@@ -859,7 +859,7 @@ class KolektAdmin {
     async deleteContent(contentId) {
         if (confirm('Are you sure you want to delete this content?')) {
             try {
-                await this.apiCall(`/content/${contentId}`, 'DELETE');
+                await this.apiCall(`/api/v1/admin/content/${contentId}`, 'DELETE');
                 this.showSuccess('Content deleted successfully');
                 this.loadContent();
             } catch (error) {
@@ -871,7 +871,7 @@ class KolektAdmin {
     async removeConnection(connectionId) {
         if (confirm('Are you sure you want to remove this connection?')) {
             try {
-                await this.apiCall(`/social-connections/${connectionId}`, 'DELETE');
+                await this.apiCall(`/api/v1/admin/social-connections/${connectionId}`, 'DELETE');
                 this.showSuccess('Connection removed successfully');
                 this.loadConnections();
             } catch (error) {
@@ -891,7 +891,7 @@ class KolektAdmin {
     async deleteAnnouncement(announcementId) {
         if (confirm('Are you sure you want to delete this announcement?')) {
             try {
-                await this.apiCall(`/announcements/${announcementId}`, 'DELETE');
+                await this.apiCall(`/api/v1/admin/announcements/${announcementId}`, 'DELETE');
                 this.showSuccess('Announcement deleted successfully');
                 this.loadAnnouncements();
             } catch (error) {
