@@ -70,132 +70,116 @@ class AuthenticationService:
             }
         }
     
-    async def register_user(self, email: str, password: str, name: str = None) -> Dict:
+    async def register_user(self, email: str, password: str, name: str) -> dict:
         """Register a new user with Supabase Auth"""
         try:
-            # Validate input
-            if not email or not password:
-                raise HTTPException(status_code=400, detail="Email and password are required")
-            
-            if len(password) < 8:
-                raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
-            
-            # Check if user already exists
-            existing_user = await self._get_user_by_email(email)
-            if existing_user:
-                raise HTTPException(status_code=400, detail="User already exists")
-            
             # Create user in Supabase Auth
-            auth_response = await self.supabase.sign_up(email, password, {"name": name or email.split('@')[0]})
+            auth_response = self.supabase.client.auth.sign_up({
+                "email": email,
+                "password": password
+            })
             
-            if auth_response.get("success") and auth_response.get("user"):
-                user_id = auth_response["user"].id
-                
-                # Create or update profile (handle existing profiles gracefully)
-                profile_data = {
+            if not auth_response.user:
+                raise Exception("Failed to create user in Supabase Auth")
+            
+            user_id = auth_response.user.id
+            is_verified = auth_response.user.email_confirmed_at is not None
+            
+            # Create user profile
+            profile_data = {
+                "id": user_id,
+                "email": email,
+                "name": name,
+                "role": "user",
+                "plan": "free",
+                "is_active": True,
+                "is_verified": is_verified,
+                "created_at": datetime.now().isoformat(),
+                "updated_at": datetime.now().isoformat()
+            }
+            
+            # Try to create profile, handle if it already exists
+            try:
+                profile_response = self.supabase.client.table("profiles").insert(profile_data).execute()
+            except Exception as e:
+                if "duplicate key" in str(e):
+                    # Profile already exists, get the existing one
+                    profile_response = self.supabase.client.table("profiles").select("*").eq("id", user_id).execute()
+                    if not profile_response.data:
+                        raise Exception("Failed to create user profile")
+                else:
+                    raise Exception("Failed to create user profile")
+            
+            # Create user settings
+            settings_data = {
+                "user_id": user_id,
+                "theme": "light",
+                "notifications_enabled": True,
+                "created_at": datetime.now().isoformat(),
+                "updated_at": datetime.now().isoformat()
+            }
+            
+            try:
+                self.supabase.client.table("user_settings").insert(settings_data).execute()
+            except Exception as e:
+                if "duplicate key" in str(e):
+                    # Settings already exist, update them
+                    self.supabase.client.table("user_settings").update(settings_data).eq("user_id", user_id).execute()
+                else:
+                    # Log error but don't fail registration
+                    logger.warning(f"Failed to create user settings: {e}")
+            
+            # Create default permissions
+            try:
+                await self._create_default_permissions(user_id)
+            except Exception as e:
+                logger.warning(f"Failed to create default permissions: {e}")
+            
+            # Log the event
+            try:
+                await self.observability_service.log_event(
+                    "user_registered",
+                    user_id=user_id,
+                    details={"email": email, "name": name}
+                )
+            except Exception as e:
+                logger.warning(f"Failed to log registration event: {e}")
+            
+            # Send welcome email
+            try:
+                await self._send_welcome_email(email, name)
+            except Exception as e:
+                logger.warning(f"Failed to send welcome email: {e}")
+            
+            return {
+                "success": True,
+                "user": {
                     "id": user_id,
                     "email": email,
-                    "name": name or email.split('@')[0],
+                    "name": name,
                     "role": "user",
                     "plan": "free",
-                    "created_at": datetime.now().isoformat(),
-                    "updated_at": datetime.now().isoformat(),
-                    "is_verified": auth_response["user"].email_confirmed_at is not None,
-                    "last_login": None,
-                    "login_count": 0
-                }
-                
-                try:
-                    # Try to insert first (for new users)
-                    await self.supabase.client.table('profiles').insert(profile_data).execute()
-                except Exception as insert_error:
-                    # If insert fails due to existing profile, try to update
-                    if "duplicate key value" in str(insert_error) or "already exists" in str(insert_error):
-                        logger.info(f"Profile already exists for user {user_id}, updating instead")
-                        update_data = {
-                            "email": email,
-                            "name": name or email.split('@')[0],
-                            "updated_at": datetime.now().isoformat(),
-                            "is_verified": auth_response["user"].email_confirmed_at is not None
-                        }
-                        await self.supabase.client.table('profiles').update(update_data).eq('id', user_id).execute()
-                    else:
-                        # Re-raise if it's a different error
-                        raise insert_error
+                    "is_verified": is_verified
+                },
+                "access_token": auth_response.session.access_token if auth_response.session else None,
+                "token_type": "bearer"
+            }
             
-                # Create user settings (handle existing settings gracefully)
-                settings_data = {
-                    "id": user_id,  # Use id instead of user_id for user_settings
-                    "notifications_enabled": True,
-                    "theme": "cyberpunk",
-                    "created_at": datetime.now().isoformat(),
-                    "updated_at": datetime.now().isoformat()
-                }
-                
-                try:
-                    await self.supabase.client.table('user_settings').insert(settings_data).execute()
-                except Exception as settings_error:
-                    # If settings already exist, update them
-                    if "duplicate key value" in str(settings_error) or "already exists" in str(settings_error):
-                        logger.info(f"User settings already exist for user {user_id}, updating instead")
-                        update_settings = {
-                            "notifications_enabled": True,
-                            "theme": "cyberpunk",
-                            "updated_at": datetime.now().isoformat()
-                        }
-                        await self.supabase.client.table('user_settings').update(update_settings).eq('id', user_id).execute()
-                    else:
-                        # Re-raise if it's a different error
-                        raise settings_error
-                
-                # Create default permissions for new user
-                try:
-                    await self._create_default_permissions(user_id)
-                except Exception as e:
-                    logger.warning(f"Could not create default permissions: {e}")
-                
-                # Log registration
-                try:
-                    await observability_service.log_event(
-                        'auth',
-                        'user_registered',
-                        f"New user registered: {email}",
-                        {'user_id': user_id, 'email': email},
-                        user_id=user_id
-                    )
-                except Exception as e:
-                    logger.warning(f"Could not log registration event: {e}")
-                
-                # Send welcome email (placeholder)
-                try:
-                    await self._send_welcome_email(email, name)
-                except Exception as e:
-                    logger.warning(f"Could not send welcome email: {e}")
-                
-                return {
-                    "success": True,
-                    "user_id": user_id,
-                    "email": email,
-                    "message": "User registered successfully. Please check your email to verify your account."
-                }
-            else:
-                error_msg = auth_response.get("error", "Failed to create user")
-                raise HTTPException(status_code=400, detail=error_msg)
-                
-        except HTTPException:
-            raise
         except Exception as e:
             logger.error(f"User registration failed: {e}")
-            raise HTTPException(status_code=500, detail="Registration failed")
+            raise Exception("Registration failed")
     
     async def login_user(self, email: str, password: str) -> Dict:
         """Authenticate user and return access tokens"""
         try:
             # Authenticate with Supabase
-            auth_response = await self.supabase.sign_in(email, password)
+            auth_response = self.supabase.client.auth.sign_in_with_password({
+                "email": email,
+                "password": password
+            })
             
-            if auth_response.get("success") and auth_response.get("user"):
-                user_id = auth_response["user"].id
+            if auth_response.user:
+                user_id = auth_response.user.id
                 
                 # Get user profile
                 profile = await self._get_user_profile(user_id)
