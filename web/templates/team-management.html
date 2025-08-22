@@ -11,11 +11,199 @@
             box-sizing: border-box;
         }
 
+        /* Refined Kolekt Design System */
+        :root {
+            --kolekt-purple: #7A3FFF;
+            --kolekt-magenta: #E940A4;
+            --kolekt-orange: #FF6A3D;
+            --kolekt-gold: #FFB443;
+            --kolekt-gradient: linear-gradient(135deg, #7A3FFF 0%, #E940A4 50%, #FF6A3D 100%);
+            --kolekt-radial: radial-gradient(circle at center, #7A3FFF 0%, #E940A4 40%, #FF6A3D 75%, #FFB443 100%);
+            --kolekt-glow: rgba(122, 63, 255, 0.3);
+            --bg-dark: #0f0f23;
+            --bg-card: #1a1a2e;
+            --bg-card-hover: #252542;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6b7280;
+            --border-color: #2d2d44;
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg-dark) !important;
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
             min-height: 100vh;
-            color: #333;
+        }
+        
+        html {
+            background: var(--bg-dark) !important;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        /* Force dark background */
+        body, html, .main-content, .container {
+            background: var(--bg-dark) !important;
+        }
+        
+        /* Override any potential white backgrounds */
+        .bg-white, .bg-light, [class*="bg-"] {
+            background: var(--bg-card) !important;
+        }
+        
+        .header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem 0;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: var(--kolekt-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px var(--kolekt-glow);
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.2s;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+        
+        .nav-link:hover {
+            color: var(--kolekt-purple);
+            background: var(--bg-card-hover);
+        }
+        
+        .nav-link.active {
+            color: var(--kolekt-purple);
+            background: var(--bg-card-hover);
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-menu {
+            position: relative;
+        }
+        
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .user-menu-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--kolekt-purple);
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--kolekt-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 200px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .user-dropdown.show {
+            display: block;
+        }
+        
+        .dropdown-item {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        
+        .dropdown-item:hover {
+            background: var(--bg-card-hover);
+        }
+        
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 0.5rem 0;
         }
 
         .team-container {
@@ -25,22 +213,23 @@
         }
 
         .team-header {
-            background: white;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 2rem;
             margin-bottom: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .team-title {
             font-size: 2rem;
             font-weight: 700;
-            color: #1a202c;
+            color: var(--text-primary);
             margin-bottom: 0.5rem;
         }
 
         .team-subtitle {
-            color: #718096;
+            color: var(--text-secondary);
             font-size: 1.1rem;
         }
 
@@ -52,20 +241,28 @@
         }
 
         .stat-card {
-            background: #f7fafc;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
             padding: 1.5rem;
             border-radius: 12px;
             text-align: center;
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--kolekt-purple);
+            transform: translateY(-2px);
         }
 
         .stat-number {
             font-size: 2rem;
             font-weight: 700;
-            color: #4c51bf;
+            color: var(--kolekt-purple);
         }
 
         .stat-label {
-            color: #718096;
+            color: var(--text-secondary);
             font-size: 0.9rem;
             margin-top: 0.5rem;
         }
@@ -77,16 +274,23 @@
         }
 
         .team-panel {
-            background: white;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s;
+        }
+
+        .team-panel:hover {
+            border-color: var(--kolekt-purple);
+            transform: translateY(-2px);
         }
 
         .panel-title {
             font-size: 1.5rem;
             font-weight: 600;
-            color: #1a202c;
+            color: var(--text-primary);
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
@@ -381,6 +585,45 @@
     </style>
 </head>
 <body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo-container">
+                <div class="logo-icon">K</div>
+                <span class="logo-text">kolekt.io</span>
+            </a>
+            
+            <nav class="nav">
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/content-creator" class="nav-link">Content</a>
+                <a href="/formatter" class="nav-link">Formatter</a>
+                <a href="/templates" class="nav-link">Templates</a>
+                <a href="/analytics" class="nav-link">Analytics</a>
+                <a href="/social-manager" class="nav-link">Social</a>
+                <a href="/team-management" class="nav-link active">Team</a>
+                <a href="/profile" class="nav-link">Profile</a>
+            </nav>
+            
+            <div class="header-actions">
+                <div class="user-menu">
+                    <button class="user-menu-btn" onclick="toggleUserMenu()">
+                        <div class="user-avatar">
+                            <span id="userInitials">U</span>
+                        </div>
+                        <span id="userName">User</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="/profile" class="dropdown-item">Profile</a>
+                        <a href="/account-settings" class="dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" onclick="kolektAuth.logout()">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
     <div class="team-container">
         <!-- Team Header -->
         <div class="team-header">
@@ -816,6 +1059,55 @@
             const modal = document.getElementById('inviteModal');
             if (event.target === modal) {
                 hideInviteModal();
+            }
+        }
+
+        // User menu functionality
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const userMenu = document.querySelector('.user-menu');
+            const dropdown = document.getElementById('userDropdown');
+            
+            if (!userMenu.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Load user data
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                // User is logged in, show user menu
+                document.querySelector('.user-menu').style.display = 'block';
+                // Load user data from token or API
+                loadUserData();
+            } else {
+                // User is not logged in, show auth buttons
+                document.querySelector('.user-menu').style.display = 'none';
+            }
+        });
+
+        function loadUserData() {
+            // Load user data from API or token
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                // Decode JWT token to get user info
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    const userName = payload.name || payload.email || 'User';
+                    const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+                    
+                    document.getElementById('userName').textContent = userName;
+                    document.getElementById('userInitials').textContent = userInitials;
+                } catch (error) {
+                    console.error('Error loading user data:', error);
+                }
             }
         }
 

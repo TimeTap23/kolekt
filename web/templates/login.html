@@ -503,19 +503,137 @@
         }
         
         // Social login functions
-        function signInWithGoogle() {
-            // Implement Google OAuth
-            alert('Google OAuth integration coming soon!');
+        async function signInWithGoogle() {
+            try {
+                // Show loading state
+                const googleBtn = document.querySelector('.google-btn');
+                const originalText = googleBtn.innerHTML;
+                googleBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
+                googleBtn.disabled = true;
+
+                // Initiate Google OAuth flow
+                const response = await fetch('/api/v1/auth/google/authorize');
+                const data = await response.json();
+
+                if (data.auth_url) {
+                    // Store state for validation
+                    localStorage.setItem('oauth_state', data.state);
+                    
+                    // Redirect to Google OAuth
+                    window.location.href = data.auth_url;
+                } else {
+                    throw new Error('Failed to initiate Google OAuth');
+                }
+            } catch (error) {
+                console.error('Google OAuth error:', error);
+                alert('Google OAuth failed. Please try again.');
+                
+                // Reset button
+                const googleBtn = document.querySelector('.google-btn');
+                googleBtn.innerHTML = '<i class="fab fa-google"></i> Continue with Google';
+                googleBtn.disabled = false;
+            }
         }
         
-        function signInWithMeta() {
-            // Implement Meta OAuth
-            alert('Meta OAuth integration coming soon!');
+        async function signInWithMeta() {
+            try {
+                // Show loading state
+                const metaBtn = document.querySelector('.meta-btn');
+                const originalText = metaBtn.innerHTML;
+                metaBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
+                metaBtn.disabled = true;
+
+                // Initiate Meta OAuth flow
+                const response = await fetch('/api/v1/auth/meta/authorize');
+                const data = await response.json();
+
+                if (data.auth_url) {
+                    // Store state for validation
+                    localStorage.setItem('oauth_state', data.state);
+                    
+                    // Redirect to Meta OAuth
+                    window.location.href = data.auth_url;
+                } else {
+                    throw new Error('Failed to initiate Meta OAuth');
+                }
+            } catch (error) {
+                console.error('Meta OAuth error:', error);
+                alert('Meta OAuth failed. Please try again.');
+                
+                // Reset button
+                const metaBtn = document.querySelector('.meta-btn');
+                metaBtn.innerHTML = '<i class="fab fa-facebook"></i> Continue with Meta';
+                metaBtn.disabled = false;
+            }
+        }
+
+        // Handle OAuth callback
+        function handleOAuthCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+            const error = urlParams.get('error');
+
+            if (error) {
+                alert(`OAuth error: ${error}`);
+                return;
+            }
+
+            if (code && state) {
+                // Verify state matches stored state
+                const storedState = localStorage.getItem('oauth_state');
+                if (state !== storedState) {
+                    alert('OAuth state mismatch. Please try again.');
+                    return;
+                }
+
+                // Clear stored state
+                localStorage.removeItem('oauth_state');
+
+                // Complete OAuth flow
+                completeOAuthFlow(code, state);
+            }
+        }
+
+        async function completeOAuthFlow(code, state) {
+            try {
+                // Show loading
+                document.body.innerHTML = `
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--bg-dark); color: white;">
+                        <div style="text-align: center;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                            <h2>Completing sign in...</h2>
+                            <p>Please wait while we complete your authentication.</p>
+                        </div>
+                    </div>
+                `;
+
+                // Complete OAuth callback
+                const response = await fetch(`/api/v1/auth/google/callback?code=${code}&state=${state}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store auth token
+                    localStorage.setItem('authToken', data.token);
+                    
+                    // Redirect to dashboard
+                    window.location.href = '/dashboard';
+                } else {
+                    throw new Error(data.error || 'OAuth authentication failed');
+                }
+            } catch (error) {
+                console.error('OAuth completion error:', error);
+                alert('Authentication failed. Please try again.');
+                window.location.href = '/login';
+            }
         }
         
         // Initialize login manager
         document.addEventListener('DOMContentLoaded', () => {
             new LoginManager();
+            
+            // Handle OAuth callback if present
+            handleOAuthCallback();
         });
     </script>
 </body>
