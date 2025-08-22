@@ -226,10 +226,12 @@ class AuthenticationService:
                 "user": {
                     "id": user_id,
                     "email": email,
-                    "name": profile.get('name'),
+                    "name": profile.get('name') or "User",
                     "role": profile.get('role', 'user'),
                     "plan": profile.get('plan', 'free'),
-                    "email_verified": profile.get('email_verified', False)
+                    "email_verified": profile.get('email_verified', False),
+                    "created_at": profile.get('created_at') or datetime.now().isoformat(),
+                    "login_count": profile.get('login_count') or 1
                 }
             }
                 
@@ -478,10 +480,20 @@ class AuthenticationService:
     async def _update_last_login(self, user_id: str):
         """Update user's last login time"""
         try:
+            # Get current login count first
+            profile_response = self.supabase.client.table('profiles')\
+                .select('login_count')\
+                .eq('id', user_id)\
+                .single()\
+                .execute()
+            
+            current_login_count = profile_response.data.get('login_count', 0) if profile_response.data else 0
+            
+            # Update with incremented login count
             self.supabase.client.table('profiles')\
                 .update({
                     'last_login': datetime.now().isoformat(),
-                    'login_count': self.supabase.client.raw('login_count + 1')
+                    'login_count': current_login_count + 1
                 })\
                 .eq('id', user_id)\
                 .execute()
