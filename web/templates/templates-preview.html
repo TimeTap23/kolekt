@@ -294,8 +294,17 @@
         .template-card h3 {
             font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             color: var(--text-primary);
+        }
+
+        .template-category {
+            font-size: 0.8rem;
+            color: var(--kolekt-purple);
+            font-weight: 500;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .template-preview {
@@ -307,6 +316,21 @@
             font-size: 0.9rem;
             line-height: 1.5;
             color: var(--text-primary);
+        }
+
+        .template-benefits {
+            margin: 1rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .template-benefits span {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .template-stats {
@@ -435,66 +459,128 @@
             <h2 class="preview-title">Browse Our Template Library</h2>
             
             <div class="template-grid">
-                <!-- Product Launch Template -->
+                <!-- SaaS Product Launch -->
                 <div class="template-card">
                     <div class="template-icon">🚀</div>
-                    <h3>Product Launch</h3>
+                    <h3>SaaS Product Launch</h3>
+                    <div class="template-category">Tech & Software</div>
                     <div class="template-preview">
                         <strong>🧵 Thread 1:</strong><br>
-                        🎉 BIG NEWS! We're launching something that will change everything...<br><br>
-                        After months of hard work, we're finally ready to share what we've been building.<br><br>
-                        Here's what you need to know 👇
+                        🎉 After 18 months of building, we're launching [Product Name]!<br><br>
+                        It's the [specific problem] solution that [target audience] has been waiting for.<br><br>
+                        Here's what makes it different from everything else out there:
+                    </div>
+                    <div class="template-benefits">
+                        <span>🎯 Perfect for: SaaS founders, tech startups</span>
+                        <span>📈 Proven to increase signups by 40%</span>
                     </div>
                     <div class="template-stats">
-                        <span>📊 2.4k uses</span>
-                        <span>⭐ 4.8/5 rating</span>
-                    </div>
-                </div>
-
-                <!-- Book Review Template -->
-                <div class="template-card">
-                    <div class="template-icon">📚</div>
-                    <h3>Book Review</h3>
-                    <div class="template-preview">
-                        <strong>🧵 Thread 1:</strong><br>
-                        Just finished reading [Book Title] and WOW! 🤯<br><br>
-                        This book completely changed my perspective on [topic].<br><br>
-                        Here are the 3 biggest takeaways that blew my mind:
-                    </div>
-                    <div class="template-stats">
-                        <span>📊 1.8k uses</span>
+                        <span>📊 3.2k uses</span>
                         <span>⭐ 4.9/5 rating</span>
                     </div>
                 </div>
 
-                <!-- Industry Insights Template -->
+                <!-- Creator Income Report -->
                 <div class="template-card">
-                    <div class="template-icon">💡</div>
-                    <h3>Industry Insights</h3>
+                    <div class="template-icon">💰</div>
+                    <h3>Creator Income Report</h3>
+                    <div class="template-category">Creator Economy</div>
                     <div class="template-preview">
                         <strong>🧵 Thread 1:</strong><br>
-                        The [industry] landscape is changing faster than ever.<br><br>
-                        Here's what I'm seeing that most people are missing:<br><br>
-                        🧵 A thread on the future of [industry]:
+                        💰 My income report for [Month/Year]: $XX,XXX<br><br>
+                        This is exactly how I made money as a [creator type] this month.<br><br>
+                        I'm sharing the good, bad, and ugly numbers:
+                    </div>
+                    <div class="template-benefits">
+                        <span>🎯 Perfect for: Content creators, influencers</span>
+                        <span>📈 Drives 3x more engagement than generic posts</span>
                     </div>
                     <div class="template-stats">
-                        <span>📊 3.1k uses</span>
+                        <span>📊 2.8k uses</span>
+                        <span>⭐ 4.8/5 rating</span>
+                    </div>
+                </div>
+
+                <!-- Startup Lessons Learned -->
+                <div class="template-card">
+                    <div class="template-icon">💡</div>
+                    <h3>Startup Lessons Learned</h3>
+                    <div class="template-category">Entrepreneurship</div>
+                    <div class="template-preview">
+                        <strong>🧵 Thread 1:</strong><br>
+                        🏢 I just sold my startup for $X.XM after 3 years.<br><br>
+                        Here are the 7 lessons that changed everything for us:<br><br>
+                        Lesson 1: [Specific insight with story]
+                    </div>
+                    <div class="template-benefits">
+                        <span>🎯 Perfect for: Entrepreneurs, startup founders</span>
+                        <span>📈 Generates 5x more founder connections</span>
+                    </div>
+                    <div class="template-stats">
+                        <span>📊 4.1k uses</span>
+                        <span>⭐ 4.9/5 rating</span>
+                    </div>
+                </div>
+
+                <!-- Industry Trend Analysis -->
+                <div class="template-card">
+                    <div class="template-icon">📊</div>
+                    <h3>Industry Trend Analysis</h3>
+                    <div class="template-category">Business & Finance</div>
+                    <div class="template-preview">
+                        <strong>🧵 Thread 1:</strong><br>
+                        📈 The [Industry] market is about to explode.<br><br>
+                        I've analyzed 50+ companies and here's what the data shows:<br><br>
+                        Trend 1: [Specific trend with data]
+                    </div>
+                    <div class="template-benefits">
+                        <span>🎯 Perfect for: Analysts, consultants, investors</span>
+                        <span>📈 Positions you as industry expert</span>
+                    </div>
+                    <div class="template-stats">
+                        <span>📊 2.9k uses</span>
                         <span>⭐ 4.7/5 rating</span>
                     </div>
                 </div>
 
-                <!-- Personal Story Template -->
+                <!-- Personal Brand Story -->
                 <div class="template-card">
-                    <div class="template-icon">📖</div>
-                    <h3>Personal Story</h3>
+                    <div class="template-icon">👤</div>
+                    <h3>Personal Brand Story</h3>
+                    <div class="template-category">Personal Branding</div>
                     <div class="template-preview">
                         <strong>🧵 Thread 1:</strong><br>
-                        I want to share something personal with you today.<br><br>
-                        It's about [topic] and how it changed my life forever.<br><br>
-                        This is the story I've never told publicly before:
+                        👋 Hi, I'm [Name] and I help [audience] [achieve specific outcome].<br><br>
+                        But 5 years ago, I was [contrasting situation].<br><br>
+                        Here's how I went from [before] to [after]:
+                    </div>
+                    <div class="template-benefits">
+                        <span>🎯 Perfect for: Coaches, consultants, professionals</span>
+                        <span>📈 Builds trust and authority quickly</span>
                     </div>
                     <div class="template-stats">
-                        <span>📊 2.7k uses</span>
+                        <span>📊 3.5k uses</span>
+                        <span>⭐ 4.8/5 rating</span>
+                    </div>
+                </div>
+
+                <!-- Educational How-To -->
+                <div class="template-card">
+                    <div class="template-icon">🎓</div>
+                    <h3>Educational How-To</h3>
+                    <div class="template-category">Education & Training</div>
+                    <div class="template-preview">
+                        <strong>🧵 Thread 1:</strong><br>
+                        🎓 Want to learn [specific skill] in 10 minutes?<br><br>
+                        I've taught this to 1000+ students and here's the exact process:<br><br>
+                        Step 1: [Specific actionable step]
+                    </div>
+                    <div class="template-benefits">
+                        <span>🎯 Perfect for: Educators, trainers, experts</span>
+                        <span>📈 Drives 4x more saves and shares</span>
+                    </div>
+                    <div class="template-stats">
+                        <span>📊 2.6k uses</span>
                         <span>⭐ 4.9/5 rating</span>
                     </div>
                 </div>
