@@ -14,21 +14,8 @@ class KolektAdmin {
         this.setupNavigation();
         this.loadDashboard();
         
-        // Dev: disable redirect to keep admin accessible until real admin auth is wired
-        // if (!this.isAdminAuthenticated()) {
-        //     this.redirectToLogin();
-        //     return;
-        // }
-    }
-
-    isAdminAuthenticated() {
-        // Dev: always allow access; replace with real admin auth check later
-        return true;
-    }
-
-    redirectToLogin() {
-        // Dev: no-op to avoid bouncing back to homepage
-        console.warn('Admin auth not configured; staying on admin page.');
+        // Show welcome message
+        this.showSuccess('Welcome to Kolekt Admin Dashboard!');
     }
 
     setupNavigation() {
@@ -96,12 +83,21 @@ class KolektAdmin {
 
         try {
             const response = await fetch(`${this.baseUrl}/api/v1/admin${endpoint}`, options);
-            const result = await response.json();
             
             if (!response.ok) {
-                throw new Error(result.detail || 'API call failed');
+                if (response.status === 401) {
+                    throw new Error('Authentication required. Please log in as admin.');
+                } else if (response.status === 403) {
+                    throw new Error('Admin access required.');
+                } else if (response.status === 404) {
+                    throw new Error('API endpoint not found.');
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.detail || `HTTP ${response.status}: ${response.statusText}`);
+                }
             }
             
+            const result = await response.json();
             return result;
         } catch (error) {
             console.error('API call error:', error);
@@ -116,8 +112,58 @@ class KolektAdmin {
             this.renderDashboardStats(data.stats);
             await this.loadRecentActivity();
         } catch (error) {
-            this.showError('Failed to load dashboard');
+            this.showError('Failed to load dashboard: ' + error.message);
+            this.renderDashboardFallback();
         }
+    }
+
+    renderDashboardFallback() {
+        const statsGrid = document.getElementById('statsGrid');
+        statsGrid.innerHTML = `
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-icon users">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <h3 class="stat-value">--</h3>
+                <p class="stat-label">Total Users</p>
+                <p class="stat-change">Loading...</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-icon content">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                </div>
+                <h3 class="stat-value">--</h3>
+                <p class="stat-label">Content Items</p>
+                <p class="stat-change">Loading...</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-icon connections">
+                        <i class="fas fa-link"></i>
+                    </div>
+                </div>
+                <h3 class="stat-value">--</h3>
+                <p class="stat-label">Social Connections</p>
+                <p class="stat-change">Loading...</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-icon api">
+                        <i class="fas fa-server"></i>
+                    </div>
+                </div>
+                <h3 class="stat-value">--</h3>
+                <p class="stat-label">API Calls</p>
+                <p class="stat-change">Loading...</p>
+            </div>
+        `;
     }
 
     renderDashboardStats(stats) {
@@ -130,11 +176,11 @@ class KolektAdmin {
                         <i class="fas fa-users"></i>
                     </div>
                 </div>
-                <h3 class="stat-value">${stats.total_users.toLocaleString()}</h3>
+                <h3 class="stat-value">${(stats.total_users || 0).toLocaleString()}</h3>
                 <p class="stat-label">Total Users</p>
                 <p class="stat-change positive">
                     <i class="fas fa-arrow-up"></i>
-                    ${stats.active_users} active
+                    ${stats.active_users || 0} active
                 </p>
             </div>
 
@@ -144,11 +190,11 @@ class KolektAdmin {
                         <i class="fas fa-file-alt"></i>
                     </div>
                 </div>
-                <h3 class="stat-value">${stats.total_content_items.toLocaleString()}</h3>
+                <h3 class="stat-value">${(stats.total_content_items || 0).toLocaleString()}</h3>
                 <p class="stat-label">Content Items</p>
                 <p class="stat-change positive">
                     <i class="fas fa-arrow-up"></i>
-                    ${stats.monthly_posts} this month
+                    ${stats.monthly_posts || 0} this month
                 </p>
             </div>
 
@@ -158,7 +204,7 @@ class KolektAdmin {
                         <i class="fas fa-link"></i>
                     </div>
                 </div>
-                <h3 class="stat-value">${stats.social_connections.toLocaleString()}</h3>
+                <h3 class="stat-value">${(stats.social_connections || 0).toLocaleString()}</h3>
                 <p class="stat-label">Social Connections</p>
                 <p class="stat-change positive">
                     <i class="fas fa-check"></i>
@@ -172,7 +218,7 @@ class KolektAdmin {
                         <i class="fas fa-server"></i>
                     </div>
                 </div>
-                <h3 class="stat-value">${stats.total_api_calls.toLocaleString()}</h3>
+                <h3 class="stat-value">${(stats.total_api_calls || 0).toLocaleString()}</h3>
                 <p class="stat-label">API Calls</p>
                 <p class="stat-change positive">
                     <i class="fas fa-arrow-up"></i>
@@ -188,9 +234,9 @@ class KolektAdmin {
         try {
             // Get recent users, content, and connections
             const [users, content, connections] = await Promise.all([
-                this.apiCall('/users?limit=5'),
-                this.apiCall('/content'),
-                this.apiCall('/social-connections')
+                this.apiCall('/users?limit=5').catch(() => ({ users: [] })),
+                this.apiCall('/content').catch(() => ({ recent_content: [] })),
+                this.apiCall('/social-connections').catch(() => ({ connections: [] }))
             ]);
 
             const recentUsers = users.users?.slice(0, 3) || [];
@@ -201,37 +247,37 @@ class KolektAdmin {
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
                     <div>
                         <h4 style="margin-bottom: 1rem; color: var(--admin-dark);">Recent Users</h4>
-                        ${recentUsers.map(user => `
+                        ${recentUsers.length > 0 ? recentUsers.map(user => `
                             <div style="padding: 0.75rem; border: 1px solid var(--admin-border); border-radius: 8px; margin-bottom: 0.5rem;">
-                                <strong>${user.email}</strong><br>
-                                <small style="color: #6b7280;">Joined ${new Date(user.created_at).toLocaleDateString()}</small>
+                                <strong>${user.email || 'Unknown'}</strong><br>
+                                <small style="color: #6b7280;">Joined ${new Date(user.created_at || Date.now()).toLocaleDateString()}</small>
                             </div>
-                        `).join('')}
+                        `).join('') : '<p style="color: #6b7280;">No recent users</p>'}
                     </div>
                     
                     <div>
                         <h4 style="margin-bottom: 1rem; color: var(--admin-dark);">Recent Content</h4>
-                        ${recentContent.map(item => `
+                        ${recentContent.length > 0 ? recentContent.map(item => `
                             <div style="padding: 0.75rem; border: 1px solid var(--admin-border); border-radius: 8px; margin-bottom: 0.5rem;">
                                 <strong>${item.title || 'Untitled'}</strong><br>
-                                <small style="color: #6b7280;">Created ${new Date(item.created_at).toLocaleDateString()}</small>
+                                <small style="color: #6b7280;">Created ${new Date(item.created_at || item.added_at || Date.now()).toLocaleDateString()}</small>
                             </div>
-                        `).join('')}
+                        `).join('') : '<p style="color: #6b7280;">No recent content</p>'}
                     </div>
                     
                     <div>
                         <h4 style="margin-bottom: 1rem; color: var(--admin-dark);">Recent Connections</h4>
-                        ${recentConnections.map(conn => `
+                        ${recentConnections.length > 0 ? recentConnections.map(conn => `
                             <div style="padding: 0.75rem; border: 1px solid var(--admin-border); border-radius: 8px; margin-bottom: 0.5rem;">
-                                <strong>${conn.platform.charAt(0).toUpperCase() + conn.platform.slice(1)}</strong> - ${conn.username}<br>
-                                <small style="color: #6b7280;">Connected ${new Date(conn.connected_at).toLocaleDateString()}</small>
+                                <strong>${conn.platform ? conn.platform.charAt(0).toUpperCase() + conn.platform.slice(1) : 'Unknown'}</strong> - ${conn.username || 'Unknown'}<br>
+                                <small style="color: #6b7280;">Connected ${new Date(conn.connected_at || Date.now()).toLocaleDateString()}</small>
                             </div>
-                        `).join('')}
+                        `).join('') : '<p style="color: #6b7280;">No recent connections</p>'}
                     </div>
                 </div>
             `;
         } catch (error) {
-            activityDiv.innerHTML = '<p class="error-message">Failed to load recent activity</p>';
+            activityDiv.innerHTML = '<p class="error-message">Failed to load recent activity: ' + error.message + '</p>';
         }
     }
 
@@ -242,7 +288,7 @@ class KolektAdmin {
             const data = await this.apiCall('/users?limit=50');
             this.renderUsersTable(data.users || []);
         } catch (error) {
-            usersTable.innerHTML = '<p class="error-message">Failed to load users</p>';
+            usersTable.innerHTML = '<p class="error-message">Failed to load users: ' + error.message + '</p>';
         }
     }
 
@@ -269,7 +315,7 @@ class KolektAdmin {
                 <tbody>
                     ${users.map(user => `
                         <tr>
-                            <td>${user.email}</td>
+                            <td>${user.email || 'N/A'}</td>
                             <td>${user.name || 'N/A'}</td>
                             <td>${user.plan || 'free'}</td>
                             <td>
@@ -300,7 +346,7 @@ class KolektAdmin {
             const data = await this.apiCall('/content');
             this.renderContentStats(data.stats, data.recent_content || []);
         } catch (error) {
-            contentStats.innerHTML = '<p class="error-message">Failed to load content statistics</p>';
+            contentStats.innerHTML = '<p class="error-message">Failed to load content statistics: ' + error.message + '</p>';
         }
     }
 
@@ -310,55 +356,57 @@ class KolektAdmin {
         contentStats.innerHTML = `
             <div class="stats-grid" style="margin-bottom: 2rem;">
                 <div class="stat-card">
-                    <h3 class="stat-value">${stats.total_content}</h3>
+                    <h3 class="stat-value">${stats.total_content || 0}</h3>
                     <p class="stat-label">Total Content</p>
                 </div>
                 <div class="stat-card">
-                    <h3 class="stat-value">${stats.published_content}</h3>
+                    <h3 class="stat-value">${stats.published_content || 0}</h3>
                     <p class="stat-label">Published</p>
                 </div>
                 <div class="stat-card">
-                    <h3 class="stat-value">${stats.draft_content}</h3>
+                    <h3 class="stat-value">${stats.draft_content || 0}</h3>
                     <p class="stat-label">Drafts</p>
                 </div>
                 <div class="stat-card">
-                    <h3 class="stat-value">${stats.this_month_content}</h3>
+                    <h3 class="stat-value">${stats.this_month_content || 0}</h3>
                     <p class="stat-label">This Month</p>
                 </div>
             </div>
             
             <h3 style="margin-bottom: 1rem;">Recent Content</h3>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Status</th>
-                        <th>Created</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${recentContent.map(item => `
+            ${recentContent.length > 0 ? `
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>${item.title || 'Untitled'}</td>
-                            <td>
-                                <span class="status-badge status-${item.status || 'draft'}">
-                                    ${item.status || 'draft'}
-                                </span>
-                            </td>
-                            <td>${new Date(item.created_at).toLocaleDateString()}</td>
-                            <td>
-                                <button class="btn btn-secondary" onclick="admin.viewContent('${item.id}')">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="btn btn-secondary" onclick="admin.deleteContent('${item.id}')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
                         </tr>
-                    `).join('')}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        ${recentContent.map(item => `
+                            <tr>
+                                <td>${item.title || 'Untitled'}</td>
+                                <td>
+                                    <span class="status-badge status-${item.status || 'draft'}">
+                                        ${item.status || 'draft'}
+                                    </span>
+                                </td>
+                                <td>${new Date(item.created_at || item.added_at || Date.now()).toLocaleDateString()}</td>
+                                <td>
+                                    <button class="btn btn-secondary" onclick="admin.viewContent('${item.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="admin.deleteContent('${item.id}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            ` : '<p>No recent content found</p>'}
         `;
     }
 
@@ -369,7 +417,7 @@ class KolektAdmin {
             const data = await this.apiCall('/social-connections');
             this.renderConnectionsStats(data.stats, data.connections || []);
         } catch (error) {
-            connectionsStats.innerHTML = '<p class="error-message">Failed to load connection statistics</p>';
+            connectionsStats.innerHTML = '<p class="error-message">Failed to load connection statistics: ' + error.message + '</p>';
         }
     }
 
@@ -379,57 +427,59 @@ class KolektAdmin {
         connectionsStats.innerHTML = `
             <div class="stats-grid" style="margin-bottom: 2rem;">
                 <div class="stat-card">
-                    <h3 class="stat-value">${stats.total_connections}</h3>
+                    <h3 class="stat-value">${stats.total_connections || 0}</h3>
                     <p class="stat-label">Total Connections</p>
                 </div>
                 <div class="stat-card">
-                    <h3 class="stat-value">${stats.threads_connections}</h3>
+                    <h3 class="stat-value">${stats.threads_connections || 0}</h3>
                     <p class="stat-label">Threads</p>
                 </div>
                 <div class="stat-card">
-                    <h3 class="stat-value">${stats.instagram_connections}</h3>
+                    <h3 class="stat-value">${stats.instagram_connections || 0}</h3>
                     <p class="stat-label">Instagram</p>
                 </div>
                 <div class="stat-card">
-                    <h3 class="stat-value">${stats.facebook_connections}</h3>
+                    <h3 class="stat-value">${stats.facebook_connections || 0}</h3>
                     <p class="stat-label">Facebook</p>
                 </div>
             </div>
             
             <h3 style="margin-bottom: 1rem;">Recent Connections</h3>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Platform</th>
-                        <th>Username</th>
-                        <th>Status</th>
-                        <th>Connected</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${connections.slice(0, 20).map(conn => `
+            ${connections.length > 0 ? `
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>
-                                <i class="fab fa-${conn.platform}"></i>
-                                ${conn.platform.charAt(0).toUpperCase() + conn.platform.slice(1)}
-                            </td>
-                            <td>${conn.username}</td>
-                            <td>
-                                <span class="status-badge ${conn.is_active ? 'status-active' : 'status-inactive'}">
-                                    ${conn.is_active ? 'Active' : 'Inactive'}
-                                </span>
-                            </td>
-                            <td>${new Date(conn.connected_at).toLocaleDateString()}</td>
-                            <td>
-                                <button class="btn btn-secondary" onclick="admin.removeConnection('${conn.id}')">
-                                    <i class="fas fa-unlink"></i>
-                                </button>
-                            </td>
+                            <th>Platform</th>
+                            <th>Username</th>
+                            <th>Status</th>
+                            <th>Connected</th>
+                            <th>Actions</th>
                         </tr>
-                    `).join('')}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        ${connections.slice(0, 20).map(conn => `
+                            <tr>
+                                <td>
+                                    <i class="fab fa-${conn.platform || 'link'}"></i>
+                                    ${conn.platform ? conn.platform.charAt(0).toUpperCase() + conn.platform.slice(1) : 'Unknown'}
+                                </td>
+                                <td>${conn.username || 'Unknown'}</td>
+                                <td>
+                                    <span class="status-badge ${conn.is_active ? 'status-active' : 'status-inactive'}">
+                                        ${conn.is_active ? 'Active' : 'Inactive'}
+                                    </span>
+                                </td>
+                                <td>${new Date(conn.connected_at || Date.now()).toLocaleDateString()}</td>
+                                <td>
+                                    <button class="btn btn-secondary" onclick="admin.removeConnection('${conn.id}')">
+                                        <i class="fas fa-unlink"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            ` : '<p>No connections found</p>'}
         `;
     }
 
@@ -440,7 +490,7 @@ class KolektAdmin {
             const data = await this.apiCall('/analytics/overview');
             this.renderAnalytics(data.analytics);
         } catch (error) {
-            analyticsOverview.innerHTML = '<p class="error-message">Failed to load analytics</p>';
+            analyticsOverview.innerHTML = '<p class="error-message">Failed to load analytics: ' + error.message + '</p>';
         }
     }
 
@@ -450,7 +500,7 @@ class KolektAdmin {
         analyticsOverview.innerHTML = `
             <div class="stats-grid">
                 <div class="stat-card">
-                    <h3 class="stat-value">${analytics.user_growth_30d}</h3>
+                    <h3 class="stat-value">${analytics.user_growth_30d || 0}</h3>
                     <p class="stat-label">New Users (30 days)</p>
                     <p class="stat-change positive">
                         <i class="fas fa-arrow-up"></i>
@@ -458,7 +508,7 @@ class KolektAdmin {
                     </p>
                 </div>
                 <div class="stat-card">
-                    <h3 class="stat-value">${analytics.content_growth_30d}</h3>
+                    <h3 class="stat-value">${analytics.content_growth_30d || 0}</h3>
                     <p class="stat-label">New Content (30 days)</p>
                     <p class="stat-change positive">
                         <i class="fas fa-arrow-up"></i>
@@ -466,7 +516,7 @@ class KolektAdmin {
                     </p>
                 </div>
                 <div class="stat-card">
-                    <h3 class="stat-value">${analytics.connections_growth_30d}</h3>
+                    <h3 class="stat-value">${analytics.connections_growth_30d || 0}</h3>
                     <p class="stat-label">New Connections (30 days)</p>
                     <p class="stat-change positive">
                         <i class="fas fa-arrow-up"></i>
@@ -474,7 +524,7 @@ class KolektAdmin {
                     </p>
                 </div>
                 <div class="stat-card">
-                    <h3 class="stat-value">${analytics.total_users}</h3>
+                    <h3 class="stat-value">${analytics.total_users || 0}</h3>
                     <p class="stat-label">Total Platform Users</p>
                     <p class="stat-change">
                         <i class="fas fa-users"></i>
@@ -487,13 +537,13 @@ class KolektAdmin {
                 <h3 style="margin-bottom: 1rem;">Platform Health</h3>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
                     <div>
-                        <strong>Total Content:</strong> ${analytics.total_content}
+                        <strong>Total Content:</strong> ${analytics.total_content || 0}
                     </div>
                     <div>
-                        <strong>Total Connections:</strong> ${analytics.total_connections}
+                        <strong>Total Connections:</strong> ${analytics.total_connections || 0}
                     </div>
                     <div>
-                        <strong>Generated:</strong> ${new Date(analytics.generated_at).toLocaleString()}
+                        <strong>Generated:</strong> ${new Date(analytics.generated_at || Date.now()).toLocaleString()}
                     </div>
                 </div>
             </div>
@@ -507,7 +557,7 @@ class KolektAdmin {
             const data = await this.apiCall('/announcements');
             this.renderAnnouncements(data.announcements || []);
         } catch (error) {
-            announcementsList.innerHTML = '<p class="error-message">Failed to load announcements</p>';
+            announcementsList.innerHTML = '<p class="error-message">Failed to load announcements: ' + error.message + '</p>';
         }
     }
 
@@ -533,10 +583,10 @@ class KolektAdmin {
                 <tbody>
                     ${announcements.map(announcement => `
                         <tr>
-                            <td>${announcement.title}</td>
+                            <td>${announcement.title || 'Untitled'}</td>
                             <td>
-                                <span class="status-badge status-${announcement.priority}">
-                                    ${announcement.priority}
+                                <span class="status-badge status-${announcement.priority || 'normal'}">
+                                    ${announcement.priority || 'normal'}
                                 </span>
                             </td>
                             <td>
@@ -544,7 +594,7 @@ class KolektAdmin {
                                     ${announcement.is_active ? 'Active' : 'Inactive'}
                                 </span>
                             </td>
-                            <td>${new Date(announcement.created_at).toLocaleDateString()}</td>
+                            <td>${new Date(announcement.created_at || Date.now()).toLocaleDateString()}</td>
                             <td>
                                 <button class="btn btn-secondary" onclick="admin.editAnnouncement('${announcement.id}')">
                                     <i class="fas fa-edit"></i>
@@ -567,7 +617,7 @@ class KolektAdmin {
             const data = await this.apiCall('/system/health');
             this.renderSystemHealth(data.health);
         } catch (error) {
-            systemHealth.innerHTML = '<p class="error-message">Failed to load system health</p>';
+            systemHealth.innerHTML = '<p class="error-message">Failed to load system health: ' + error.message + '</p>';
         }
     }
 
@@ -580,28 +630,28 @@ class KolektAdmin {
                     <div class="stat-icon ${health.database === 'healthy' ? 'users' : 'api'}">
                         <i class="fas fa-database"></i>
                     </div>
-                    <h3 class="stat-value">${health.database}</h3>
+                    <h3 class="stat-value">${health.database || 'unknown'}</h3>
                     <p class="stat-label">Database</p>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon ${health.api === 'healthy' ? 'users' : 'api'}">
                         <i class="fas fa-server"></i>
                     </div>
-                    <h3 class="stat-value">${health.api}</h3>
+                    <h3 class="stat-value">${health.api || 'unknown'}</h3>
                     <p class="stat-label">API</p>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon connections">
                         <i class="fas fa-memory"></i>
                     </div>
-                    <h3 class="stat-value">${health.redis}</h3>
+                    <h3 class="stat-value">${health.redis || 'unknown'}</h3>
                     <p class="stat-label">Redis</p>
                 </div>
             </div>
             
             <div style="margin-top: 2rem; padding: 1.5rem; background: #f9fafb; border-radius: 12px;">
                 <h3 style="margin-bottom: 1rem;">System Information</h3>
-                <p><strong>Last Check:</strong> ${new Date(health.timestamp).toLocaleString()}</p>
+                <p><strong>Last Check:</strong> ${new Date(health.timestamp || Date.now()).toLocaleString()}</p>
                 <p><strong>Status:</strong> All systems operational</p>
             </div>
         `;
@@ -621,7 +671,9 @@ class KolektAdmin {
         document.body.appendChild(errorDiv);
         
         setTimeout(() => {
-            document.body.removeChild(errorDiv);
+            if (document.body.contains(errorDiv)) {
+                document.body.removeChild(errorDiv);
+            }
         }, 5000);
     }
 
@@ -638,24 +690,23 @@ class KolektAdmin {
         document.body.appendChild(successDiv);
         
         setTimeout(() => {
-            document.body.removeChild(successDiv);
+            if (document.body.contains(successDiv)) {
+                document.body.removeChild(successDiv);
+            }
         }, 3000);
     }
 
     // Action methods
     async viewUser(userId) {
-        // Implement user view modal
-        console.log('View user:', userId);
+        this.showError('User view feature not implemented yet');
     }
 
     async editUser(userId) {
-        // Implement user edit modal
-        console.log('Edit user:', userId);
+        this.showError('User edit feature not implemented yet');
     }
 
     async viewContent(contentId) {
-        // Implement content view modal
-        console.log('View content:', contentId);
+        this.showError('Content view feature not implemented yet');
     }
 
     async deleteContent(contentId) {
@@ -665,7 +716,7 @@ class KolektAdmin {
                 this.showSuccess('Content deleted successfully');
                 this.loadContent();
             } catch (error) {
-                this.showError('Failed to delete content');
+                this.showError('Failed to delete content: ' + error.message);
             }
         }
     }
@@ -677,19 +728,17 @@ class KolektAdmin {
                 this.showSuccess('Connection removed successfully');
                 this.loadConnections();
             } catch (error) {
-                this.showError('Failed to remove connection');
+                this.showError('Failed to remove connection: ' + error.message);
             }
         }
     }
 
     createAnnouncement() {
-        // Implement announcement creation modal
-        console.log('Create announcement');
+        this.showError('Announcement creation feature not implemented yet');
     }
 
     editAnnouncement(announcementId) {
-        // Implement announcement edit modal
-        console.log('Edit announcement:', announcementId);
+        this.showError('Announcement edit feature not implemented yet');
     }
 
     async deleteAnnouncement(announcementId) {
@@ -699,7 +748,7 @@ class KolektAdmin {
                 this.showSuccess('Announcement deleted successfully');
                 this.loadAnnouncements();
             } catch (error) {
-                this.showError('Failed to delete announcement');
+                this.showError('Failed to delete announcement: ' + error.message);
             }
         }
     }

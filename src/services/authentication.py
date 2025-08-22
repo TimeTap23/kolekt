@@ -14,6 +14,7 @@ from typing import Dict, Optional, Any, List
 from fastapi import HTTPException, Depends, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from passlib.context import CryptContext
+import uuid
 
 from src.core.config import settings
 from src.services.supabase import SupabaseService
@@ -104,7 +105,7 @@ class AuthenticationService:
                     "login_count": 0
                 }
                 
-                self.supabase.client.table('profiles').insert(profile_data).execute()
+                await self.supabase.client.table('profiles').insert(profile_data).execute()
                 
                 # Create user settings
                 settings_data = {
@@ -118,7 +119,7 @@ class AuthenticationService:
                     "updated_at": datetime.now().isoformat()
                 }
                 
-                self.supabase.client.table('user_settings').insert(settings_data).execute()
+                await self.supabase.client.table('user_settings').insert(settings_data).execute()
                 
                 # Create default permissions for new user
                 await self._create_default_permissions(user_id)
@@ -572,20 +573,141 @@ class AuthenticationService:
             logger.error(f"Failed to assign custom permissions to user {user_id}: {e}")
     
     async def _send_welcome_email(self, email: str, name: str):
-        """Send welcome email (placeholder)"""
+        """Send welcome email to new user (placeholder)"""
         try:
-            # This would integrate with your email service
+            # TODO: Implement actual email sending
             logger.info(f"Welcome email sent to {email}")
-            
-            await observability_service.log_event(
-                'email',
-                'welcome_sent',
-                f"Welcome email sent to {email}",
-                {'email': email, 'name': name}
-            )
-            
         except Exception as e:
             logger.error(f"Failed to send welcome email: {e}")
+
+    async def login_user_oauth(self, email: str, provider: str, user_info: Dict) -> Dict:
+        """Login user via OAuth provider"""
+        try:
+            # Get user profile
+            user_profile = await self._get_user_by_email(email)
+            if not user_profile:
+                raise HTTPException(status_code=404, detail="User not found")
+            
+            # Update last login
+            await self._update_last_login(user_profile['id'])
+            
+            # Generate tokens
+            access_token = await self._generate_access_token(user_profile['id'])
+            refresh_token = await self._generate_refresh_token(user_profile['id'])
+            
+            # Log OAuth login
+            await observability_service.log_event(
+                'auth',
+                'oauth_login_success',
+                f"OAuth login successful: {email} via {provider}",
+                {'email': email, 'provider': provider, 'user_id': user_profile['id']}
+            )
+            
+            return {
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+                "token_type": "bearer",
+                "expires_in": self.access_token_expire_minutes * 60,
+                "user": {
+                    "id": user_profile['id'],
+                    "email": user_profile['email'],
+                    "name": user_profile['name'],
+                    "role": user_profile['role'],
+                    "plan": user_profile['plan'],
+                    "email_verified": user_profile.get('email_verified', False),
+                    "created_at": user_profile['created_at'],
+                    "last_login": user_profile.get('last_login'),
+                    "login_count": user_profile.get('login_count', 0)
+                }
+            }
+            
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"OAuth login error: {e}")
+            raise HTTPException(status_code=500, detail="OAuth login failed")
+
+    async def register_user_oauth(self, email: str, name: str, provider: str, provider_user_id: str) -> Dict:
+        """Register new user via OAuth provider"""
+        try:
+            # Check if user already exists
+            existing_user = await self._get_user_by_email(email)
+            if existing_user:
+                # User exists, log them in instead
+                return await self.login_user_oauth(email, provider, {"email": email})
+            
+            # Create user profile
+            user_id = str(uuid.uuid4())
+            profile_data = {
+                "id": user_id,
+                "email": email,
+                "name": name,
+                "role": "user",
+                "plan": "free",
+                "created_at": datetime.now().isoformat(),
+                "updated_at": datetime.now().isoformat(),
+                "email_verified": True,  # OAuth users are pre-verified
+                "last_login": datetime.now().isoformat(),
+                "login_count": 1,
+                "oauth_provider": provider,
+                "oauth_provider_id": provider_user_id
+            }
+            
+            # Insert profile
+            await self.supabase.client.table('profiles').insert(profile_data).execute()
+            
+            # Create user settings
+            settings_data = {
+                "user_id": user_id,
+                "notifications_enabled": True,
+                "email_notifications": True,
+                "theme": "cyberpunk",
+                "language": "en",
+                "timezone": "UTC",
+                "created_at": datetime.now().isoformat(),
+                "updated_at": datetime.now().isoformat()
+            }
+            
+            await self.supabase.client.table('user_settings').insert(settings_data).execute()
+            
+            # Create default permissions
+            await self._create_default_permissions(user_id)
+            
+            # Generate tokens
+            access_token = await self._generate_access_token(user_id)
+            refresh_token = await self._generate_refresh_token(user_id)
+            
+            # Log OAuth registration
+            await observability_service.log_event(
+                'auth',
+                'oauth_registration_success',
+                f"OAuth registration successful: {email} via {provider}",
+                {'email': email, 'provider': provider, 'user_id': user_id}
+            )
+            
+            return {
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+                "token_type": "bearer",
+                "expires_in": self.access_token_expire_minutes * 60,
+                "user": {
+                    "id": user_id,
+                    "email": email,
+                    "name": name,
+                    "role": "user",
+                    "plan": "free",
+                    "email_verified": True,
+                    "created_at": profile_data['created_at'],
+                    "last_login": profile_data['last_login'],
+                    "login_count": 1
+                }
+            }
+            
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"OAuth registration error: {e}")
+            raise HTTPException(status_code=500, detail="OAuth registration failed")
 
 
 # Global authentication service instance

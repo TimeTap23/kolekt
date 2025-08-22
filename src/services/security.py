@@ -98,6 +98,17 @@ class SecurityService:
         except Exception as e:
             logger.error(f"Token decryption failed: {e}")
             raise
+
+    def generate_secure_token(self, length: int = 32) -> str:
+        """Generate a secure random token for OAuth state"""
+        try:
+            return secrets.token_urlsafe(length)
+        except Exception as e:
+            logger.error(f"Failed to generate secure token: {e}")
+            # Fallback to a simpler method
+            import random
+            import string
+            return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
     
     async def _encrypt_with_kms(self, token: str, user_id: str) -> str:
         """Encrypt token using AWS KMS"""

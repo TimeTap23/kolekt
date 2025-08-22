@@ -786,49 +786,49 @@ async def status():
 
 # Load routers individually to avoid import errors
 try:
-    from src.api.auth_routes import router as auth_router
-    app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
+    from src.api.auth_routes import auth_router
+    app.include_router(auth_router, prefix="/api/v1", tags=["Authentication"])
     logging.info("Auth router loaded successfully")
 except Exception as e:
     logging.error(f"Error loading auth router: {e}")
 
 try:
-    from src.api.connections_routes import router as connections_router
+    from src.api.connections_routes import connections_router
     app.include_router(connections_router, prefix="/api/v1/connections", tags=["Social Connections"])
     logging.info("Connections router loaded successfully")
 except Exception as e:
     logging.error(f"Error loading connections router: {e}")
 
 try:
-    from src.api.content_routes import router as content_router
+    from src.api.content_routes import content_router
     app.include_router(content_router, prefix="/api/v1/content", tags=["Content Management"])
     logging.info("Content router loaded successfully")
 except Exception as e:
     logging.error(f"Error loading content router: {e}")
 
 try:
-    from src.api.social_routes import router as social_router
+    from src.api.social_routes import social_router
     app.include_router(social_router, prefix="/api/v1/social", tags=["Social Media"])
     logging.info("Social router loaded successfully")
 except Exception as e:
     logging.error(f"Error loading social router: {e}")
 
 try:
-    from src.api.admin_routes import router as admin_router
+    from src.api.admin_routes import admin_router
     app.include_router(admin_router, prefix="/api/v1/admin", tags=["Admin"])
     logging.info("Admin router loaded successfully")
 except Exception as e:
     logging.error(f"Error loading admin router: {e}")
 
 try:
-    from src.api.ai_routes import router as ai_router
+    from src.api.ai_routes import ai_router
     app.include_router(ai_router, prefix="/api/v1/ai", tags=["AI Services"])
     logging.info("AI router loaded successfully")
 except Exception as e:
     logging.error(f"Error loading AI router: {e}")
 
 try:
-    from src.api.threads_routes import router as threads_router
+    from src.api.threads_routes import threads_router
     app.include_router(threads_router, prefix="/api/v1/threads", tags=["Threads"])
     logging.info("Threads router loaded successfully")
 except Exception as e:
@@ -842,7 +842,7 @@ except Exception as e:
     logging.error(f"Error loading subscription router: {e}")
 
 try:
-    from src.api.import_routes import router as import_router
+    from src.api.import_routes import import_router
     app.include_router(import_router, prefix="/api/v1/import", tags=["Import"])
     logging.info("Import router loaded successfully")
 except Exception as e:

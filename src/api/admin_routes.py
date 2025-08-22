@@ -206,10 +206,13 @@ async def get_users(
         # Get paginated results
         users_response = query.range(offset, offset + limit - 1).execute()
         
-        observability_service.log_admin_action(
-            user_id=current_user.id,
+        await observability_service.log_event(
+            category="admin",
             action="view_users",
-            details={"page": page, "limit": limit, "search": search}
+            description=f"Admin viewed users list (page {page}, limit {limit})",
+            metadata={"page": page, "limit": limit, "search": search},
+            user_id=current_user.id,
+            severity="info"
         )
         
         return {
@@ -246,10 +249,13 @@ async def get_user(user_id: str, current_user = Depends(require_admin)):
         user_data["threadstorms"] = threadstorms_response.data
         user_data["api_usage"] = api_usage_response.data
         
-        observability_service.log_admin_action(
-            user_id=current_user.id,
+        await observability_service.log_event(
+            category="admin",
             action="view_user",
-            details={"target_user_id": user_id}
+            description=f"Admin viewed user details for {user_id}",
+            metadata={"target_user_id": user_id},
+            user_id=current_user.id,
+            severity="info"
         )
         
         return {"success": True, "user": user_data}
@@ -284,10 +290,13 @@ async def update_user(user_id: str, user_update: UserUpdate, current_user = Depe
         if not response.data:
             raise HTTPException(status_code=404, detail="User not found")
         
-        observability_service.log_admin_action(
-            user_id=current_user.id,
+        await observability_service.log_event(
+            category="admin",
             action="update_user",
-            details={"target_user_id": user_id, "updates": update_data}
+            description=f"Admin updated user {user_id}",
+            metadata={"target_user_id": user_id, "updates": update_data},
+            user_id=current_user.id,
+            severity="info"
         )
         
         return {"success": True, "user": response.data[0]}
@@ -308,10 +317,13 @@ async def delete_user(user_id: str, current_user = Depends(require_admin)):
         if not response.data:
             raise HTTPException(status_code=404, detail="User not found")
         
-        observability_service.log_admin_action(
-            user_id=current_user.id,
+        await observability_service.log_event(
+            category="admin",
             action="delete_user",
-            details={"target_user_id": user_id}
+            description=f"Admin deactivated user {user_id}",
+            metadata={"target_user_id": user_id},
+            user_id=current_user.id,
+            severity="warning"
         )
         
         return {"success": True, "message": "User deactivated successfully"}
@@ -562,10 +574,13 @@ async def create_announcement(announcement: AnnouncementCreate, current_user = D
         
         response = supabase_service.client.table("announcements").insert(announcement_data).execute()
         
-        observability_service.log_admin_action(
-            user_id=current_user.id,
+        await observability_service.log_event(
+            category="admin",
             action="create_announcement",
-            details={"announcement_id": response.data[0]["id"]}
+            description=f"Admin created announcement {response.data[0]['id']}",
+            metadata={"announcement_id": response.data[0]["id"]},
+            user_id=current_user.id,
+            severity="info"
         )
         
         return {"success": True, "announcement": response.data[0]}
@@ -598,10 +613,13 @@ async def update_announcement(announcement_id: str, announcement: AnnouncementUp
         if not response.data:
             raise HTTPException(status_code=404, detail="Announcement not found")
         
-        observability_service.log_admin_action(
-            user_id=current_user.id,
+        await observability_service.log_event(
+            category="admin",
             action="update_announcement",
-            details={"announcement_id": announcement_id}
+            description=f"Admin updated announcement {announcement_id}",
+            metadata={"announcement_id": announcement_id},
+            user_id=current_user.id,
+            severity="info"
         )
         
         return {"success": True, "announcement": response.data[0]}
@@ -621,10 +639,13 @@ async def delete_announcement(announcement_id: str, current_user = Depends(requi
         if not response.data:
             raise HTTPException(status_code=404, detail="Announcement not found")
         
-        observability_service.log_admin_action(
-            user_id=current_user.id,
+        await observability_service.log_event(
+            category="admin",
             action="delete_announcement",
-            details={"announcement_id": announcement_id}
+            description=f"Admin deleted announcement {announcement_id}",
+            metadata={"announcement_id": announcement_id},
+            user_id=current_user.id,
+            severity="warning"
         )
         
         return {"success": True, "message": "Announcement deleted successfully"}
@@ -653,10 +674,13 @@ async def get_system_health():
         # Check API endpoints
         api_health = "healthy"
         
-        # observability_service.log_admin_action(
-        #     user_id=current_user.id,
+        # await observability_service.log_event(
+        #     category="admin",
         #     action="check_system_health",
-        #     details={"db_health": db_health, "redis_health": redis_health, "api_health": api_health}
+        #     description="Admin checked system health",
+        #     metadata={"db_health": db_health, "redis_health": redis_health, "api_health": api_health},
+        #     user_id=current_user.id,
+        #     severity="info"
         # )
         
         return {
@@ -684,10 +708,13 @@ async def toggle_maintenance_mode(
         # This would typically update a system settings table
         # For now, we'll just log the action
         
-        observability_service.log_admin_action(
-            user_id=current_user.id,
+        await observability_service.log_event(
+            category="admin",
             action="toggle_maintenance",
-            details={"enabled": enabled, "message": message}
+            description=f"Admin toggled maintenance mode: {enabled}",
+            metadata={"enabled": enabled, "message": message},
+            user_id=current_user.id,
+            severity="warning"
         )
         
         return {

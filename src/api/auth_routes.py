@@ -531,6 +531,162 @@ async def update_user_role(user_id: str, role: str):
         raise HTTPException(status_code=500, detail="Failed to update user role")
 
 
+# =============================================================================
+# OAUTH ENDPOINTS
+# =============================================================================
+
+@auth_router.get("/google/authorize")
+async def google_oauth_authorize():
+    """Initiate Google OAuth flow"""
+    try:
+        from src.services.oauth_service import OAuthService, OAuthProvider
+        
+        oauth_service = OAuthService()
+        state = security_service.generate_secure_token()
+        
+        # Store state for validation
+        await observability_service.log_event(
+            'oauth',
+            'google_authorize_initiated',
+            "Google OAuth flow initiated",
+            {'state': state}
+        )
+        
+        auth_url = oauth_service.get_auth_url(OAuthProvider.GOOGLE, state)
+        return {"auth_url": auth_url, "state": state}
+        
+    except Exception as e:
+        logger.error(f"Google OAuth authorize error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to initiate Google OAuth")
+
+
+@auth_router.get("/google/callback")
+async def google_oauth_callback(code: str, state: str):
+    """Handle Google OAuth callback"""
+    try:
+        from src.services.oauth_service import OAuthService, OAuthProvider
+        
+        oauth_service = OAuthService()
+        
+        # Exchange code for token
+        token = await oauth_service.exchange_code_for_token(OAuthProvider.GOOGLE, code)
+        
+        # Get user info from Google
+        user_info = await oauth_service.get_user_info(OAuthProvider.GOOGLE, token.access_token)
+        
+        # Check if user exists
+        existing_user = await auth_service._get_user_by_email(user_info['email'])
+        
+        if existing_user:
+            # User exists, log them in
+            result = await auth_service.login_user_oauth(user_info['email'], 'google', user_info)
+        else:
+            # Create new user
+            result = await auth_service.register_user_oauth(
+                email=user_info['email'],
+                name=user_info.get('name', user_info['email'].split('@')[0]),
+                provider='google',
+                provider_user_id=user_info['id']
+            )
+        
+        # Log OAuth success
+        await observability_service.log_event(
+            'oauth',
+            'google_oauth_success',
+            f"Google OAuth successful for {user_info['email']}",
+            {'email': user_info['email'], 'provider': 'google'}
+        )
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Google OAuth callback error: {e}")
+        await observability_service.log_event(
+            'oauth',
+            'google_oauth_error',
+            f"Google OAuth failed: {str(e)}",
+            {'error': str(e)},
+            severity='error'
+        )
+        raise HTTPException(status_code=500, detail="Google OAuth failed")
+
+
+@auth_router.get("/meta/authorize")
+async def meta_oauth_authorize():
+    """Initiate Meta OAuth flow"""
+    try:
+        from src.services.oauth_service import OAuthService, OAuthProvider
+        
+        oauth_service = OAuthService()
+        state = security_service.generate_secure_token()
+        
+        # Store state for validation
+        await observability_service.log_event(
+            'oauth',
+            'meta_authorize_initiated',
+            "Meta OAuth flow initiated",
+            {'state': state}
+        )
+        
+        auth_url = oauth_service.get_auth_url(OAuthProvider.META, state)
+        return {"auth_url": auth_url, "state": state}
+        
+    except Exception as e:
+        logger.error(f"Meta OAuth authorize error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to initiate Meta OAuth")
+
+
+@auth_router.get("/meta/callback")
+async def meta_oauth_callback(code: str, state: str):
+    """Handle Meta OAuth callback"""
+    try:
+        from src.services.oauth_service import OAuthService, OAuthProvider
+        
+        oauth_service = OAuthService()
+        
+        # Exchange code for token
+        token = await oauth_service.exchange_code_for_token(OAuthProvider.META, code)
+        
+        # Get user info from Meta
+        user_info = await oauth_service.get_user_info(OAuthProvider.META, token.access_token)
+        
+        # Check if user exists
+        existing_user = await auth_service._get_user_by_email(user_info['email'])
+        
+        if existing_user:
+            # User exists, log them in
+            result = await auth_service.login_user_oauth(user_info['email'], 'meta', user_info)
+        else:
+            # Create new user
+            result = await auth_service.register_user_oauth(
+                email=user_info['email'],
+                name=user_info.get('name', user_info['email'].split('@')[0]),
+                provider='meta',
+                provider_user_id=user_info['id']
+            )
+        
+        # Log OAuth success
+        await observability_service.log_event(
+            'oauth',
+            'meta_oauth_success',
+            f"Meta OAuth successful for {user_info['email']}",
+            {'email': user_info['email'], 'provider': 'meta'}
+        )
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Meta OAuth callback error: {e}")
+        await observability_service.log_event(
+            'oauth',
+            'meta_oauth_error',
+            f"Meta OAuth failed: {str(e)}",
+            {'error': str(e)},
+            severity='error'
+        )
+        raise HTTPException(status_code=500, detail="Meta OAuth failed")
+
+
 # Health check endpoint
 @auth_router.get("/health")
 async def auth_health_check():
