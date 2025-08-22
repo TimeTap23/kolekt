@@ -91,21 +91,34 @@ class AuthenticationService:
             if auth_response.get("success") and auth_response.get("user"):
                 user_id = auth_response["user"].id
                 
-                # Create user profile
-                profile_data = {
-                    "id": user_id,
-                    "email": email,
-                    "name": name or email.split('@')[0],
-                    "role": "user",
-                    "plan": "free",
-                    "created_at": datetime.now().isoformat(),
-                    "updated_at": datetime.now().isoformat(),
-                    "is_verified": auth_response["user"].email_confirmed_at is not None,
-                    "last_login": None,
-                    "login_count": 0
-                }
-                
-                await self.supabase.client.table('profiles').insert(profile_data).execute()
+                # Check if profile already exists
+                existing_profile = await self._get_user_profile(user_id)
+                if existing_profile:
+                    # Profile already exists, update it
+                    profile_data = {
+                        "email": email,
+                        "name": name or email.split('@')[0],
+                        "updated_at": datetime.now().isoformat(),
+                        "is_verified": auth_response["user"].email_confirmed_at is not None
+                    }
+                    
+                    await self.supabase.client.table('profiles').update(profile_data).eq('id', user_id).execute()
+                else:
+                    # Create new profile
+                    profile_data = {
+                        "id": user_id,
+                        "email": email,
+                        "name": name or email.split('@')[0],
+                        "role": "user",
+                        "plan": "free",
+                        "created_at": datetime.now().isoformat(),
+                        "updated_at": datetime.now().isoformat(),
+                        "is_verified": auth_response["user"].email_confirmed_at is not None,
+                        "last_login": None,
+                        "login_count": 0
+                    }
+                    
+                    await self.supabase.client.table('profiles').insert(profile_data).execute()
             
                 # Create user settings
                 settings_data = {
