@@ -94,20 +94,10 @@
             color: var(--text-primary);
         }
         
-        .logo-icon {
-            width: 48px;
+        .logo-full {
             height: 48px;
-            border-radius: 16px;
-            background: var(--kolekt-radial);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            font-weight: 700;
-            font-size: 1.5rem;
-            box-shadow: 0 0 30px var(--kolekt-glow);
-            position: relative;
-            animation: pulse 2s infinite;
+            width: auto;
+            object-fit: contain;
         }
         
         @keyframes pulse {
@@ -437,8 +427,7 @@
         <div class="header-content">
             <!-- Logo -->
             <a href="/" class="logo-container">
-                <div class="logo-icon">K</div>
-                <span class="logo-text">kolekt.io</span>
+                <img src="/static/images/Kolekt_icon_wordmark.png" alt="Kolekt Logo" class="logo-full">
             </a>
             
             <!-- Navigation -->
@@ -586,8 +575,7 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-logo">
-                <div class="logo-icon">K</div>
-                <span class="logo-text">kolekt.io</span>
+                <img src="/static/images/Kolekt_icon_wordmark.png" alt="Kolekt Logo" class="logo-full">
             </div>
             <div class="footer-links">
                 <a href="#" class="footer-link">Privacy Policy</a>
