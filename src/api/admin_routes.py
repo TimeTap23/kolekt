@@ -16,10 +16,10 @@ admin_router = APIRouter(tags=["admin"])
 
 # Pydantic Models
 class UserUpdate(BaseModel):
-    user_id: str
     email: Optional[str] = None
     name: Optional[str] = None
     plan: Optional[str] = None
+    role: Optional[str] = None
     is_active: Optional[bool] = None
     is_verified: Optional[bool] = None
 
@@ -174,6 +174,82 @@ async def get_kolekt_admin_dashboard():
         raise HTTPException(status_code=500, detail="Failed to get dashboard statistics")
 
 # User Management
+@admin_router.post("/users")
+async def create_user(
+    email: str,
+    password: str,
+    name: Optional[str] = None,
+    plan: str = "free",
+    role: str = "user",
+    current_user = Depends(require_admin)
+):
+    """Create a new user"""
+    try:
+        # First create the user in Supabase Auth
+        auth_response = supabase_service.client.auth.admin.create_user({
+            "email": email,
+            "password": password,
+            "email_confirm": True
+        })
+        
+        if not auth_response.user:
+            raise HTTPException(status_code=400, detail="Failed to create user in auth system")
+        
+        user_id = auth_response.user.id
+        
+        # Create user profile
+        profile_data = {
+            "id": user_id,
+            "email": email,
+            "name": name or email.split('@')[0],
+            "role": role,
+            "plan": plan,
+            "is_active": True,
+            "is_verified": True,
+            "created_at": datetime.now().isoformat(),
+            "updated_at": datetime.now().isoformat()
+        }
+        
+        profile_response = supabase_service.client.table("profiles").insert(profile_data).execute()
+        
+        if not profile_response.data:
+            raise HTTPException(status_code=500, detail="Failed to create user profile")
+        
+        # Create user settings
+        settings_data = {
+            "id": user_id,
+            "notifications_enabled": True,
+            "theme": "cyberpunk",
+            "created_at": datetime.now().isoformat(),
+            "updated_at": datetime.now().isoformat()
+        }
+        
+        try:
+            supabase_service.client.table("user_settings").insert(settings_data).execute()
+        except Exception as e:
+            logger.warning(f"Failed to create user settings for {user_id}: {e}")
+        
+        await observability_service.log_event(
+            category="admin",
+            action="create_user",
+            description=f"Admin created new user {email}",
+            metadata={"target_user_id": user_id, "email": email, "plan": plan, "role": role},
+            user_id=current_user.id,
+            severity="info"
+        )
+        
+        return {
+            "success": True,
+            "user": profile_response.data[0],
+            "message": "User created successfully"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating user: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create user")
+
 @admin_router.get("/users")
 async def get_users(
     page: int = 1,
@@ -277,10 +353,15 @@ async def update_user(user_id: str, user_update: UserUpdate, current_user = Depe
             update_data["name"] = user_update.name
         if user_update.plan is not None:
             update_data["plan"] = user_update.plan
+        if user_update.role is not None:
+            update_data["role"] = user_update.role
         if user_update.is_active is not None:
             update_data["is_active"] = user_update.is_active
         if user_update.is_verified is not None:
             update_data["is_verified"] = user_update.is_verified
+        
+        # Add updated_at timestamp
+        update_data["updated_at"] = datetime.now().isoformat()
         
         if not update_data:
             raise HTTPException(status_code=400, detail="No fields to update")
@@ -308,25 +389,46 @@ async def update_user(user_id: str, user_update: UserUpdate, current_user = Depe
         raise HTTPException(status_code=500, detail="Failed to update user")
 
 @admin_router.delete("/users/{user_id}")
-async def delete_user(user_id: str, current_user = Depends(require_admin)):
-    """Delete user (soft delete)"""
+async def delete_user(user_id: str, hard_delete: bool = False, current_user = Depends(require_admin)):
+    """Delete user (soft delete by default, hard delete if specified)"""
     try:
-        # Soft delete by setting is_active to False
-        response = supabase_service.client.table("profiles").update({"is_active": False}).eq("id", user_id).execute()
+        if hard_delete:
+            # Hard delete - remove from Supabase Auth and database
+            try:
+                # Delete from Supabase Auth
+                supabase_service.client.auth.admin.delete_user(user_id)
+            except Exception as e:
+                logger.warning(f"Failed to delete user from auth: {e}")
+            
+            # Delete from profiles table
+            response = supabase_service.client.table("profiles").delete().eq("id", user_id).execute()
+            
+            # Delete from user_settings table
+            try:
+                supabase_service.client.table("user_settings").delete().eq("id", user_id).execute()
+            except Exception as e:
+                logger.warning(f"Failed to delete user settings: {e}")
+            
+            action_description = f"Admin permanently deleted user {user_id}"
+        else:
+            # Soft delete by setting is_active to False
+            response = supabase_service.client.table("profiles").update({"is_active": False}).eq("id", user_id).execute()
+            action_description = f"Admin deactivated user {user_id}"
         
-        if not response.data:
+        if not response.data and not hard_delete:
             raise HTTPException(status_code=404, detail="User not found")
         
         await observability_service.log_event(
             category="admin",
             action="delete_user",
-            description=f"Admin deactivated user {user_id}",
-            metadata={"target_user_id": user_id},
+            description=action_description,
+            metadata={"target_user_id": user_id, "hard_delete": hard_delete},
             user_id=current_user.id,
             severity="warning"
         )
         
-        return {"success": True, "message": "User deactivated successfully"}
+        message = "User permanently deleted" if hard_delete else "User deactivated successfully"
+        return {"success": True, "message": message}
         
     except HTTPException:
         raise

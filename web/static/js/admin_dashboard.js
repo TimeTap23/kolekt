@@ -307,6 +307,7 @@ class KolektAdmin {
                         <th>Email</th>
                         <th>Name</th>
                         <th>Plan</th>
+                        <th>Role</th>
                         <th>Status</th>
                         <th>Last Login</th>
                         <th>Actions</th>
@@ -318,6 +319,7 @@ class KolektAdmin {
                             <td>${user.email || 'N/A'}</td>
                             <td>${user.name || 'N/A'}</td>
                             <td>${user.plan || 'free'}</td>
+                            <td>${user.role || 'user'}</td>
                             <td>
                                 <span class="status-badge ${user.is_active ? 'status-active' : 'status-inactive'}">
                                     ${user.is_active ? 'Active' : 'Inactive'}
@@ -325,11 +327,14 @@ class KolektAdmin {
                             </td>
                             <td>${user.last_login ? new Date(user.last_login).toLocaleDateString() : 'Never'}</td>
                             <td>
-                                <button class="btn btn-secondary" onclick="admin.viewUser('${user.id}')">
+                                <button class="btn btn-secondary" onclick="admin.viewUser('${user.id}')" title="View Details">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button class="btn btn-secondary" onclick="admin.editUser('${user.id}')">
+                                <button class="btn btn-primary" onclick="admin.editUser('${user.id}')" title="Edit User">
                                     <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger" onclick="admin.deleteUser('${user.id}')" title="Delete User">
+                                    <i class="fas fa-trash"></i>
                                 </button>
                             </td>
                         </tr>
@@ -337,6 +342,148 @@ class KolektAdmin {
                 </tbody>
             </table>
         `;
+    }
+
+    // User Management Methods
+    showCreateUserModal() {
+        document.getElementById('createUserModal').classList.remove('hidden');
+        document.getElementById('createUserForm').reset();
+    }
+
+    closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+    }
+
+    async createUser(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        const userData = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await this.apiCall('/users', 'POST', userData);
+            this.showSuccess('User created successfully!');
+            this.closeModal('createUserModal');
+            this.loadUsers(); // Refresh the users table
+        } catch (error) {
+            this.showError('Failed to create user: ' + error.message);
+        }
+    }
+
+    async viewUser(userId) {
+        try {
+            const user = await this.apiCall(`/users/${userId}`);
+            this.renderUserDetails(user);
+            document.getElementById('viewUserModal').classList.remove('hidden');
+        } catch (error) {
+            this.showError('Failed to load user details: ' + error.message);
+        }
+    }
+
+    renderUserDetails(user) {
+        const userDetails = document.getElementById('userDetails');
+        userDetails.innerHTML = `
+            <div style="padding: 1.5rem;">
+                <div class="form-group">
+                    <label>Email</label>
+                    <p style="margin: 0; padding: 0.5rem; background: #f9fafb; border-radius: 4px;">${user.email}</p>
+                </div>
+                <div class="form-group">
+                    <label>Name</label>
+                    <p style="margin: 0; padding: 0.5rem; background: #f9fafb; border-radius: 4px;">${user.name || 'N/A'}</p>
+                </div>
+                <div class="form-group">
+                    <label>Plan</label>
+                    <p style="margin: 0; padding: 0.5rem; background: #f9fafb; border-radius: 4px;">${user.plan || 'free'}</p>
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <p style="margin: 0; padding: 0.5rem; background: #f9fafb; border-radius: 4px;">${user.role || 'user'}</p>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <p style="margin: 0; padding: 0.5rem; background: #f9fafb; border-radius: 4px;">
+                        <span class="status-badge ${user.is_active ? 'status-active' : 'status-inactive'}">
+                            ${user.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label>Created</label>
+                    <p style="margin: 0; padding: 0.5rem; background: #f9fafb; border-radius: 4px;">${user.created_at ? new Date(user.created_at).toLocaleString() : 'N/A'}</p>
+                </div>
+                <div class="form-group">
+                    <label>Last Login</label>
+                    <p style="margin: 0; padding: 0.5rem; background: #f9fafb; border-radius: 4px;">${user.last_login ? new Date(user.last_login).toLocaleString() : 'Never'}</p>
+                </div>
+            </div>
+        `;
+    }
+
+    async editUser(userId) {
+        try {
+            const user = await this.apiCall(`/users/${userId}`);
+            this.populateEditForm(user);
+            document.getElementById('editUserModal').classList.remove('hidden');
+        } catch (error) {
+            this.showError('Failed to load user for editing: ' + error.message);
+        }
+    }
+
+    populateEditForm(user) {
+        document.getElementById('editUserId').value = user.id;
+        document.getElementById('editUserEmail').value = user.email || '';
+        document.getElementById('editUserName').value = user.name || '';
+        document.getElementById('editUserPlan').value = user.plan || 'free';
+        document.getElementById('editUserRole').value = user.role || 'user';
+        document.getElementById('editUserActive').checked = user.is_active !== false;
+    }
+
+    async updateUser(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        const userData = Object.fromEntries(formData.entries());
+        const userId = userData.id;
+
+        // Remove id from userData as it's not needed for the update
+        delete userData.id;
+
+        try {
+            const response = await this.apiCall(`/users/${userId}`, 'PUT', userData);
+            this.showSuccess('User updated successfully!');
+            this.closeModal('editUserModal');
+            this.loadUsers(); // Refresh the users table
+        } catch (error) {
+            this.showError('Failed to update user: ' + error.message);
+        }
+    }
+
+    async deleteUser(userId) {
+        if (!userId) {
+            // Get userId from the edit form if not provided
+            userId = document.getElementById('editUserId').value;
+        }
+
+        if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+            return;
+        }
+
+        try {
+            await this.apiCall(`/users/${userId}`, 'DELETE');
+            this.showSuccess('User deleted successfully!');
+            this.closeModal('editUserModal');
+            this.loadUsers(); // Refresh the users table
+        } catch (error) {
+            this.showError('Failed to delete user: ' + error.message);
+        }
+    }
+
+    editCurrentUser() {
+        // Close view modal and open edit modal
+        this.closeModal('viewUserModal');
+        // The edit form should already be populated from the viewUser call
+        document.getElementById('editUserModal').classList.remove('hidden');
     }
 
     async loadContent() {

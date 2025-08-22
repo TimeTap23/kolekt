@@ -97,7 +97,230 @@
 
         .admin-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--admin-dark);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .admin-subtitle {
+            color: #6b7280;
+            margin: 0;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--admin-border);
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--admin-dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #f3f4f6;
+            color: var(--admin-dark);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--admin-dark);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--admin-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--admin-primary);
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--admin-dark);
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: auto;
+            margin-right: 0.5rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding: 1.5rem;
+            border-top: 1px solid var(--admin-border);
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--admin-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--admin-secondary);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-success {
+            background: var(--admin-success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: var(--admin-danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* Table Styles */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .table th,
+        .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--admin-border);
+        }
+
+        .table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: var(--admin-dark);
+        }
+
+        .table tr:hover {
+            background: #f9fafb;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-inactive {
+            background: #fef2f2;
+            color: #991b1b;
+        }
             align-items: center;
             margin-bottom: 2rem;
             padding-bottom: 1rem;
@@ -424,6 +647,10 @@
                         <h2 class="section-title">Users</h2>
                         <div>
                             <input type="search" placeholder="Search users..." id="userSearch" style="padding: 0.5rem; border: 1px solid var(--admin-border); border-radius: 8px; margin-right: 1rem;">
+                            <button class="btn btn-success" onclick="admin.showCreateUserModal()">
+                                <i class="fas fa-plus"></i>
+                                Create User
+                            </button>
                             <button class="btn btn-primary" onclick="refreshUsers()">
                                 <i class="fas fa-sync-alt"></i>
                                 Refresh
@@ -434,6 +661,118 @@
                         <div class="loading">
                             <i class="fas fa-spinner"></i>
                             Loading users...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Management Modals -->
+                <!-- Create User Modal -->
+                <div id="createUserModal" class="modal hidden">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Create New User</h3>
+                            <button class="modal-close" onclick="admin.closeModal('createUserModal')">&times;</button>
+                        </div>
+                        <form id="createUserForm" onsubmit="admin.createUser(event)">
+                            <div class="form-group">
+                                <label for="newUserEmail">Email *</label>
+                                <input type="email" id="newUserEmail" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newUserName">Name</label>
+                                <input type="text" id="newUserName" name="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="newUserPassword">Password *</label>
+                                <input type="password" id="newUserPassword" name="password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newUserPlan">Plan</label>
+                                <select id="newUserPlan" name="plan">
+                                    <option value="free">Free</option>
+                                    <option value="pro">Pro</option>
+                                    <option value="enterprise">Enterprise</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="newUserRole">Role</label>
+                                <select id="newUserRole" name="role">
+                                    <option value="user">User</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="admin.closeModal('createUserModal')">Cancel</button>
+                                <button type="submit" class="btn btn-success">Create User</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Edit User Modal -->
+                <div id="editUserModal" class="modal hidden">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Edit User</h3>
+                            <button class="modal-close" onclick="admin.closeModal('editUserModal')">&times;</button>
+                        </div>
+                        <form id="editUserForm" onsubmit="admin.updateUser(event)">
+                            <input type="hidden" id="editUserId" name="id">
+                            <div class="form-group">
+                                <label for="editUserEmail">Email *</label>
+                                <input type="email" id="editUserEmail" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editUserName">Name</label>
+                                <input type="text" id="editUserName" name="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="editUserPlan">Plan</label>
+                                <select id="editUserPlan" name="plan">
+                                    <option value="free">Free</option>
+                                    <option value="pro">Pro</option>
+                                    <option value="enterprise">Enterprise</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editUserRole">Role</label>
+                                <select id="editUserRole" name="role">
+                                    <option value="user">User</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="editUserActive" name="is_active">
+                                    <span class="checkmark"></span>
+                                    Active Account
+                                </label>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-danger" onclick="admin.deleteUser()">Delete User</button>
+                                <button type="button" class="btn btn-secondary" onclick="admin.closeModal('editUserModal')">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Update User</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- View User Modal -->
+                <div id="viewUserModal" class="modal hidden">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>User Details</h3>
+                            <button class="modal-close" onclick="admin.closeModal('viewUserModal')">&times;</button>
+                        </div>
+                        <div id="userDetails">
+                            <div class="loading">
+                                <i class="fas fa-spinner"></i>
+                                Loading user details...
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="admin.closeModal('viewUserModal')">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="admin.editCurrentUser()">Edit User</button>
                         </div>
                     </div>
                 </div>
