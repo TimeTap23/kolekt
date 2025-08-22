@@ -760,6 +760,21 @@
         function updateCharts(chartData) {
             // This would integrate with a charting library like Chart.js
             console.log('Chart data updated:', chartData);
+            
+            // Guard against missing data
+            if (!chartData || !chartData.engagementOverTime) {
+                console.warn('No chart data available');
+                return;
+            }
+            
+            // TODO: Replace with actual Chart.js integration
+            // Example:
+            // const ctx = document.getElementById('engagementChart').getContext('2d');
+            // new Chart(ctx, {
+            //     type: 'line',
+            //     data: chartData.engagementOverTime,
+            //     options: { responsive: true }
+            // });
         }
 
         // Update insights

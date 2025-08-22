@@ -1,3 +1,4 @@
+
 # 🔧 Fixing Supabase Authentication Settings
 
 ## 🚨 **Current Issue**

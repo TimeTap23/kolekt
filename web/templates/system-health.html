@@ -573,6 +573,31 @@
 
                 // Update last updated time
                 document.getElementById('lastUpdated').textContent = 'Just now';
+                
+                // Update charts if data available
+                if (data.charts) {
+                    this.updateCharts(data.charts);
+                }
+            }
+
+            updateCharts(chartData) {
+                // This would integrate with a charting library like Chart.js
+                console.log('Chart data updated:', chartData);
+                
+                // Guard against missing data
+                if (!chartData || !chartData.performanceTrends) {
+                    console.warn('No performance chart data available');
+                    return;
+                }
+                
+                // TODO: Replace with actual Chart.js integration
+                // Example:
+                // const ctx = document.getElementById('performanceChart').getContext('2d');
+                // new Chart(ctx, {
+                //     type: 'line',
+                //     data: chartData.performanceTrends,
+                //     options: { responsive: true }
+                // });
             }
 
             getMockData() {
