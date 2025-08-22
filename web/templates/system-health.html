@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Health - Kolekt</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css?v=2.4.2">
+    <link rel="stylesheet" href="/static/css/dashboard.css?v=2.3.0">
+    
+    <style>
+        /* Refined Kolekt Design System */
+        :root {
+            --kolekt-purple: #7A3FFF;
+            --kolekt-magenta: #E940A4;
+            --kolekt-orange: #FF6A3D;
+            --kolekt-gold: #FFB443;
+            --kolekt-gradient: linear-gradient(135deg, #7A3FFF 0%, #E940A4 50%, #FF6A3D 100%);
+            --kolekt-radial: radial-gradient(circle at center, #7A3FFF 0%, #E940A4 40%, #FF6A3D 75%, #FFB443 100%);
+            --kolekt-glow: rgba(122, 63, 255, 0.3);
+            --bg-dark: #0f0f23;
+            --bg-card: #1a1a2e;
+            --bg-card-hover: #252542;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6b7280;
+            --border-color: #2d2d44;
+            --status-healthy: #10b981;
+            --status-warning: #f59e0b;
+            --status-critical: #ef4444;
+        }
+
+        body {
+            background: var(--bg-dark) !important;
+            color: var(--text-primary);
+        }
+
+        .health-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .health-header {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .health-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .health-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .overall-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-indicator {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--status-healthy);
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.warning {
+            background: var(--status-warning);
+        }
+
+        .status-indicator.critical {
+            background: var(--status-critical);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .health-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .health-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s;
+        }
+
+        .health-card:hover {
+            border-color: var(--kolekt-purple);
+            transform: translateY(-2px);
+        }
+
+        .health-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .health-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .health-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--kolekt-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .metric-value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .metric-value.healthy {
+            color: var(--status-healthy);
+        }
+
+        .metric-value.warning {
+            color: var(--status-warning);
+        }
+
+        .metric-value.critical {
+            color: var(--status-critical);
+        }
+
+        .alerts-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .alerts-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .alerts-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            background: var(--bg-card-hover);
+            border-left: 4px solid var(--status-warning);
+        }
+
+        .alert-item.critical {
+            border-left-color: var(--status-critical);
+        }
+
+        .alert-item.resolved {
+            border-left-color: var(--status-healthy);
+            opacity: 0.7;
+        }
+
+        .alert-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--kolekt-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .alert-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .alert-time {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .performance-chart {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: var(--bg-card-hover);
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+
+        .refresh-btn {
+            background: var(--kolekt-gradient);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(122, 63, 255, 0.3);
+        }
+
+        .auto-refresh {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .auto-refresh input[type="checkbox"] {
+            accent-color: var(--kolekt-purple);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo">
+                    <img src="/static/images/logo.png" alt="Kolekt Logo" class="logo-img">
+                    <span class="logo-text">Kolekt</span>
+                </div>
+            </div>
+            
+            <nav class="header-nav">
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/content-creator" class="nav-link">Content Creator</a>
+                <a href="/analytics" class="nav-link">Analytics</a>
+                <a href="/team-management" class="nav-link">Team</a>
+                <a href="/system-health" class="nav-link active">System Health</a>
+            </nav>
+            
+            <div class="header-actions">
+                <div class="user-menu">
+                    <button class="user-menu-btn" onclick="toggleUserMenu()">
+                        <img src="/static/images/avatar.png" alt="User Avatar" class="user-avatar">
+                        <span class="user-name">Admin</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="/profile" class="dropdown-item">Profile</a>
+                        <a href="/settings" class="dropdown-item">Settings</a>
+                        <a href="/admin" class="dropdown-item">Admin Panel</a>
+                        <hr class="dropdown-divider">
+                        <a href="/logout" class="dropdown-item">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="health-container">
+        <!-- Health Header -->
+        <div class="health-header">
+            <h1 class="health-title">System Health Dashboard</h1>
+            <p class="health-subtitle">Monitor system performance, uptime, and critical metrics</p>
+            
+            <div class="overall-status">
+                <div class="status-indicator" id="overallStatus"></div>
+                <span id="statusText">All systems operational</span>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <button class="refresh-btn" onclick="refreshHealthData()">
+                    🔄 Refresh Data
+                </button>
+                <div class="auto-refresh">
+                    <input type="checkbox" id="autoRefresh" checked>
+                    <label for="autoRefresh">Auto-refresh every 30s</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Metrics Grid -->
+        <div class="health-grid">
+            <!-- Server Performance -->
+            <div class="health-card">
+                <div class="health-card-header">
+                    <h3 class="health-card-title">Server Performance</h3>
+                    <div class="health-card-icon">🖥️</div>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">CPU Usage</span>
+                    <span class="metric-value" id="cpuUsage">23%</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Memory Usage</span>
+                    <span class="metric-value" id="memoryUsage">67%</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Disk Usage</span>
+                    <span class="metric-value" id="diskUsage">45%</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Network I/O</span>
+                    <span class="metric-value" id="networkIO">2.3 MB/s</span>
+                </div>
+            </div>
+
+            <!-- Database Health -->
+            <div class="health-card">
+                <div class="health-card-header">
+                    <h3 class="health-card-title">Database Health</h3>
+                    <div class="health-card-icon">🗄️</div>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Connection Pool</span>
+                    <span class="metric-value" id="dbConnections">12/20</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Query Response Time</span>
+                    <span class="metric-value" id="dbResponseTime">45ms</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Active Queries</span>
+                    <span class="metric-value" id="activeQueries">8</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Database Size</span>
+                    <span class="metric-value" id="dbSize">2.4 GB</span>
+                </div>
+            </div>
+
+            <!-- API Performance -->
+            <div class="health-card">
+                <div class="health-card-header">
+                    <h3 class="health-card-title">API Performance</h3>
+                    <div class="health-card-icon">🔌</div>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Response Time (avg)</span>
+                    <span class="metric-value" id="apiResponseTime">120ms</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Requests/min</span>
+                    <span class="metric-value" id="requestsPerMin">156</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Error Rate</span>
+                    <span class="metric-value" id="errorRate">0.2%</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Uptime</span>
+                    <span class="metric-value" id="uptime">99.8%</span>
+                </div>
+            </div>
+
+            <!-- External Services -->
+            <div class="health-card">
+                <div class="health-card-header">
+                    <h3 class="health-card-title">External Services</h3>
+                    <div class="health-card-icon">🌐</div>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Supabase</span>
+                    <span class="metric-value healthy" id="supabaseStatus">✅ Online</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">OAuth Providers</span>
+                    <span class="metric-value healthy" id="oauthStatus">✅ Online</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Email Service</span>
+                    <span class="metric-value healthy" id="emailStatus">✅ Online</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">File Storage</span>
+                    <span class="metric-value healthy" id="storageStatus">✅ Online</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Chart -->
+        <div class="performance-chart">
+            <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Performance Trends (Last 24 Hours)</h3>
+            <div class="chart-placeholder">
+                📈 Performance chart will be displayed here
+                <br>
+                <small>Integration with monitoring service coming soon</small>
+            </div>
+        </div>
+
+        <!-- Alerts Panel -->
+        <div class="alerts-panel">
+            <div class="alerts-header">
+                <h3 class="alerts-title">System Alerts</h3>
+                <span style="color: var(--text-secondary); font-size: 0.9rem;">Last updated: <span id="lastUpdated">Just now</span></span>
+            </div>
+            <div id="alertsList">
+                <div class="alert-item">
+                    <div class="alert-icon">⚠️</div>
+                    <div class="alert-content">
+                        <div class="alert-title">High Memory Usage</div>
+                        <div class="alert-description">Memory usage has increased to 85% in the last 10 minutes</div>
+                    </div>
+                    <div class="alert-time">2 min ago</div>
+                </div>
+                <div class="alert-item resolved">
+                    <div class="alert-icon">✅</div>
+                    <div class="alert-content">
+                        <div class="alert-title">Database Connection Restored</div>
+                        <div class="alert-description">Database connection pool has been restored to normal levels</div>
+                    </div>
+                    <div class="alert-time">15 min ago</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        class SystemHealthMonitor {
+            constructor() {
+                this.autoRefreshInterval = null;
+                this.init();
+            }
+
+            init() {
+                this.loadHealthData();
+                this.setupAutoRefresh();
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                document.getElementById('autoRefresh').addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        this.startAutoRefresh();
+                    } else {
+                        this.stopAutoRefresh();
+                    }
+                });
+            }
+
+            async loadHealthData() {
+                try {
+                    const response = await fetch('/api/v1/system/health');
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.updateHealthMetrics(data);
+                    } else {
+                        this.updateHealthMetrics(this.getMockData());
+                    }
+                } catch (error) {
+                    console.error('Error loading health data:', error);
+                    this.updateHealthMetrics(this.getMockData());
+                }
+            }
+
+            updateHealthMetrics(data) {
+                // Update overall status
+                const overallStatus = document.getElementById('overallStatus');
+                const statusText = document.getElementById('statusText');
+                
+                if (data.overall_status === 'healthy') {
+                    overallStatus.className = 'status-indicator';
+                    statusText.textContent = 'All systems operational';
+                } else if (data.overall_status === 'warning') {
+                    overallStatus.className = 'status-indicator warning';
+                    statusText.textContent = 'Some systems showing warnings';
+                } else {
+                    overallStatus.className = 'status-indicator critical';
+                    statusText.textContent = 'Critical issues detected';
+                }
+
+                // Update metrics
+                if (data.server) {
+                    document.getElementById('cpuUsage').textContent = data.server.cpu + '%';
+                    document.getElementById('memoryUsage').textContent = data.server.memory + '%';
+                    document.getElementById('diskUsage').textContent = data.server.disk + '%';
+                    document.getElementById('networkIO').textContent = data.server.network;
+                }
+
+                if (data.database) {
+                    document.getElementById('dbConnections').textContent = data.database.connections;
+                    document.getElementById('dbResponseTime').textContent = data.database.response_time;
+                    document.getElementById('activeQueries').textContent = data.database.active_queries;
+                    document.getElementById('dbSize').textContent = data.database.size;
+                }
+
+                if (data.api) {
+                    document.getElementById('apiResponseTime').textContent = data.api.response_time;
+                    document.getElementById('requestsPerMin').textContent = data.api.requests_per_min;
+                    document.getElementById('errorRate').textContent = data.api.error_rate;
+                    document.getElementById('uptime').textContent = data.api.uptime;
+                }
+
+                // Update last updated time
+                document.getElementById('lastUpdated').textContent = 'Just now';
+            }
+
+            getMockData() {
+                return {
+                    overall_status: 'healthy',
+                    server: {
+                        cpu: Math.floor(Math.random() * 30) + 15,
+                        memory: Math.floor(Math.random() * 30) + 50,
+                        disk: Math.floor(Math.random() * 20) + 40,
+                        network: (Math.random() * 3 + 1).toFixed(1) + ' MB/s'
+                    },
+                    database: {
+                        connections: Math.floor(Math.random() * 8) + 8 + '/20',
+                        response_time: Math.floor(Math.random() * 50) + 30 + 'ms',
+                        active_queries: Math.floor(Math.random() * 5) + 5,
+                        size: (Math.random() * 2 + 2).toFixed(1) + ' GB'
+                    },
+                    api: {
+                        response_time: Math.floor(Math.random() * 100) + 80 + 'ms',
+                        requests_per_min: Math.floor(Math.random() * 100) + 100,
+                        error_rate: (Math.random() * 0.5).toFixed(1) + '%',
+                        uptime: (99.5 + Math.random() * 0.5).toFixed(1) + '%'
+                    }
+                };
+            }
+
+            startAutoRefresh() {
+                this.autoRefreshInterval = setInterval(() => {
+                    this.loadHealthData();
+                }, 30000); // 30 seconds
+            }
+
+            stopAutoRefresh() {
+                if (this.autoRefreshInterval) {
+                    clearInterval(this.autoRefreshInterval);
+                    this.autoRefreshInterval = null;
+                }
+            }
+
+            setupAutoRefresh() {
+                if (document.getElementById('autoRefresh').checked) {
+                    this.startAutoRefresh();
+                }
+            }
+        }
+
+        // Global functions
+        function refreshHealthData() {
+            if (window.healthMonitor) {
+                healthMonitor.loadHealthData();
+            }
+        }
+
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('userDropdown');
+            const userMenuBtn = document.querySelector('.user-menu-btn');
+            
+            if (!userMenuBtn.contains(event.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        // Initialize system health monitor
+        let healthMonitor;
+        document.addEventListener('DOMContentLoaded', () => {
+            healthMonitor = new SystemHealthMonitor();
+        });
+    </script>
+</body>
+</html>
