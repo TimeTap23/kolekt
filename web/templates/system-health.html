@@ -102,6 +102,112 @@
             margin-bottom: 2rem;
         }
 
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--kolekt-gradient);
+        }
+
+        .metric-card:hover {
+            border-color: var(--kolekt-purple);
+            transform: translateY(-2px);
+        }
+
+        .metric-card.critical {
+            border-color: var(--status-critical);
+        }
+
+        .metric-card.warning {
+            border-color: var(--status-warning);
+        }
+
+        .metric-card.healthy {
+            border-color: var(--status-healthy);
+        }
+
+        .metric-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .metric-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--kolekt-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0.5rem 0;
+        }
+
+        .metric-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .trend-up {
+            color: var(--status-healthy);
+        }
+
+        .trend-down {
+            color: var(--status-critical);
+        }
+
+        .trend-stable {
+            color: var(--text-muted);
+        }
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
         .health-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -267,6 +373,222 @@
             align-items: center;
             justify-content: center;
             color: var(--text-secondary);
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            grid-column: span 2;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--kolekt-gradient);
+        }
+
+        .chart-container:hover {
+            border-color: var(--kolekt-purple);
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--kolekt-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: white;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .chart-btn {
+            padding: 0.25rem 0.75rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .chart-btn.active {
+            background: var(--kolekt-purple);
+            color: white;
+            border-color: var(--kolekt-purple);
+        }
+
+        .chart-btn:hover {
+            border-color: var(--kolekt-purple);
+            color: var(--text-primary);
+        }
+
+        .alerts-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .alert-item {
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .alert-item.critical {
+            border-left: 4px solid var(--status-critical);
+        }
+
+        .alert-item.warning {
+            border-left: 4px solid var(--status-warning);
+        }
+
+        .alert-item.info {
+            border-left: 4px solid var(--kolekt-purple);
+        }
+
+        .alert-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .alert-severity {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .severity-critical {
+            color: var(--status-critical);
+        }
+
+        .severity-warning {
+            color: var(--status-warning);
+        }
+
+        .severity-info {
+            color: var(--kolekt-purple);
+        }
+
+        .alert-message {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .alert-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .alert-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .alert-btn {
+            padding: 0.25rem 0.75rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .alert-btn:hover {
+            border-color: var(--kolekt-purple);
+            color: var(--text-primary);
+        }
+
+        .recommendations-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .recommendation-item {
+            background: var(--bg-card-hover);
+            border-left: 3px solid var(--kolekt-purple);
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-top: 2px solid var(--kolekt-purple);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid #dc3545;
+            border-radius: 8px;
+            padding: 1rem;
+            color: #dc3545;
+            margin: 1rem 0;
+        }
+
+        .success-message {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid #28a745;
+            border-radius: 8px;
+            padding: 1rem;
+            color: #28a745;
+            margin: 1rem 0;
         }
 
         .refresh-btn {
@@ -436,79 +758,134 @@
             </div>
         </div>
 
-        <!-- Health Metrics Grid -->
-        <div class="health-grid">
-            <!-- Server Performance -->
-            <div class="health-card">
-                <div class="health-card-header">
-                    <h3 class="health-card-title">Server Performance</h3>
-                    <div class="health-card-icon">🖥️</div>
+        <!-- Enhanced Metrics Grid -->
+        <div class="metrics-grid">
+            <!-- CPU Usage -->
+            <div class="metric-card" id="cpuCard">
+                <div class="metric-header">
+                    <h3 class="metric-title">CPU Usage</h3>
+                    <div class="metric-icon">🖥️</div>
                 </div>
-                <div class="metric-row">
-                    <span class="metric-label">CPU Usage</span>
-                    <span class="metric-value" id="cpuUsage">23%</span>
+                <div class="metric-value" id="cpuUsage">23%</div>
+                <div class="metric-subtitle">8 cores @ 2.4 GHz</div>
+                <div class="metric-trend trend-stable">
+                    <span>↔</span>
+                    <span>Stable</span>
                 </div>
-                <div class="metric-row">
-                    <span class="metric-label">Memory Usage</span>
-                    <span class="metric-value" id="memoryUsage">67%</span>
+            </div>
+
+            <!-- Memory Usage -->
+            <div class="metric-card" id="memoryCard">
+                <div class="metric-header">
+                    <h3 class="metric-title">Memory Usage</h3>
+                    <div class="metric-icon">💾</div>
                 </div>
-                <div class="metric-row">
-                    <span class="metric-label">Disk Usage</span>
-                    <span class="metric-value" id="diskUsage">45%</span>
+                <div class="metric-value" id="memoryUsage">67%</div>
+                <div class="metric-subtitle">5.2 GB / 8 GB available</div>
+                <div class="metric-trend trend-stable">
+                    <span>↔</span>
+                    <span>Stable</span>
                 </div>
-                <div class="metric-row">
-                    <span class="metric-label">Network I/O</span>
-                    <span class="metric-value" id="networkIO">2.3 MB/s</span>
+            </div>
+
+            <!-- Disk Usage -->
+            <div class="metric-card" id="diskCard">
+                <div class="metric-header">
+                    <h3 class="metric-title">Disk Usage</h3>
+                    <div class="metric-icon">💿</div>
+                </div>
+                <div class="metric-value" id="diskUsage">45%</div>
+                <div class="metric-subtitle">45 GB / 100 GB used</div>
+                <div class="metric-trend trend-up">
+                    <span>↗</span>
+                    <span>+2% this week</span>
+                </div>
+            </div>
+
+            <!-- Network I/O -->
+            <div class="metric-card" id="networkCard">
+                <div class="metric-header">
+                    <h3 class="metric-title">Network I/O</h3>
+                    <div class="metric-icon">🌐</div>
+                </div>
+                <div class="metric-value" id="networkIO">2.3 MB/s</div>
+                <div class="metric-subtitle">In: 1.2 MB/s | Out: 1.1 MB/s</div>
+                <div class="metric-trend trend-up">
+                    <span>↗</span>
+                    <span>+15% this hour</span>
                 </div>
             </div>
 
             <!-- Database Health -->
-            <div class="health-card">
-                <div class="health-card-header">
-                    <h3 class="health-card-title">Database Health</h3>
-                    <div class="health-card-icon">🗄️</div>
+            <div class="metric-card" id="databaseCard">
+                <div class="metric-header">
+                    <h3 class="metric-title">Database Health</h3>
+                    <div class="metric-icon">🗄️</div>
                 </div>
-                <div class="metric-row">
-                    <span class="metric-label">Connection Pool</span>
-                    <span class="metric-value" id="dbConnections">12/20</span>
-                </div>
-                <div class="metric-row">
-                    <span class="metric-label">Query Response Time</span>
-                    <span class="metric-value" id="dbResponseTime">45ms</span>
-                </div>
-                <div class="metric-row">
-                    <span class="metric-label">Active Queries</span>
-                    <span class="metric-value" id="activeQueries">8</span>
-                </div>
-                <div class="metric-row">
-                    <span class="metric-label">Database Size</span>
-                    <span class="metric-value" id="dbSize">2.4 GB</span>
+                <div class="metric-value" id="dbHealth">Healthy</div>
+                <div class="metric-subtitle">12/20 connections active</div>
+                <div class="metric-trend trend-stable">
+                    <span>↔</span>
+                    <span>Response: 45ms</span>
                 </div>
             </div>
 
             <!-- API Performance -->
-            <div class="health-card">
-                <div class="health-card-header">
-                    <h3 class="health-card-title">API Performance</h3>
-                    <div class="health-card-icon">🔌</div>
+            <div class="metric-card" id="apiCard">
+                <div class="metric-header">
+                    <h3 class="metric-title">API Performance</h3>
+                    <div class="metric-icon">🔌</div>
                 </div>
-                <div class="metric-row">
-                    <span class="metric-label">Response Time (avg)</span>
-                    <span class="metric-value" id="apiResponseTime">120ms</span>
-                </div>
-                <div class="metric-row">
-                    <span class="metric-label">Requests/min</span>
-                    <span class="metric-value" id="requestsPerMin">156</span>
-                </div>
-                <div class="metric-row">
-                    <span class="metric-label">Error Rate</span>
-                    <span class="metric-value" id="errorRate">0.2%</span>
-                </div>
-                <div class="metric-row">
-                    <span class="metric-label">Uptime</span>
-                    <span class="metric-value" id="uptime">99.8%</span>
+                <div class="metric-value" id="apiResponseTime">120ms</div>
+                <div class="metric-subtitle">156 req/min | 0.2% errors</div>
+                <div class="metric-trend trend-stable">
+                    <span>↔</span>
+                    <span>99.8% uptime</span>
                 </div>
             </div>
+        </div>
+
+        <!-- Performance Charts -->
+        <div class="chart-container">
+            <div class="chart-title">
+                <div class="chart-icon">📈</div>
+                System Performance Trends
+            </div>
+            <div class="chart-controls">
+                <button class="chart-btn active" data-chart="cpu">CPU</button>
+                <button class="chart-btn" data-chart="memory">Memory</button>
+                <button class="chart-btn" data-chart="disk">Disk</button>
+                <button class="chart-btn" data-chart="network">Network</button>
+            </div>
+            <div id="performanceChart" class="chart-placeholder">
+                <div class="loading-spinner"></div>
+                <span style="margin-left: 0.5rem;">Loading performance data...</span>
+            </div>
+        </div>
+
+        <!-- Alerts Section -->
+        <div class="alerts-section">
+            <h3 class="chart-title">
+                <div class="chart-icon">🚨</div>
+                System Alerts
+            </h3>
+            <div id="alertsContainer">
+                <div class="loading-spinner"></div>
+                <span style="margin-left: 0.5rem;">Loading alerts...</span>
+            </div>
+        </div>
+
+        <!-- Recommendations Section -->
+        <div class="recommendations-section">
+            <h3 class="chart-title">
+                <div class="chart-icon">💡</div>
+                System Recommendations
+            </h3>
+            <div id="recommendationsContainer">
+                <div class="loading-spinner"></div>
+                <span style="margin-left: 0.5rem;">Loading recommendations...</span>
+            </div>
+        </div>
 
             <!-- External Services -->
             <div class="health-card">
@@ -580,7 +957,7 @@
             }
 
             init() {
-                this.loadHealthData();
+                this.loadEnhancedHealthData();
                 this.setupAutoRefresh();
                 this.setupEventListeners();
             }
@@ -697,6 +1074,295 @@
                         requests_per_min: Math.floor(Math.random() * 100) + 100,
                         error_rate: (Math.random() * 0.5).toFixed(1) + '%',
                         uptime: (99.5 + Math.random() * 0.5).toFixed(1) + '%'
+                    }
+                };
+            }
+
+            // Enhanced System Health Methods
+            async loadEnhancedHealthData() {
+                try {
+                    this.showLoading();
+                    const response = await fetch('/api/v1/system/health');
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.updateEnhancedMetrics(data);
+                        this.updateAlerts(data.alerts || []);
+                        this.updateRecommendations(data.recommendations || []);
+                        this.updatePerformanceCharts(data);
+                    } else {
+                        throw new Error('Failed to load health data');
+                    }
+                } catch (error) {
+                    console.error('Error loading enhanced health data:', error);
+                    this.showError('Failed to load system health data');
+                    this.updateEnhancedMetrics(this.getMockData());
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            updateEnhancedMetrics(data) {
+                // Update overall status
+                this.updateOverallStatus(data.overall_status);
+                
+                // Update system metrics
+                if (data.server) {
+                    this.updateSystemMetrics(data.server);
+                }
+                
+                if (data.database) {
+                    this.updateDatabaseMetrics(data.database);
+                }
+                
+                if (data.api) {
+                    this.updateAPIMetrics(data.api);
+                }
+            }
+
+            updateOverallStatus(status) {
+                const overallStatus = document.getElementById('overallStatus');
+                const statusText = document.getElementById('statusText');
+                
+                // Remove existing classes
+                overallStatus.className = 'status-indicator';
+                
+                switch (status) {
+                    case 'healthy':
+                        statusText.textContent = 'All systems operational';
+                        break;
+                    case 'warning':
+                        overallStatus.classList.add('warning');
+                        statusText.textContent = 'Some systems showing warnings';
+                        break;
+                    case 'critical':
+                        overallStatus.classList.add('critical');
+                        statusText.textContent = 'Critical issues detected';
+                        break;
+                    default:
+                        statusText.textContent = 'Status unknown';
+                }
+            }
+
+            updateSystemMetrics(serverData) {
+                // Update CPU
+                const cpuUsage = document.getElementById('cpuUsage');
+                const cpuCard = document.getElementById('cpuCard');
+                cpuUsage.textContent = `${serverData.cpu_usage || 0}%`;
+                this.updateMetricCardStatus(cpuCard, serverData.cpu_usage || 0, 80, 70);
+                
+                // Update Memory
+                const memoryUsage = document.getElementById('memoryUsage');
+                const memoryCard = document.getElementById('memoryCard');
+                memoryUsage.textContent = `${serverData.memory_usage || 0}%`;
+                this.updateMetricCardStatus(memoryCard, serverData.memory_usage || 0, 85, 75);
+                
+                // Update Disk
+                const diskUsage = document.getElementById('diskUsage');
+                const diskCard = document.getElementById('diskCard');
+                diskUsage.textContent = `${serverData.disk_usage || 0}%`;
+                this.updateMetricCardStatus(diskCard, serverData.disk_usage || 0, 90, 80);
+                
+                // Update Network
+                const networkIO = document.getElementById('networkIO');
+                networkIO.textContent = `${serverData.network_io?.bytes_sent || 0} MB/s`;
+            }
+
+            updateDatabaseMetrics(dbData) {
+                const dbHealth = document.getElementById('dbHealth');
+                const databaseCard = document.getElementById('databaseCard');
+                
+                dbHealth.textContent = dbData.health_status || 'Unknown';
+                
+                // Update card status based on health
+                if (dbData.health_status === 'healthy') {
+                    databaseCard.className = 'metric-card healthy';
+                } else {
+                    databaseCard.className = 'metric-card critical';
+                }
+            }
+
+            updateAPIMetrics(apiData) {
+                const apiResponseTime = document.getElementById('apiResponseTime');
+                const apiCard = document.getElementById('apiCard');
+                
+                apiResponseTime.textContent = apiData.response_time || '0ms';
+                
+                // Update card status based on response time
+                const responseTime = parseFloat(apiData.response_time?.replace('ms', '') || 0);
+                this.updateMetricCardStatus(apiCard, responseTime, 2000, 1000, true);
+            }
+
+            updateMetricCardStatus(card, value, criticalThreshold, warningThreshold, isLowerBetter = false) {
+                // Remove existing status classes
+                card.className = 'metric-card';
+                
+                let status = 'healthy';
+                if (isLowerBetter) {
+                    if (value > criticalThreshold) status = 'critical';
+                    else if (value > warningThreshold) status = 'warning';
+                } else {
+                    if (value > criticalThreshold) status = 'critical';
+                    else if (value > warningThreshold) status = 'warning';
+                }
+                
+                card.classList.add(status);
+            }
+
+            updateAlerts(alerts) {
+                const container = document.getElementById('alertsContainer');
+                
+                if (alerts.length === 0) {
+                    container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No active alerts</p>';
+                    return;
+                }
+                
+                const alertsHtml = alerts.map(alert => `
+                    <div class="alert-item ${alert.severity}">
+                        <div class="alert-header">
+                            <div class="alert-severity severity-${alert.severity}">
+                                <span>${this.getSeverityIcon(alert.severity)}</span>
+                                <span>${alert.severity.toUpperCase()}</span>
+                            </div>
+                            <button class="alert-btn" onclick="systemHealth.acknowledgeAlert('${alert.id}')">
+                                Acknowledge
+                            </button>
+                        </div>
+                        <div class="alert-message">${alert.message}</div>
+                        <div class="alert-meta">
+                            <span>Metric: ${alert.metric}</span>
+                            <span>Value: ${alert.value}</span>
+                            <span>Threshold: ${alert.threshold}</span>
+                            <span>Time: ${new Date(alert.timestamp).toLocaleString()}</span>
+                        </div>
+                    </div>
+                `).join('');
+                
+                container.innerHTML = alertsHtml;
+            }
+
+            updateRecommendations(recommendations) {
+                const container = document.getElementById('recommendationsContainer');
+                
+                if (recommendations.length === 0) {
+                    container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No recommendations available</p>';
+                    return;
+                }
+                
+                const recommendationsHtml = recommendations.map(rec => `
+                    <div class="recommendation-item">${rec}</div>
+                `).join('');
+                
+                container.innerHTML = recommendationsHtml;
+            }
+
+            updatePerformanceCharts(data) {
+                // Simple chart rendering (in production, use Chart.js)
+                const chartContainer = document.getElementById('performanceChart');
+                
+                if (data.server) {
+                    const chartHtml = `
+                        <div style="height: 300px; display: flex; align-items: end; gap: 4px; padding: 1rem;">
+                            <div style="
+                                background: var(--kolekt-gradient);
+                                width: 60px;
+                                height: ${(data.server.cpu_usage || 0) * 2}px;
+                                border-radius: 4px;
+                                position: relative;
+                            " title="CPU: ${data.server.cpu_usage || 0}%">
+                            </div>
+                            <div style="
+                                background: var(--kolekt-gradient);
+                                width: 60px;
+                                height: ${(data.server.memory_usage || 0) * 2}px;
+                                border-radius: 4px;
+                                position: relative;
+                            " title="Memory: ${data.server.memory_usage || 0}%">
+                            </div>
+                            <div style="
+                                background: var(--kolekt-gradient);
+                                width: 60px;
+                                height: ${(data.server.disk_usage || 0) * 2}px;
+                                border-radius: 4px;
+                                position: relative;
+                            " title="Disk: ${data.server.disk_usage || 0}%">
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-around; margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
+                            <span>CPU</span>
+                            <span>Memory</span>
+                            <span>Disk</span>
+                        </div>
+                    `;
+                    
+                    chartContainer.innerHTML = chartHtml;
+                }
+            }
+
+            getSeverityIcon(severity) {
+                const icons = {
+                    'critical': '🚨',
+                    'warning': '⚠️',
+                    'info': 'ℹ️'
+                };
+                return icons[severity] || 'ℹ️';
+            }
+
+            async acknowledgeAlert(alertId) {
+                try {
+                    const response = await fetch(`/api/v1/system/alerts/acknowledge`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ alert_id: alertId })
+                    });
+                    
+                    if (response.ok) {
+                        this.showSuccess('Alert acknowledged successfully');
+                        this.loadEnhancedHealthData(); // Refresh data
+                    } else {
+                        throw new Error('Failed to acknowledge alert');
+                    }
+                } catch (error) {
+                    console.error('Error acknowledging alert:', error);
+                    this.showError('Failed to acknowledge alert');
+                }
+            }
+
+            showLoading() {
+                document.querySelectorAll('.loading-spinner').forEach(el => {
+                    el.style.display = 'block';
+                });
+            }
+
+            hideLoading() {
+                document.querySelectorAll('.loading-spinner').forEach(el => {
+                    el.style.display = 'none';
+                });
+            }
+
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = message;
+                document.querySelector('.health-container').prepend(errorDiv);
+                
+                setTimeout(() => {
+                    errorDiv.remove();
+                }, 5000);
+            }
+
+            showSuccess(message) {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success-message';
+                successDiv.textContent = message;
+                document.querySelector('.health-container').prepend(successDiv);
+                
+                setTimeout(() => {
+                    successDiv.remove();
+                }, 5000);
+            }
                     }
                 };
             }
