@@ -1,5 +1,261 @@
 ---
-description:
-globs:
 alwaysApply: false
 ---
+
+# ==============================
+# AAA QUALITY – NON‑NEGOTIABLES
+# ==============================
+- No hacks, bypasses, silent fallbacks, or TODOs.
+- Ask on ambiguity; do not invent types, env vars, or stubs.
+- Small diffs, tests-first, explain root cause for every bug fix.
+
+# =============
+# CODE QUALITY
+# =============
+- Enforce formatting/linting/type-safety before any implementation:
+  - Run and pass: `pnpm format:check && pnpm lint && pnpm typecheck`
+  - TS must compile with "strict": true, "noUncheckedIndexedAccess": true, "noImplicitOverride": true.
+- Do not disable ESLint/TypeScript rules except at the narrowest scope with a justification comment.
+- Public interfaces are contracts. Changing one requires:
+  - Diff of old vs new shape
+  - Migration notes and version bump plan (if API)
+  - Tests proving backward-compat or clear deprecation path
+
+# =========
+# TESTING
+# =========
+- Write tests FIRST that encode desired behavior.
+- Coverage thresholds (hard fail):
+  - Lines: 90%  | Branches: 85%  | Functions: 90%
+- Levels:
+  - Unit (Jest/Vitest): functions, hooks, utils
+  - Integration: API routes, DB queries, cross-module behavior
+  - E2E (Playwright/Cypress): critical flows, auth, payments
+- Every bug fix adds a failing test reproducing the issue.
+- No mocking external network calls in E2E; use sandbox/fakes.
+
+# =================
+# SECURITY & PRIVACY
+# =================
+- Validate all inputs at boundaries (server + client) using a schema lib (e.g., zod/yup).
+- Never log secrets/PII. Logs must be structured and scrubbed.
+- Secrets: only from env; no defaults. Maintain `.env.example` with comments.
+- Use parameterized queries / ORM safeguards; forbid raw SQL without review.
+- Add rate limits on all public endpoints; set sane request timeouts.
+- Auth:
+  - JWT access tokens ≤ 24h; refresh flow documented; rotate keys.
+  - Role/permission checks at handler boundaries; deny by default.
+- Supply chain:
+  - Pin dependencies; lockfile required; no `latest`.
+  - Run and pass: `pnpm audit:ci` (or allowlist with justification),
+    `gitleaks` (no secrets), `semgrep --error` (baseline SAST).
+  - Disallow transitive deps with known critical CVEs (fail CI).
+
+# ===============
+# PERFORMANCE SLO
+# ===============
+- Backend latency budgets (p95): read ≤ 150ms, write ≤ 300ms (adjust per service).
+- Frontend budgets:
+  - Hydration JS ≤ 170KB gz (per route) excluding vendor polyfills.
+  - Largest Contentful Paint ≤ 2.5s on 4x CPU/Slow 4G lab profile.
+  - CLS < 0.1, TBT < 200ms (lab) on key pages.
+- Add simple load tests for new endpoints (k6/Autocannon) and include results.
+
+# ===============
+# ACCESSIBILITY
+# ===============
+- WCAG 2.1 AA: keyboard nav, visible focus, labels, contrast.
+- Run and pass automated a11y checks (axe/lighthouse-ci) in CI for key routes.
+- No interactive element without a keyboard path and ARIA where needed.
+
+# ==================
+# OBSERVABILITY & DX
+# ==================
+- Structured logging (e.g., pino/winston) with correlation IDs per request.
+- OpenTelemetry traces for API + DB calls; expose `/healthz` and `/readyz`.
+- Emit basic RED/USE metrics (rate, errors, duration; CPU, mem, event loop lag).
+- Add debug guides to README (how to run, seed, test, trace).
+
+# =========
+# DATABASE
+# =========
+- All schema changes via migrations; no drift.
+- Enforce referential integrity, unique constraints, and check constraints.
+- Idempotency where needed (e.g., POST with idempotency key).
+- Write backfill/migration notes for data‑shape changes; include rollback steps.
+
+# =====
+# API
+# =====
+- Contract‑first: include OpenAPI snippet for every new/changed endpoint.
+- Version APIs when breaking changes; document deprecation timelines.
+- Pagination, filtering, sorting documented and tested on list endpoints.
+- Return typed error shapes; never leak internals to clients.
+
+# ============
+# FRONTEND UX
+# ============
+- Error boundaries and suspense boundaries on async routes.
+- Avoid global state unless justified; prefer query libs with caching policies.
+- Images optimized (next/image or similar); SVGs inlined when small.
+- Respect user preferences (reduced motion, color scheme).
+
+# =========
+# CI/CD
+# =========
+- CI must run and pass in this order:
+  1) format/lint/typecheck
+  2) unit + integration tests (coverage gates)
+  3) build
+  4) e2e on preview env
+  5) security scanners (gitleaks, semgrep, audit)
+  6) lighthouse-ci + axe (key routes)
+- Artifacts: SBOM (e.g., `pnpm dlx cyclonedx`), build provenance attestation.
+- Release:
+  - Conventional commits; semantic versioning.
+  - Changelog and migration notes generated per release.
+  - Canary deploy + health checks; documented rollback (one command).
+
+# ==============
+# PR REQUIREMENTS
+# ==============
+- Include: summary, before/after behavior, test plan (commands + results), risks, rollout/rollback.
+- If touching public interfaces, attach OpenAPI diff and migration plan.
+- No PR > 500 lines without an explicit justification and plan to split.
+
+# ===================
+# OUTPUT EXPECTATIONS
+# ===================
+- Each response must include:
+  1) What changed + why (incl. SLO/a11y/security notes)
+  2) File list with paths
+  3) Commands to run tests, linters, scanners, and build
+  4) Any migrations + rollback steps# ==============================
+# AAA QUALITY – NON‑NEGOTIABLES
+# ==============================
+- No hacks, bypasses, silent fallbacks, or TODOs.
+- Ask on ambiguity; do not invent types, env vars, or stubs.
+- Small diffs, tests-first, explain root cause for every bug fix.
+
+# =============
+# CODE QUALITY
+# =============
+- Enforce formatting/linting/type-safety before any implementation:
+  - Run and pass: `pnpm format:check && pnpm lint && pnpm typecheck`
+  - TS must compile with "strict": true, "noUncheckedIndexedAccess": true, "noImplicitOverride": true.
+- Do not disable ESLint/TypeScript rules except at the narrowest scope with a justification comment.
+- Public interfaces are contracts. Changing one requires:
+  - Diff of old vs new shape
+  - Migration notes and version bump plan (if API)
+  - Tests proving backward-compat or clear deprecation path
+
+# =========
+# TESTING
+# =========
+- Write tests FIRST that encode desired behavior.
+- Coverage thresholds (hard fail):
+  - Lines: 90%  | Branches: 85%  | Functions: 90%
+- Levels:
+  - Unit (Jest/Vitest): functions, hooks, utils
+  - Integration: API routes, DB queries, cross-module behavior
+  - E2E (Playwright/Cypress): critical flows, auth, payments
+- Every bug fix adds a failing test reproducing the issue.
+- No mocking external network calls in E2E; use sandbox/fakes.
+
+# =================
+# SECURITY & PRIVACY
+# =================
+- Validate all inputs at boundaries (server + client) using a schema lib (e.g., zod/yup).
+- Never log secrets/PII. Logs must be structured and scrubbed.
+- Secrets: only from env; no defaults. Maintain `.env.example` with comments.
+- Use parameterized queries / ORM safeguards; forbid raw SQL without review.
+- Add rate limits on all public endpoints; set sane request timeouts.
+- Auth:
+  - JWT access tokens ≤ 24h; refresh flow documented; rotate keys.
+  - Role/permission checks at handler boundaries; deny by default.
+- Supply chain:
+  - Pin dependencies; lockfile required; no `latest`.
+  - Run and pass: `pnpm audit:ci` (or allowlist with justification),
+    `gitleaks` (no secrets), `semgrep --error` (baseline SAST).
+  - Disallow transitive deps with known critical CVEs (fail CI).
+
+# ===============
+# PERFORMANCE SLO
+# ===============
+- Backend latency budgets (p95): read ≤ 150ms, write ≤ 300ms (adjust per service).
+- Frontend budgets:
+  - Hydration JS ≤ 170KB gz (per route) excluding vendor polyfills.
+  - Largest Contentful Paint ≤ 2.5s on 4x CPU/Slow 4G lab profile.
+  - CLS < 0.1, TBT < 200ms (lab) on key pages.
+- Add simple load tests for new endpoints (k6/Autocannon) and include results.
+
+# ===============
+# ACCESSIBILITY
+# ===============
+- WCAG 2.1 AA: keyboard nav, visible focus, labels, contrast.
+- Run and pass automated a11y checks (axe/lighthouse-ci) in CI for key routes.
+- No interactive element without a keyboard path and ARIA where needed.
+
+# ==================
+# OBSERVABILITY & DX
+# ==================
+- Structured logging (e.g., pino/winston) with correlation IDs per request.
+- OpenTelemetry traces for API + DB calls; expose `/healthz` and `/readyz`.
+- Emit basic RED/USE metrics (rate, errors, duration; CPU, mem, event loop lag).
+- Add debug guides to README (how to run, seed, test, trace).
+
+# =========
+# DATABASE
+# =========
+- All schema changes via migrations; no drift.
+- Enforce referential integrity, unique constraints, and check constraints.
+- Idempotency where needed (e.g., POST with idempotency key).
+- Write backfill/migration notes for data‑shape changes; include rollback steps.
+
+# =====
+# API
+# =====
+- Contract‑first: include OpenAPI snippet for every new/changed endpoint.
+- Version APIs when breaking changes; document deprecation timelines.
+- Pagination, filtering, sorting documented and tested on list endpoints.
+- Return typed error shapes; never leak internals to clients.
+
+# ============
+# FRONTEND UX
+# ============
+- Error boundaries and suspense boundaries on async routes.
+- Avoid global state unless justified; prefer query libs with caching policies.
+- Images optimized (next/image or similar); SVGs inlined when small.
+- Respect user preferences (reduced motion, color scheme).
+
+# =========
+# CI/CD
+# =========
+- CI must run and pass in this order:
+  1) format/lint/typecheck
+  2) unit + integration tests (coverage gates)
+  3) build
+  4) e2e on preview env
+  5) security scanners (gitleaks, semgrep, audit)
+  6) lighthouse-ci + axe (key routes)
+- Artifacts: SBOM (e.g., `pnpm dlx cyclonedx`), build provenance attestation.
+- Release:
+  - Conventional commits; semantic versioning.
+  - Changelog and migration notes generated per release.
+  - Canary deploy + health checks; documented rollback (one command).
+
+# ==============
+# PR REQUIREMENTS
+# ==============
+- Include: summary, before/after behavior, test plan (commands + results), risks, rollout/rollback.
+- If touching public interfaces, attach OpenAPI diff and migration plan.
+- No PR > 500 lines without an explicit justification and plan to split.
+
+# ===================
+# OUTPUT EXPECTATIONS
+# ===================
+- Each response must include:
+  1) What changed + why (incl. SLO/a11y/security notes)
+  2) File list with paths
+  3) Commands to run tests, linters, scanners, and build
+  4) Any migrations + rollback steps

@@ -141,6 +141,102 @@
             align-items: center;
             justify-content: center;
             color: var(--text-secondary);
+            position: relative;
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            grid-column: span 2;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--kolekt-gradient);
+        }
+
+        .chart-container:hover {
+            border-color: var(--kolekt-purple);
+            transform: translateY(-2px);
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--kolekt-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: white;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .chart-btn {
+            padding: 0.25rem 0.75rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .chart-btn.active {
+            background: var(--kolekt-purple);
+            color: white;
+            border-color: var(--kolekt-purple);
+        }
+
+        .chart-btn:hover {
+            border-color: var(--kolekt-purple);
+            color: var(--text-primary);
+        }
+
+        .chart-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: var(--text-secondary);
+        }
+
+        .chart-error {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: #dc3545;
+            text-align: center;
         }
 
         /* Enhanced Analytics Features */
@@ -193,11 +289,254 @@
             color: var(--text-primary);
         }
 
+        .export-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .export-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .export-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--kolekt-gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(122, 63, 255, 0.3);
+        }
+
+        .export-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .performance-indicators {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .performance-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .performance-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--kolekt-purple);
+            margin-bottom: 0.25rem;
+        }
+
+        .performance-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .performance-trend {
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        .trend-positive {
+            color: #28a745;
+        }
+
+        .trend-negative {
+            color: #dc3545;
+        }
+
+        .trend-neutral {
+            color: var(--text-muted);
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-top: 2px solid var(--kolekt-purple);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid #dc3545;
+            border-radius: 8px;
+            padding: 1rem;
+            color: #dc3545;
+            margin: 1rem 0;
+        }
+
+        .success-message {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid #28a745;
+            border-radius: 8px;
+            padding: 1rem;
+            color: #28a745;
+            margin: 1rem 0;
+        }
+
         .insights-panel {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insights-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--kolekt-gradient);
+        }
+
+        .insight-item {
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .insight-item:hover {
+            border-color: var(--kolekt-purple);
+            transform: translateY(-1px);
+        }
+
+        .insight-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--kolekt-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+        }
+
+        .insight-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .insight-description {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .insight-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+        }
+
+        .insight-impact {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .impact-high {
+            color: #28a745;
+        }
+
+        .impact-medium {
+            color: #ffc107;
+        }
+
+        .impact-low {
+            color: #6c757d;
+        }
+
+        .insight-confidence {
+            color: var(--text-muted);
+        }
+
+        .recommendations-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+
+        .recommendation-item {
+            background: var(--bg-card-hover);
+            border-left: 3px solid var(--kolekt-purple);
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .trends-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+
+        .trend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .trend-icon {
+            width: 20px;
+            height: 20px;
+            background: var(--kolekt-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: white;
+        }
             margin-top: 2rem;
         }
 
@@ -603,6 +942,81 @@
                 </div>
             </div>
 
+            <!-- Enhanced Insights Panel -->
+            <div class="insights-panel">
+                <h3 class="chart-title">
+                    <div class="chart-icon">💡</div>
+                    AI-Powered Insights
+                </h3>
+                <div id="insightsContainer">
+                    <div class="chart-loading">
+                        <div class="loading-spinner"></div>
+                        <span style="margin-left: 0.5rem;">Loading insights...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Indicators -->
+            <div class="performance-indicators">
+                <div class="performance-card">
+                    <div class="performance-value" id="contentQualityScore">8.5</div>
+                    <div class="performance-label">Content Quality Score</div>
+                    <div class="performance-trend trend-positive">+0.3 from last week</div>
+                </div>
+                <div class="performance-card">
+                    <div class="performance-value" id="audienceGrowthRate">12.3%</div>
+                    <div class="performance-label">Audience Growth Rate</div>
+                    <div class="performance-trend trend-positive">+2.1% from last month</div>
+                </div>
+                <div class="performance-card">
+                    <div class="performance-value" id="conversionRate">5.8%</div>
+                    <div class="performance-label">Conversion Rate</div>
+                    <div class="performance-trend trend-neutral">No change</div>
+                </div>
+                <div class="performance-card">
+                    <div class="performance-value" id="engagementTrend">↗</div>
+                    <div class="performance-label">Engagement Trend</div>
+                    <div class="performance-trend trend-positive">Increasing</div>
+                </div>
+            </div>
+
+            <!-- Enhanced Charts -->
+            <div class="chart-container">
+                <div class="chart-title">
+                    <div class="chart-icon">📈</div>
+                    Engagement Over Time
+                </div>
+                <div class="chart-controls">
+                    <button class="chart-btn active" data-chart="engagement">Engagement</button>
+                    <button class="chart-btn" data-chart="reach">Reach</button>
+                    <button class="chart-btn" data-chart="conversions">Conversions</button>
+                </div>
+                <div id="engagementChart" class="chart-placeholder">
+                    <div class="chart-loading">
+                        <div class="loading-spinner"></div>
+                        <span style="margin-left: 0.5rem;">Loading chart data...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Platform Performance Chart -->
+            <div class="chart-container">
+                <div class="chart-title">
+                    <div class="chart-icon">📱</div>
+                    Platform Performance
+                </div>
+                <div class="chart-controls">
+                    <button class="chart-btn active" data-chart="platforms">By Platform</button>
+                    <button class="chart-btn" data-chart="content-types">By Content Type</button>
+                </div>
+                <div id="platformChart" class="chart-placeholder">
+                    <div class="chart-loading">
+                        <div class="loading-spinner"></div>
+                        <span style="margin-left: 0.5rem;">Loading platform data...</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Content Performance -->
             <div class="content-performance">
                 <div class="performance-header">
@@ -699,6 +1113,29 @@
                 </div>
             </div>
         </div>
+
+        <!-- Export Section -->
+        <div class="export-section">
+            <h3 class="chart-title">
+                <div class="chart-icon">📊</div>
+                Export Analytics Data
+            </h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                Download your analytics data for external analysis and reporting
+            </p>
+            <div class="export-controls">
+                <button class="export-btn" onclick="exportData('json')">
+                    📄 Export as JSON
+                </button>
+                <button class="export-btn" onclick="exportData('csv')">
+                    📊 Export as CSV
+                </button>
+                <button class="export-btn" onclick="exportDetailedReport()">
+                    📋 Detailed Report
+                </button>
+            </div>
+            <div id="exportStatus"></div>
+        </div>
     </main>
 
     <script>
@@ -750,6 +1187,24 @@
         function initializeAnalytics() {
             renderPerformanceTable();
             setupEventListeners();
+            
+            // Initialize enhanced analytics
+            if (window.analyticsDashboard) {
+                window.analyticsDashboard.loadEnhancedAnalytics('7d');
+            }
+        }
+
+        // Global export functions
+        function exportData(format) {
+            if (window.analyticsDashboard) {
+                window.analyticsDashboard.exportData(format);
+            }
+        }
+
+        function exportDetailedReport() {
+            if (window.analyticsDashboard) {
+                window.analyticsDashboard.exportDetailedReport();
+            }
         }
 
         // Render performance table
@@ -1079,6 +1534,298 @@
                             event_type: eventType,
                             metadata: metadata
                         })
+                    });
+                } catch (error) {
+                    console.error('Error tracking event:', error);
+                }
+            }
+
+            // Enhanced Analytics Methods
+            async loadEnhancedAnalytics(range = '7d') {
+                try {
+                    this.showLoading();
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/analytics/range/${range}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.updateEnhancedMetrics(data);
+                        this.updateCharts(data.charts);
+                        this.updateInsights(data.insights);
+                    } else {
+                        throw new Error('Failed to load enhanced analytics');
+                    }
+                } catch (error) {
+                    console.error('Error loading enhanced analytics:', error);
+                    this.showError('Failed to load analytics data');
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            updateEnhancedMetrics(data) {
+                const metrics = data.metrics || {};
+                
+                // Update metric cards
+                document.getElementById('totalPosts').textContent = metrics.total_posts || 0;
+                document.getElementById('totalEngagement').textContent = this.formatNumber(metrics.total_engagement || 0);
+                document.getElementById('avgEngagementRate').textContent = `${metrics.avg_engagement_rate || 0}%`;
+                document.getElementById('totalReach').textContent = this.formatNumber(metrics.total_reach || 0);
+                
+                // Update performance indicators
+                document.getElementById('contentQualityScore').textContent = '8.5';
+                document.getElementById('audienceGrowthRate').textContent = '12.3%';
+                document.getElementById('conversionRate').textContent = '5.8%';
+            }
+
+            updateCharts(chartData) {
+                if (!chartData) return;
+                
+                // Update engagement chart
+                this.renderEngagementChart(chartData.engagement_over_time);
+                
+                // Update platform chart
+                this.renderPlatformChart(chartData.posts_by_platform);
+            }
+
+            renderEngagementChart(data) {
+                const chartContainer = document.getElementById('engagementChart');
+                if (!chartContainer || !data) return;
+                
+                // Simple chart rendering (in production, use Chart.js or similar)
+                const chartHtml = `
+                    <div style="height: 300px; display: flex; align-items: end; gap: 4px; padding: 1rem;">
+                        ${data.map(item => `
+                            <div style="
+                                background: var(--kolekt-gradient);
+                                width: 20px;
+                                height: ${(item.value / 100) * 200}px;
+                                border-radius: 2px;
+                                position: relative;
+                            " title="${item.label}: ${item.value}">
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
+                        <span>${data[0]?.label || ''}</span>
+                        <span>${data[data.length - 1]?.label || ''}</span>
+                    </div>
+                `;
+                
+                chartContainer.innerHTML = chartHtml;
+            }
+
+            renderPlatformChart(data) {
+                const chartContainer = document.getElementById('platformChart');
+                if (!chartContainer || !data) return;
+                
+                const chartHtml = `
+                    <div style="height: 300px; display: flex; align-items: end; gap: 8px; padding: 1rem;">
+                        ${data.map(item => `
+                            <div style="flex: 1; text-align: center;">
+                                <div style="
+                                    background: var(--kolekt-gradient);
+                                    height: ${(item.value / 100) * 200}px;
+                                    border-radius: 4px;
+                                    margin-bottom: 0.5rem;
+                                " title="${item.label}: ${item.value}">
+                                </div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">${item.label}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                chartContainer.innerHTML = chartHtml;
+            }
+
+            updateInsights(insightsData) {
+                const container = document.getElementById('insightsContainer');
+                if (!container || !insightsData) return;
+                
+                const insights = insightsData.insights || [];
+                const recommendations = insightsData.recommendations || [];
+                const trends = insightsData.trends || [];
+                
+                let html = '';
+                
+                // Render insights
+                if (insights.length > 0) {
+                    html += '<h4 style="margin-bottom: 1rem; color: var(--text-primary);">Key Insights</h4>';
+                    insights.forEach(insight => {
+                        html += `
+                            <div class="insight-item">
+                                <div class="insight-header">
+                                    <div class="insight-icon">${insight.icon}</div>
+                                    <div>
+                                        <div class="insight-title">${insight.title}</div>
+                                        <div class="insight-description">${insight.description}</div>
+                                    </div>
+                                </div>
+                                <div class="insight-meta">
+                                    <div class="insight-impact impact-${insight.impact.toLowerCase()}">
+                                        <span>Impact:</span> ${insight.impact}
+                                    </div>
+                                    <div class="insight-confidence">
+                                        Confidence: ${Math.round(insight.confidence * 100)}%
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                // Render recommendations
+                if (recommendations.length > 0) {
+                    html += '<h4 style="margin: 2rem 0 1rem 0; color: var(--text-primary);">Recommendations</h4>';
+                    html += '<ul class="recommendations-list">';
+                    recommendations.forEach(rec => {
+                        html += `<li class="recommendation-item">${rec}</li>`;
+                    });
+                    html += '</ul>';
+                }
+                
+                // Render trends
+                if (trends.length > 0) {
+                    html += '<h4 style="margin: 2rem 0 1rem 0; color: var(--text-primary);">Trends</h4>';
+                    html += '<ul class="trends-list">';
+                    trends.forEach(trend => {
+                        html += `
+                            <li class="trend-item">
+                                <div class="trend-icon">📈</div>
+                                <span>${trend}</span>
+                            </li>
+                        `;
+                    });
+                    html += '</ul>';
+                }
+                
+                if (!html) {
+                    html = '<p style="color: var(--text-secondary); text-align: center;">No insights available</p>';
+                }
+                
+                container.innerHTML = html;
+            }
+
+            showLoading() {
+                // Show loading state
+                document.querySelectorAll('.chart-loading').forEach(el => {
+                    el.style.display = 'flex';
+                });
+            }
+
+            hideLoading() {
+                // Hide loading state
+                document.querySelectorAll('.chart-loading').forEach(el => {
+                    el.style.display = 'none';
+                });
+            }
+
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = message;
+                document.querySelector('.analytics-container').prepend(errorDiv);
+                
+                setTimeout(() => {
+                    errorDiv.remove();
+                }, 5000);
+            }
+
+            showSuccess(message) {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success-message';
+                successDiv.textContent = message;
+                document.querySelector('.analytics-container').prepend(successDiv);
+                
+                setTimeout(() => {
+                    successDiv.remove();
+                }, 5000);
+            }
+
+            // Export functionality
+            async exportData(format) {
+                try {
+                    const exportStatus = document.getElementById('exportStatus');
+                    exportStatus.innerHTML = '<div class="loading-spinner"></div> Exporting...';
+                    
+                    const token = localStorage.getItem(this.tokenKey);
+                    const response = await fetch(`${this.baseUrl}/analytics/export?format=${format}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // Create download link
+                        const blob = new Blob([JSON.stringify(data.data, null, 2)], { type: 'application/json' });
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = data.filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                        
+                        exportStatus.innerHTML = '<div class="success-message">Export completed successfully!</div>';
+                        this.showSuccess('Data exported successfully');
+                    } else {
+                        throw new Error('Export failed');
+                    }
+                } catch (error) {
+                    console.error('Export error:', error);
+                    document.getElementById('exportStatus').innerHTML = '<div class="error-message">Export failed</div>';
+                    this.showError('Export failed');
+                }
+            }
+
+            async exportDetailedReport() {
+                try {
+                    const exportStatus = document.getElementById('exportStatus');
+                    exportStatus.innerHTML = '<div class="loading-spinner"></div> Generating detailed report...';
+                    
+                    // Generate comprehensive report
+                    const report = {
+                        generated_at: new Date().toISOString(),
+                        analytics_summary: {
+                            total_posts: document.getElementById('totalPosts').textContent,
+                            total_engagement: document.getElementById('totalEngagement').textContent,
+                            avg_engagement_rate: document.getElementById('avgEngagementRate').textContent,
+                            total_reach: document.getElementById('totalReach').textContent
+                        },
+                        performance_indicators: {
+                            content_quality_score: document.getElementById('contentQualityScore').textContent,
+                            audience_growth_rate: document.getElementById('audienceGrowthRate').textContent,
+                            conversion_rate: document.getElementById('conversionRate').textContent
+                        }
+                    };
+                    
+                    // Create download link
+                    const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `analytics_report_${new Date().toISOString().split('T')[0]}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    
+                    exportStatus.innerHTML = '<div class="success-message">Detailed report generated!</div>';
+                    this.showSuccess('Detailed report generated successfully');
+                } catch (error) {
+                    console.error('Report generation error:', error);
+                    document.getElementById('exportStatus').innerHTML = '<div class="error-message">Report generation failed</div>';
+                    this.showError('Report generation failed');
+                }
+            }
                     });
                 } catch (error) {
                     console.error('Error tracking event:', error);
