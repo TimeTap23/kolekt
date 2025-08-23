@@ -103,6 +103,262 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
+        .announcement-card {
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .announcement-card:hover {
+            border-color: var(--kolekt-purple);
+            transform: translateY(-2px);
+        }
+
+        .announcement-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .announcement-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .announcement-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .announcement-content {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .announcement-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .announcement-btn {
+            padding: 0.25rem 0.75rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .announcement-btn:hover {
+            border-color: var(--kolekt-purple);
+            color: var(--text-primary);
+        }
+
+        .announcement-btn.primary {
+            background: var(--kolekt-purple);
+            color: white;
+            border-color: var(--kolekt-purple);
+        }
+
+        .announcement-btn.danger {
+            background: var(--status-critical);
+            color: white;
+            border-color: var(--status-critical);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-draft {
+            background: rgba(107, 114, 128, 0.2);
+            color: var(--status-draft);
+        }
+
+        .status-scheduled {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--status-scheduled);
+        }
+
+        .status-sent {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--status-sent);
+        }
+
+        .status-failed {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--status-failed);
+        }
+
+        .create-announcement-form {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--kolekt-purple);
+            box-shadow: 0 0 0 3px rgba(122, 63, 255, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-checkbox-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-checkbox input[type="checkbox"] {
+            width: auto;
+        }
+
+        .analytics-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .analytics-card {
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .analytics-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .analytics-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .chart-container {
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-top: 2px solid var(--kolekt-purple);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid #dc3545;
+            border-radius: 8px;
+            padding: 1rem;
+            color: #dc3545;
+            margin: 1rem 0;
+        }
+
+        .success-message {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid #28a745;
+            border-radius: 8px;
+            padding: 1rem;
+            color: #28a745;
+            margin: 1rem 0;
+        }
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
         .list-header {
             display: flex;
             justify-content: space-between;
@@ -565,61 +821,131 @@
             </div>
         </div>
 
+        <!-- Enhanced Analytics Section -->
+        <div class="analytics-section">
+            <h2 class="analytics-title">📊 Announcement Analytics</h2>
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <div class="analytics-value" id="totalAnnouncements">0</div>
+                    <div class="analytics-label">Total Announcements</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-value" id="totalRecipients">0</div>
+                    <div class="analytics-label">Total Recipients</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-value" id="avgDeliveryRate">0%</div>
+                    <div class="analytics-label">Avg Delivery Rate</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-value" id="avgOpenRate">0%</div>
+                    <div class="analytics-label">Avg Open Rate</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-value" id="avgClickRate">0%</div>
+                    <div class="analytics-label">Avg Click Rate</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-value" id="successRate">0%</div>
+                    <div class="analytics-label">Success Rate</div>
+                </div>
+            </div>
+            
+            <div class="chart-container" id="analyticsChart">
+                <div class="loading-spinner"></div>
+                <span style="margin-left: 0.5rem;">Loading analytics...</span>
+            </div>
+        </div>
+
         <!-- Main Grid -->
         <div class="announcements-grid">
-            <!-- Announcements List -->
+            <!-- Enhanced Announcements List -->
             <div class="announcements-list">
                 <div class="list-header">
-                    <h2 class="list-title">All Announcements</h2>
-                    <select class="filter-select" id="statusFilter" onchange="filterAnnouncements()">
-                        <option value="all">All Status</option>
-                        <option value="draft">Draft</option>
-                        <option value="scheduled">Scheduled</option>
-                        <option value="sent">Sent</option>
-                        <option value="failed">Failed</option>
-                    </select>
+                    <h2 class="list-title">📢 All Announcements</h2>
+                    <div class="list-controls">
+                        <select class="filter-select" id="statusFilter" onchange="filterAnnouncements()">
+                            <option value="all">All Status</option>
+                            <option value="draft">Draft</option>
+                            <option value="scheduled">Scheduled</option>
+                            <option value="sending">Sending</option>
+                            <option value="sent">Sent</option>
+                            <option value="failed">Failed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        <select class="filter-select" id="typeFilter" onchange="filterAnnouncements()">
+                            <option value="all">All Types</option>
+                            <option value="info">Info</option>
+                            <option value="warning">Warning</option>
+                            <option value="critical">Critical</option>
+                            <option value="update">Update</option>
+                            <option value="maintenance">Maintenance</option>
+                            <option value="feature">Feature</option>
+                        </select>
+                        <select class="filter-select" id="audienceFilter" onchange="filterAnnouncements()">
+                            <option value="all">All Audiences</option>
+                            <option value="all">All Users</option>
+                            <option value="admin">Admin</option>
+                            <option value="premium">Premium</option>
+                            <option value="free">Free</option>
+                            <option value="beta">Beta</option>
+                        </select>
+                    </div>
                 </div>
                 
                 <div id="announcementsList">
-                    <!-- Announcement items will be loaded here -->
+                    <div class="loading-spinner"></div>
+                    <span style="margin-left: 0.5rem;">Loading announcements...</span>
                 </div>
             </div>
 
-            <!-- Sidebar -->
+            <!-- Enhanced Sidebar -->
             <div class="sidebar">
-                <!-- Statistics -->
+                <!-- Enhanced Statistics -->
                 <div class="stats-card">
-                    <h3 class="stats-title">Statistics</h3>
-                    <div class="stat-item">
-                        <span class="stat-label">Total Announcements</span>
-                        <span class="stat-value" id="totalAnnouncements">24</span>
-                    </div>
+                    <h3 class="stats-title">📈 Quick Stats</h3>
                     <div class="stat-item">
                         <span class="stat-label">Scheduled</span>
-                        <span class="stat-value" id="scheduledCount">5</span>
+                        <span class="stat-value" id="scheduledCount">0</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-label">Sent Today</span>
-                        <span class="stat-value" id="sentToday">3</span>
+                        <span class="stat-value" id="sentToday">0</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Delivery Rate</span>
-                        <span class="stat-value" id="deliveryRate">98.5%</span>
+                        <span class="stat-label">Failed</span>
+                        <span class="stat-value" id="failedCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Avg Engagement</span>
+                        <span class="stat-value" id="avgEngagement">0%</span>
                     </div>
                 </div>
 
-                <!-- Quick Actions -->
+                <!-- Enhanced Quick Actions -->
                 <div class="stats-card">
-                    <h3 class="stats-title">Quick Actions</h3>
-                    <button class="action-btn" onclick="showCreateModal()" style="width: 100%; margin-bottom: 0.5rem;">
-                        📝 Create New
+                    <h3 class="stats-title">⚡ Quick Actions</h3>
+                    <button class="action-btn primary" onclick="showCreateModal()" style="width: 100%; margin-bottom: 0.5rem;">
+                        ✨ Create New
                     </button>
                     <button class="action-btn" onclick="showScheduleModal()" style="width: 100%; margin-bottom: 0.5rem;">
                         ⏰ Schedule Bulk
                     </button>
-                    <button class="action-btn" onclick="exportAnnouncements()" style="width: 100%;">
-                        📊 Export Data
+                    <button class="action-btn" onclick="showAnalyticsModal()" style="width: 100%; margin-bottom: 0.5rem;">
+                        📊 Detailed Analytics
                     </button>
+                    <button class="action-btn" onclick="exportAnnouncements()" style="width: 100%;">
+                        📥 Export Data
+                    </button>
+                </div>
+
+                <!-- Scheduled Announcements -->
+                <div class="stats-card">
+                    <h3 class="stats-title">⏰ Scheduled</h3>
+                    <div id="scheduledAnnouncements">
+                        <div class="loading-spinner"></div>
+                        <span style="margin-left: 0.5rem;">Loading...</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -644,13 +970,86 @@
                     <textarea id="announcementContent" name="content" class="form-textarea" placeholder="Enter announcement content..." required></textarea>
                 </div>
                 
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="announcementType" class="form-label">Type</label>
+                        <select id="announcementType" name="type" class="form-select" required>
+                            <option value="">Select type...</option>
+                            <option value="info">Info</option>
+                            <option value="warning">Warning</option>
+                            <option value="critical">Critical</option>
+                            <option value="update">Update</option>
+                            <option value="maintenance">Maintenance</option>
+                            <option value="feature">Feature</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="announcementAudience" class="form-label">Audience</label>
+                        <select id="announcementAudience" name="audience" class="form-select" required>
+                            <option value="">Select audience...</option>
+                            <option value="all">All Users</option>
+                            <option value="admin">Admin Only</option>
+                            <option value="premium">Premium Users</option>
+                            <option value="free">Free Users</option>
+                            <option value="beta">Beta Users</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="announcementPriority" class="form-label">Priority</label>
+                        <select id="announcementPriority" name="priority" class="form-select">
+                            <option value="1">Low (1)</option>
+                            <option value="2">Normal (2)</option>
+                            <option value="3" selected>Medium (3)</option>
+                            <option value="4">High (4)</option>
+                            <option value="5">Critical (5)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="scheduleType" class="form-label">Schedule Type</label>
+                        <select id="scheduleType" name="scheduleType" class="form-select" onchange="toggleScheduleOptions()">
+                            <option value="immediate">Send Immediately</option>
+                            <option value="scheduled">Schedule for Later</option>
+                            <option value="recurring">Recurring</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" id="scheduleOptions" style="display: none;">
+                    <label for="scheduledFor" class="form-label">Scheduled Date & Time</label>
+                    <input type="datetime-local" id="scheduledFor" name="scheduledFor" class="form-input">
+                </div>
+
                 <div class="form-group">
-                    <label for="announcementType" class="form-label">Type</label>
-                    <select id="announcementType" name="type" class="form-select" required>
-                        <option value="">Select type...</option>
-                        <option value="general">General</option>
-                        <option value="maintenance">Maintenance</option>
-                        <option value="update">Update</option>
+                    <label class="form-label">Delivery Channels</label>
+                    <div class="form-checkbox-group">
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="emailChannel" name="notification_channels" value="email" checked>
+                            <label for="emailChannel">Email</label>
+                        </div>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="inAppChannel" name="notification_channels" value="in_app" checked>
+                            <label for="inAppChannel">In-App</label>
+                        </div>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="pushChannel" name="notification_channels" value="push">
+                            <label for="pushChannel">Push Notifications</label>
+                        </div>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="smsChannel" name="notification_channels" value="sms">
+                            <label for="smsChannel">SMS</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="announcementTags" class="form-label">Tags (comma-separated)</label>
+                    <input type="text" id="announcementTags" name="tags" class="form-input" placeholder="feature, update, important...">
+                </div>
                         <option value="urgent">Urgent</option>
                     </select>
                 </div>
@@ -696,7 +1095,7 @@
             }
 
             init() {
-                this.loadAnnouncements();
+                this.loadEnhancedData();
                 this.setupEventListeners();
             }
 
@@ -795,6 +1194,202 @@
                 });
             }
 
+            // Enhanced Announcements Methods
+            async loadEnhancedData() {
+                try {
+                    this.showLoading();
+                    await Promise.all([
+                        this.loadAnnouncements(),
+                        this.loadAnalytics(),
+                        this.loadScheduledAnnouncements()
+                    ]);
+                } catch (error) {
+                    console.error('Error loading enhanced data:', error);
+                    this.showError('Failed to load announcements data');
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            async loadAnalytics() {
+                try {
+                    const response = await fetch('/api/v1/announcements/analytics/overview?days=30');
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.updateAnalytics(data.analytics);
+                    }
+                } catch (error) {
+                    console.error('Error loading analytics:', error);
+                }
+            }
+
+            updateAnalytics(analytics) {
+                document.getElementById('totalAnnouncements').textContent = analytics.total_announcements || 0;
+                document.getElementById('totalRecipients').textContent = analytics.total_recipients || 0;
+                document.getElementById('avgDeliveryRate').textContent = `${analytics.avg_delivery_rate || 0}%`;
+                document.getElementById('avgOpenRate').textContent = `${analytics.avg_open_rate || 0}%`;
+                document.getElementById('avgClickRate').textContent = `${analytics.avg_click_rate || 0}%`;
+                document.getElementById('successRate').textContent = `${analytics.success_rate || 0}%`;
+                
+                // Update sidebar stats
+                document.getElementById('scheduledCount').textContent = analytics.scheduled_announcements || 0;
+                document.getElementById('failedCount').textContent = analytics.failed_announcements || 0;
+                document.getElementById('avgEngagement').textContent = `${analytics.avg_open_rate || 0}%`;
+                
+                // Update analytics chart
+                this.updateAnalyticsChart(analytics);
+            }
+
+            updateAnalyticsChart(analytics) {
+                const chartContainer = document.getElementById('analyticsChart');
+                
+                if (analytics.type_distribution) {
+                    const chartHtml = `
+                        <div style="height: 300px; display: flex; align-items: end; gap: 8px; padding: 1rem;">
+                            ${Object.entries(analytics.type_distribution).map(([type, count]) => `
+                                <div style="
+                                    background: var(--kolekt-gradient);
+                                    width: 80px;
+                                    height: ${(count / Math.max(...Object.values(analytics.type_distribution))) * 200}px;
+                                    border-radius: 4px;
+                                    position: relative;
+                                " title="${type}: ${count}">
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div style="display: flex; justify-content: space-around; margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
+                            ${Object.keys(analytics.type_distribution).map(type => `<span>${type}</span>`).join('')}
+                        </div>
+                    `;
+                    
+                    chartContainer.innerHTML = chartHtml;
+                }
+            }
+
+            async loadScheduledAnnouncements() {
+                try {
+                    const response = await fetch('/api/v1/announcements/scheduled');
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.updateScheduledAnnouncements(data.scheduled_announcements);
+                    }
+                } catch (error) {
+                    console.error('Error loading scheduled announcements:', error);
+                }
+            }
+
+            updateScheduledAnnouncements(scheduled) {
+                const container = document.getElementById('scheduledAnnouncements');
+                
+                if (scheduled.length === 0) {
+                    container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No scheduled announcements</p>';
+                    return;
+                }
+                
+                const scheduledHtml = scheduled.slice(0, 5).map(announcement => `
+                    <div style="margin-bottom: 0.5rem; padding: 0.5rem; background: var(--bg-card-hover); border-radius: 4px;">
+                        <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-primary);">${announcement.title}</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted);">${this.formatDate(announcement.scheduled_for)}</div>
+                    </div>
+                `).join('');
+                
+                container.innerHTML = scheduledHtml;
+            }
+
+            async sendAnnouncement(announcementId) {
+                try {
+                    const response = await fetch(`/api/v1/announcements/${announcementId}/send`, {
+                        method: 'POST'
+                    });
+                    
+                    if (response.ok) {
+                        this.showSuccess('Announcement sent successfully');
+                        this.loadEnhancedData();
+                    } else {
+                        throw new Error('Failed to send announcement');
+                    }
+                } catch (error) {
+                    console.error('Error sending announcement:', error);
+                    this.showError('Failed to send announcement');
+                }
+            }
+
+            async cancelScheduledAnnouncement(announcementId) {
+                try {
+                    const response = await fetch(`/api/v1/announcements/${announcementId}/cancel`, {
+                        method: 'POST'
+                    });
+                    
+                    if (response.ok) {
+                        this.showSuccess('Scheduled announcement cancelled');
+                        this.loadEnhancedData();
+                    } else {
+                        throw new Error('Failed to cancel announcement');
+                    }
+                } catch (error) {
+                    console.error('Error cancelling announcement:', error);
+                    this.showError('Failed to cancel announcement');
+                }
+            }
+
+            async getAnnouncementAnalytics(announcementId) {
+                try {
+                    const response = await fetch(`/api/v1/announcements/${announcementmentId}/analytics`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.showAnalyticsModal(data.analytics);
+                    }
+                } catch (error) {
+                    console.error('Error getting announcement analytics:', error);
+                    this.showError('Failed to load analytics');
+                }
+            }
+
+            showLoading() {
+                document.querySelectorAll('.loading-spinner').forEach(el => {
+                    el.style.display = 'block';
+                });
+            }
+
+            hideLoading() {
+                document.querySelectorAll('.loading-spinner').forEach(el => {
+                    el.style.display = 'none';
+                });
+            }
+
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = message;
+                document.querySelector('.announcements-container').prepend(errorDiv);
+                
+                setTimeout(() => {
+                    errorDiv.remove();
+                }, 5000);
+            }
+
+            showSuccess(message) {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success-message';
+                successDiv.textContent = message;
+                document.querySelector('.announcements-container').prepend(successDiv);
+                
+                setTimeout(() => {
+                    successDiv.remove();
+                }, 5000);
+            }
+
+            toggleScheduleOptions() {
+                const scheduleType = document.getElementById('scheduleType').value;
+                const scheduleOptions = document.getElementById('scheduleOptions');
+                
+                if (scheduleType === 'scheduled') {
+                    scheduleOptions.style.display = 'block';
+                } else {
+                    scheduleOptions.style.display = 'none';
+                }
+            }
+
             getMockData() {
                 return [
                     {
@@ -806,8 +1401,8 @@
                         status: 'sent',
                         created_at: '2024-01-15T10:00:00Z',
                         sent_at: '2024-01-15T10:00:00Z',
-                        recipients: 1250,
-                        delivered: 1230
+                        recipients_count: 1250,
+                        delivered_count: 1230
                     },
                     {
                         id: '2',
@@ -823,7 +1418,7 @@
                         id: '3',
                         title: 'Premium Features Available',
                         content: 'Premium users now have access to advanced analytics and unlimited content scheduling. Upgrade your account to unlock these features.',
-                        type: 'general',
+                        type: 'feature',
                         audience: 'premium',
                         status: 'draft',
                         created_at: '2024-01-13T09:15:00Z'
@@ -833,16 +1428,31 @@
 
             async handleSubmit() {
                 const formData = new FormData(document.getElementById('announcementForm'));
+                
+                // Get selected notification channels
+                const notificationChannels = [];
+                document.querySelectorAll('input[name="notification_channels"]:checked').forEach(checkbox => {
+                    notificationChannels.push(checkbox.value);
+                });
+                
+                // Get tags
+                const tags = formData.get('tags') ? formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+                
                 const announcementData = {
                     title: formData.get('title'),
                     content: formData.get('content'),
                     type: formData.get('type'),
                     audience: formData.get('audience'),
-                    schedule: formData.get('schedule'),
-                    scheduleDateTime: formData.get('scheduleDateTime')
+                    priority: parseInt(formData.get('priority')),
+                    tags: tags,
+                    schedule_type: formData.get('scheduleType'),
+                    scheduled_for: formData.get('scheduleType') === 'scheduled' ? formData.get('scheduledFor') : null,
+                    notification_channels: notificationChannels,
+                    user_segments: []
                 };
 
                 try {
+                    this.showLoading();
                     const response = await fetch('/api/v1/announcements', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
