@@ -144,13 +144,25 @@
             box-shadow: 0 0 0 3px rgba(122, 63, 255, 0.1);
         }
 
-        /* AI Assistant Styles */
+        /* Enhanced AI Assistant Styles */
         .ai-assistant {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-assistant::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--kolekt-gradient);
         }
 
         .ai-assistant-header {
@@ -161,21 +173,28 @@
         }
 
         .ai-icon {
-            width: 24px;
-            height: 24px;
+            width: 32px;
+            height: 32px;
             background: var(--kolekt-gradient);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 0.8rem;
+            font-size: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .ai-suggestions {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
+            margin-bottom: 1rem;
         }
 
         .ai-suggestion {
@@ -187,17 +206,160 @@
             color: var(--text-secondary);
             cursor: pointer;
             transition: all 0.2s;
+            position: relative;
         }
 
         .ai-suggestion:hover {
             background: var(--kolekt-purple);
             color: white;
             border-color: var(--kolekt-purple);
+            transform: translateY(-1px);
         }
 
-        /* Content Templates */
+        .ai-suggestion.active {
+            background: var(--kolekt-purple);
+            color: white;
+            border-color: var(--kolekt-purple);
+        }
+
+        .ai-input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .ai-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .ai-input:focus {
+            outline: none;
+            border-color: var(--kolekt-purple);
+        }
+
+        .ai-generate-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--kolekt-gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .ai-generate-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(122, 63, 255, 0.3);
+        }
+
+        .ai-generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Enhanced Content Templates */
         .template-selector {
             background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .template-card {
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .template-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--kolekt-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .template-card:hover {
+            border-color: var(--kolekt-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(122, 63, 255, 0.2);
+        }
+
+        .template-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .template-card.selected {
+            border-color: var(--kolekt-purple);
+            background: rgba(122, 63, 255, 0.1);
+        }
+
+        .template-card.selected::before {
+            transform: scaleX(1);
+        }
+
+        .template-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .template-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--kolekt-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .template-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .template-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .template-preview {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 1.5rem;
@@ -281,8 +443,8 @@
         }
         
         .content-preview {
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 1.5rem;
             min-height: 300px;
@@ -290,6 +452,62 @@
             font-family: inherit;
             font-size: 1rem;
             line-height: 1.6;
+            color: var(--text-primary);
+            position: relative;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .preview-platform {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .platform-badge {
+            background: var(--kolekt-purple);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .preview-content {
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .preview-meta {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .preview-stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--kolekt-purple);
         }
         
         .action-buttons {
@@ -309,41 +527,48 @@
         }
         
         .btn-primary {
-            background: #007bff;
+            background: var(--kolekt-purple);
             color: white;
         }
         
         .btn-primary:hover {
-            background: #0056b3;
+            background: var(--kolekt-magenta);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(122, 63, 255, 0.3);
         }
         
         .btn-secondary {
-            background: #6c757d;
-            color: white;
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
         }
         
         .btn-secondary:hover {
-            background: #545b62;
+            background: var(--kolekt-purple);
+            color: white;
+            border-color: var(--kolekt-purple);
         }
         
         .btn-success {
-            background: #28a745;
+            background: var(--kolekt-gradient);
             color: white;
         }
         
         .btn-success:hover {
-            background: #1e7e34;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(122, 63, 255, 0.3);
         }
         
         .btn-outline {
             background: transparent;
-            color: #007bff;
-            border: 2px solid #007bff;
+            color: var(--kolekt-purple);
+            border: 2px solid var(--kolekt-purple);
         }
         
         .btn-outline:hover {
-            background: #007bff;
+            background: var(--kolekt-purple);
             color: white;
+            transform: translateY(-1px);
         }
         
         .ai-assist {
@@ -649,7 +874,7 @@
                     </div>
                 </div>
 
-                            <!-- AI Assistant -->
+                            <!-- Enhanced AI Assistant -->
             <div class="ai-assistant">
                 <div class="ai-assistant-header">
                     <div class="ai-icon">🤖</div>
@@ -657,33 +882,83 @@
                 </div>
                 <p style="color: var(--text-secondary); margin-bottom: 1rem;">Get AI-powered suggestions to enhance your content</p>
                 <div class="ai-suggestions">
-                    <div class="ai-suggestion" onclick="suggestTitle()">Suggest Title</div>
-                    <div class="ai-suggestion" onclick="suggestHashtags()">Add Hashtags</div>
-                    <div class="ai-suggestion" onclick="optimizeContent()">Optimize Content</div>
-                    <div class="ai-suggestion" onclick="generateThread()">Generate Thread</div>
+                    <div class="ai-suggestion" onclick="suggestTitle()">🎯 Suggest Title</div>
+                    <div class="ai-suggestion" onclick="suggestHashtags()">🏷️ Add Hashtags</div>
+                    <div class="ai-suggestion" onclick="optimizeContent()">✨ Optimize Content</div>
+                    <div class="ai-suggestion" onclick="generateThread()">🧵 Generate Thread</div>
+                    <div class="ai-suggestion" onclick="expandContent()">📝 Expand Content</div>
+                    <div class="ai-suggestion" onclick="rewriteTone()">🎭 Rewrite Tone</div>
+                </div>
+                <div class="ai-input-group">
+                    <input type="text" class="ai-input" id="aiPrompt" placeholder="Describe what you want to create...">
+                    <button class="ai-generate-btn" onclick="generateWithPrompt()">Generate</button>
                 </div>
             </div>
 
-            <!-- Content Templates -->
+            <!-- Enhanced Content Templates -->
             <div class="template-selector">
                 <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Content Templates</h3>
                 <p style="color: var(--text-secondary); margin-bottom: 1rem;">Choose a template to get started quickly</p>
                 <div class="template-grid">
                     <div class="template-card" onclick="selectTemplate('product-launch')">
-                        <div class="template-title">Product Launch</div>
-                        <div class="template-description">Announce new products with excitement</div>
+                        <div class="template-header">
+                            <div class="template-icon">🚀</div>
+                            <div>
+                                <div class="template-title">Product Launch</div>
+                                <div class="template-description">Announce new products with excitement</div>
+                            </div>
+                        </div>
+                        <div class="template-preview">"🎉 Exciting news! We're launching [Product] that will revolutionize [industry]..."</div>
                     </div>
                     <div class="template-card" onclick="selectTemplate('educational')">
-                        <div class="template-title">Educational</div>
-                        <div class="template-description">Share knowledge and insights</div>
+                        <div class="template-header">
+                            <div class="template-icon">📚</div>
+                            <div>
+                                <div class="template-title">Educational</div>
+                                <div class="template-description">Share knowledge and insights</div>
+                            </div>
+                        </div>
+                        <div class="template-preview">"💡 Did you know? [Interesting fact] Here's why this matters..."</div>
                     </div>
                     <div class="template-card" onclick="selectTemplate('storytelling')">
-                        <div class="template-title">Storytelling</div>
-                        <div class="template-description">Engage with personal stories</div>
+                        <div class="template-header">
+                            <div class="template-icon">📖</div>
+                            <div>
+                                <div class="template-title">Storytelling</div>
+                                <div class="template-description">Engage with personal stories</div>
+                            </div>
+                        </div>
+                        <div class="template-preview">"Once upon a time... [Personal story that connects with audience]"</div>
                     </div>
                     <div class="template-card" onclick="selectTemplate('promotional')">
-                        <div class="template-title">Promotional</div>
-                        <div class="template-description">Promote offers and deals</div>
+                        <div class="template-header">
+                            <div class="template-icon">💰</div>
+                            <div>
+                                <div class="template-title">Promotional</div>
+                                <div class="template-description">Promote offers and deals</div>
+                            </div>
+                        </div>
+                        <div class="template-preview">"🔥 Limited time offer! Get [discount] off [product] when you..."</div>
+                    </div>
+                    <div class="template-card" onclick="selectTemplate('behind-scenes')">
+                        <div class="template-header">
+                            <div class="template-icon">🎬</div>
+                            <div>
+                                <div class="template-title">Behind the Scenes</div>
+                                <div class="template-description">Show your process and team</div>
+                            </div>
+                        </div>
+                        <div class="template-preview">"Ever wonder how we [process]? Here's a peek behind the curtain..."</div>
+                    </div>
+                    <div class="template-card" onclick="selectTemplate('customer-success')">
+                        <div class="template-header">
+                            <div class="template-icon">🏆</div>
+                            <div>
+                                <div class="template-title">Customer Success</div>
+                                <div class="template-description">Share customer testimonials</div>
+                            </div>
+                        </div>
+                        <div class="template-preview">"🎉 Another success story! [Customer] achieved [result] using our..."</div>
                     </div>
                 </div>
             </div>
@@ -779,7 +1054,36 @@
                 </div>
 
                 <div class="content-preview" id="contentPreview">
-                    Your content preview will appear here...
+                    <div class="preview-header">
+                        <div class="preview-platform">
+                            <span class="platform-badge">Preview</span>
+                        </div>
+                        <div class="preview-stats">
+                            <div class="stat-item">
+                                <span>📊</span>
+                                <span class="stat-value" id="previewWordCount">0</span> words
+                            </div>
+                            <div class="stat-item">
+                                <span>📝</span>
+                                <span class="stat-value" id="previewCharCount">0</span> chars
+                            </div>
+                        </div>
+                    </div>
+                    <div class="preview-content" id="previewContent">
+                        Your content preview will appear here...
+                    </div>
+                    <div class="preview-meta">
+                        <div class="preview-stats">
+                            <div class="stat-item">
+                                <span>🎯</span>
+                                <span>Engagement Score: <span class="stat-value" id="engagementScore">-</span></span>
+                            </div>
+                            <div class="stat-item">
+                                <span>⏱️</span>
+                                <span>Read Time: <span class="stat-value" id="readTime">-</span></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Drafts Section -->
@@ -1145,8 +1449,48 @@
                     return;
                 }
                 
-                const preview = `📝 ${title || 'Untitled'}\n\n${content}\n\n#${type} #content`;
-                document.getElementById('contentPreview').textContent = preview;
+                // Update preview content
+                const previewContent = document.getElementById('previewContent');
+                previewContent.innerHTML = `
+                    <h3 style="color: var(--text-primary); margin-bottom: 1rem;">${title || 'Untitled'}</h3>
+                    <div style="white-space: pre-wrap; line-height: 1.6;">${content}</div>
+                `;
+                
+                // Update stats
+                this.updatePreviewStats(content);
+                
+                // Calculate engagement score
+                this.calculateEngagementScore(content);
+            }
+            
+            updatePreviewStats(content) {
+                const words = content.trim().split(/\s+/).filter(word => word.length > 0);
+                const wordCount = words.length;
+                const charCount = content.length;
+                const readTime = Math.ceil(wordCount / 200); // Average reading speed
+                
+                document.getElementById('previewWordCount').textContent = wordCount;
+                document.getElementById('previewCharCount').textContent = charCount;
+                document.getElementById('readTime').textContent = `${readTime} min`;
+            }
+            
+            calculateEngagementScore(content) {
+                // Simple engagement scoring algorithm
+                let score = 50; // Base score
+                
+                // Factors that increase engagement
+                if (content.includes('?')) score += 10; // Questions
+                if (content.includes('!')) score += 5; // Excitement
+                if (content.includes('💡') || content.includes('🎯') || content.includes('🔥')) score += 15; // Emojis
+                if (content.length > 100 && content.length < 500) score += 10; // Optimal length
+                if (content.includes('you') || content.includes('your')) score += 10; // Personalization
+                
+                // Factors that decrease engagement
+                if (content.length > 1000) score -= 10; // Too long
+                if (content.length < 50) score -= 5; // Too short
+                
+                score = Math.max(0, Math.min(100, score)); // Clamp between 0-100
+                document.getElementById('engagementScore').textContent = `${score}/100`;
             }
             
             refreshPreview() {
@@ -1172,6 +1516,209 @@
                 setTimeout(() => {
                     alert.style.display = 'none';
                 }, 5000);
+            }
+        }
+        
+        // Enhanced AI Functions
+        async function suggestTitle() {
+            const content = document.getElementById('contentBody').value;
+            if (!content.trim()) {
+                contentCreator.showAlert('Please enter some content first', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/v1/ai/suggest-title', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    document.getElementById('contentTitle').value = result.title;
+                    contentCreator.showAlert('Title suggested!', 'success');
+                }
+            } catch (error) {
+                contentCreator.showAlert('AI suggestion failed', 'error');
+            }
+        }
+        
+        async function suggestHashtags() {
+            const content = document.getElementById('contentBody').value;
+            if (!content.trim()) {
+                contentCreator.showAlert('Please enter some content first', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/v1/ai/suggest-hashtags', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    const hashtags = result.hashtags.join(' ');
+                    document.getElementById('contentBody').value += `\n\n${hashtags}`;
+                    contentCreator.showAlert('Hashtags added!', 'success');
+                }
+            } catch (error) {
+                contentCreator.showAlert('AI suggestion failed', 'error');
+            }
+        }
+        
+        async function optimizeContent() {
+            const content = document.getElementById('contentBody').value;
+            if (!content.trim()) {
+                contentCreator.showAlert('Please enter some content first', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/v1/ai/optimize-content', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    document.getElementById('contentBody').value = result.optimized_content;
+                    contentCreator.showAlert('Content optimized!', 'success');
+                }
+            } catch (error) {
+                contentCreator.showAlert('AI optimization failed', 'error');
+            }
+        }
+        
+        async function generateThread() {
+            const topic = document.getElementById('contentTitle').value || 'content creation';
+            
+            try {
+                const response = await fetch('/api/v1/ai/generate-thread', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ topic })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    document.getElementById('contentBody').value = result.thread_content;
+                    contentCreator.showAlert('Thread generated!', 'success');
+                }
+            } catch (error) {
+                contentCreator.showAlert('AI generation failed', 'error');
+            }
+        }
+        
+        async function expandContent() {
+            const content = document.getElementById('contentBody').value;
+            if (!content.trim()) {
+                contentCreator.showAlert('Please enter some content first', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/v1/ai/expand-content', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    document.getElementById('contentBody').value = result.expanded_content;
+                    contentCreator.showAlert('Content expanded!', 'success');
+                }
+            } catch (error) {
+                contentCreator.showAlert('AI expansion failed', 'error');
+            }
+        }
+        
+        async function rewriteTone() {
+            const content = document.getElementById('contentBody').value;
+            if (!content.trim()) {
+                contentCreator.showAlert('Please enter some content first', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/v1/ai/rewrite-tone', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content, tone: 'professional' })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    document.getElementById('contentBody').value = result.rewritten_content;
+                    contentCreator.showAlert('Tone rewritten!', 'success');
+                }
+            } catch (error) {
+                contentCreator.showAlert('AI rewrite failed', 'error');
+            }
+        }
+        
+        async function generateWithPrompt() {
+            const prompt = document.getElementById('aiPrompt').value;
+            if (!prompt.trim()) {
+                contentCreator.showAlert('Please enter a prompt', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/v1/ai/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    document.getElementById('contentBody').value = result.generated_content;
+                    contentCreator.showAlert('Content generated!', 'success');
+                }
+            } catch (error) {
+                contentCreator.showAlert('AI generation failed', 'error');
+            }
+        }
+        
+        // Template Functions
+        function selectTemplate(templateType) {
+            const templates = {
+                'product-launch': {
+                    title: 'Product Launch Announcement',
+                    content: '🎉 Exciting news! We\'re launching [Product Name] that will revolutionize [industry/niche].\n\n✨ Key features:\n• [Feature 1]\n• [Feature 2]\n• [Feature 3]\n\n🚀 Early bird pricing available now!\n\nWhat do you think? Drop a comment below! 👇'
+                },
+                'educational': {
+                    title: 'Educational Insight',
+                    content: '💡 Did you know? [Interesting fact about your industry]\n\nHere\'s why this matters:\n\n📚 [Explanation in 2-3 sentences]\n\n🎯 Key takeaway: [Main learning point]\n\nWhat questions do you have about this? 🤔'
+                },
+                'storytelling': {
+                    title: 'Behind the Scenes Story',
+                    content: 'Once upon a time... [Personal story that connects with your audience]\n\nThis experience taught me [lesson learned]\n\n💭 The moral of the story: [Key insight]\n\nHave you had a similar experience? Share your story below! 📖'
+                },
+                'promotional': {
+                    title: 'Special Offer',
+                    content: '🔥 Limited time offer!\n\nGet [discount percentage] off [product/service] when you [action required].\n\n⏰ Offer ends [date]\n\n💳 Use code: [PROMOCODE]\n\nDon\'t miss out! 🚀'
+                },
+                'behind-scenes': {
+                    title: 'Behind the Scenes',
+                    content: 'Ever wonder how we [process/operation]?\n\nHere\'s a peek behind the curtain:\n\n🎬 [Step 1]\n🎬 [Step 2]\n🎬 [Step 3]\n\nIt\'s not always glamorous, but it\'s always worth it! 💪\n\nWhat would you like to see more of?'
+                },
+                'customer-success': {
+                    title: 'Customer Success Story',
+                    content: '🎉 Another success story!\n\n[Customer Name] achieved [specific result] using our [product/service].\n\n📈 Results:\n• [Result 1]\n• [Result 2]\n• [Result 3]\n\nProud to be part of your journey! 🙏\n\nReady to write your own success story?'
+                }
+            };
+            
+            const template = templates[templateType];
+            if (template) {
+                document.getElementById('contentTitle').value = template.title;
+                document.getElementById('contentBody').value = template.content;
+                contentCreator.showAlert('Template loaded!', 'success');
             }
         }
         
