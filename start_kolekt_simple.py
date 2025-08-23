@@ -814,7 +814,7 @@ except Exception as e:
     logging.error(f"Error loading social router: {e}")
 
 try:
-    from src.api.admin_routes import admin_router
+    from src.api.admin_routes_new import admin_router_new as admin_router
     app.include_router(admin_router, prefix="/api/v1/admin", tags=["Admin"])
     logging.info("Admin router loaded successfully")
 except Exception as e:

@@ -124,7 +124,7 @@ try:
     from src.api.connections_routes import router as connections_router
     from src.api.content_routes import router as content_router
     from src.api.social_routes import router as social_router
-    from src.api.admin_routes import router as admin_router
+    from src.api.admin_routes_new import admin_router_new as admin_router
     from src.api.ai_routes import router as ai_router
     from src.api.threads_routes import router as threads_router
     from src.api.subscription_routes import router as subscription_router
