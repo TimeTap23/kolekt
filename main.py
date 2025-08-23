@@ -200,7 +200,7 @@ async def content_guidelines():
     }
 
 
-@app.get("/admin", response_class=HTMLResponse)
+@app.get("/admin-dashboard", response_class=HTMLResponse)
 async def admin_dashboard(request: Request):
     """Admin dashboard page"""
     try:
