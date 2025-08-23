@@ -100,7 +100,7 @@ app.mount("/static", StaticFiles(directory="web/static"), name="static")
 # Templates
 templates = Jinja2Templates(directory="web/templates")
 
-# Include API routes
+# Include API routes FIRST (before individual routes)
 app.include_router(api_router, prefix="/api/v1")
 
 
