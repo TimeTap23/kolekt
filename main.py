@@ -6,11 +6,12 @@ Enhanced with anti-spam and rate limiting middleware
 
 import logging
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
+from src.services.authentication import require_admin
 
 # Import our modules
 from src.api.routes import api_router
@@ -201,8 +202,8 @@ async def content_guidelines():
 
 
 @app.get("/admin-dashboard", response_class=HTMLResponse)
-async def admin_dashboard(request: Request):
-    """Admin dashboard page"""
+async def admin_dashboard(request: Request, current_user = Depends(require_admin)):
+    """Admin dashboard page - requires admin authentication"""
     try:
         return templates.TemplateResponse("admin_dashboard.html", {"request": request})
     except Exception as e:
