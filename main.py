@@ -20,8 +20,8 @@ from src.core.config import settings
 from src.core.logging_config import setup_logging
 from src.services.cache_service import cache_service
 from src.services.performance_monitor import performance_monitor
-# from src.services.database_pool import db_pool
-# from src.services.cdn_service import cdn_service
+from src.services.database_pool import db_pool
+from src.services.cdn_service import cdn_service
 
 # Import API routes
 from src.api.auth_routes import auth_router
@@ -48,8 +48,8 @@ async def lifespan(app: FastAPI):
         logger.info("✅ Redis cache initialized")
         
         # Initialize database pool
-        # await db_pool.init_pool()
-        # logger.info("✅ Database connection pool initialized")
+        await db_pool.init_pool()
+        logger.info("✅ Database connection pool initialized")
         
         # Initialize analytics service
         performance_monitor.start_monitoring()
@@ -60,8 +60,8 @@ async def lifespan(app: FastAPI):
         logger.info("✅ Rate limiter initialized")
         
         # Initialize CDN service
-        # await cdn_service.optimize_static_assets()
-        # logger.info("✅ Static assets optimized")
+        await cdn_service.optimize_static_assets()
+        logger.info("✅ Static assets optimized")
         
         # Initialize performance monitoring
         performance_monitor.start_monitoring()
@@ -77,8 +77,8 @@ async def lifespan(app: FastAPI):
     logger.info("🛑 Shutting down ThreadStorm...")
     performance_monitor.stop_monitoring()
     logger.info("✅ Performance monitoring stopped")
-    # await db_pool.close()
-    # logger.info("✅ Database connection pool closed")
+    await db_pool.close()
+    logger.info("✅ Database connection pool closed")
     cache_service.close()
     logger.info("✅ Cache service closed")
     logger.info("✅ Shutdown complete")
@@ -125,16 +125,15 @@ async def root(request: Request):
         "features": {
             "caching": cache_service.enabled,
             "performance_monitoring": True,
-            # "database_pooling": db_pool.enabled,
-            # "cdn_optimization": cdn_service.enabled,
+            "database_pooling": db_pool.enabled,
+            "cdn_optimization": cdn_service.enabled,
             "load_balancing": True,
             "auto_scaling": True
         },
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
     
-    # preload_assets = await cdn_service.preload_critical_assets()
-    preload_assets = []
+    preload_assets = await cdn_service.preload_critical_assets()
     
     return templates.TemplateResponse(
         "index.html",
@@ -146,11 +145,9 @@ async def health_check():
     """Comprehensive health check endpoint"""
     try:
         cache_health = await cache_service.health_check()
-        # db_health = await db_pool.health_check()
-        db_health = {"status": "disabled"}
+        db_health = await db_pool.health_check()
         system_health = await performance_monitor.get_system_health()
-        # cdn_health = await cdn_service.health_check()
-        cdn_health = {"status": "disabled"}
+        cdn_health = await cdn_service.health_check()
         
         return {
             "status": "healthy",
@@ -160,15 +157,15 @@ async def health_check():
                 "database": db_health,
                 "redis": cache_health,
                 "performance_monitoring": True,
-                # "database_pooling": db_health,
-                # "cdn_optimization": cdn_health
+                "database_pooling": db_health,
+                "cdn_optimization": cdn_health
             },
             "system_health": system_health,
             "optimization_features": {
                 "caching": cache_service.enabled,
-                # "database_pooling": db_pool.enabled,
+                "database_pooling": db_pool.enabled,
                 "performance_monitoring": True,
-                # "cdn_optimization": cdn_service.enabled,
+                "cdn_optimization": cdn_service.enabled,
                 "load_balancing": True,
                 "auto_scaling": True
             },
@@ -185,10 +182,8 @@ async def performance_endpoint():
         summary = await performance_monitor.get_performance_summary()
         health = await performance_monitor.get_system_health()
         cache_stats = await cache_service.get_cache_stats()
-        # db_stats = await db_pool.get_pool_stats()
-        db_stats = {"status": "disabled"}
-        # cdn_stats = await cdn_service.get_cache_stats()
-        cdn_stats = {"status": "disabled"}
+        db_stats = await db_pool.get_pool_stats()
+        cdn_stats = await cdn_service.get_cache_stats()
         
         return {
             "success": True,
@@ -199,9 +194,9 @@ async def performance_endpoint():
             "cdn_stats": cdn_stats,
             "optimization_status": {
                 "caching_enabled": cache_service.enabled,
-                # "database_pooling_enabled": db_pool.enabled,
+                "database_pooling_enabled": db_pool.enabled,
                 "performance_monitoring_enabled": True,
-                # "cdn_optimization_enabled": cdn_service.enabled
+                "cdn_optimization_enabled": cdn_service.enabled
             }
         }
     except Exception as e:
@@ -223,21 +218,21 @@ async def optimization_status():
                     "status": await cache_service.health_check(),
                     "stats": await cache_service.get_cache_stats()
                 },
-                # "database_pooling": {
-                #     "enabled": db_pool.enabled,
-                #     "status": await db_pool.health_check(),
-                #     "stats": await db_pool.get_pool_stats()
-                # },
+                "database_pooling": {
+                    "enabled": db_pool.enabled,
+                    "status": await db_pool.health_check(),
+                    "stats": await db_pool.get_pool_stats()
+                },
                 "performance_monitoring": {
                     "enabled": True,
                     "status": "active",
                     "summary": await performance_monitor.get_performance_summary()
                 },
-                # "cdn_optimization": {
-                #     "enabled": cdn_service.enabled,
-                #     "status": await cdn_service.health_check(),
-                #     "stats": await cdn_service.get_cache_stats()
-                # },
+                "cdn_optimization": {
+                    "enabled": cdn_service.enabled,
+                    "status": await cdn_service.health_check(),
+                    "stats": await cdn_service.get_cache_stats()
+                },
                 "load_balancing": {
                     "enabled": True,
                     "status": "configured"
