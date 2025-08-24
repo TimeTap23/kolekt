@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ThreadStorm - Professional AI-powered content formatting for social media
+Kolekt - Professional AI-powered content formatting for social media
 Main application entry point with comprehensive performance optimizations
 """
 
@@ -41,7 +41,7 @@ templates = Jinja2Templates(directory="web/templates")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan manager with comprehensive optimization services"""
-    logger.info("🚀 Starting ThreadStorm with comprehensive performance optimizations...")
+    logger.info("🚀 Starting Kolekt with comprehensive performance optimizations...")
     try:
         # Initialize cache service
         cache_service.init_redis()
@@ -74,7 +74,7 @@ async def lifespan(app: FastAPI):
     yield
     
     # Shutdown
-    logger.info("🛑 Shutting down ThreadStorm...")
+    logger.info("🛑 Shutting down Kolekt...")
     performance_monitor.stop_monitoring()
     logger.info("✅ Performance monitoring stopped")
     await db_pool.close()
@@ -84,7 +84,7 @@ async def lifespan(app: FastAPI):
     logger.info("✅ Shutdown complete")
 
 app = FastAPI(
-    title="ThreadStorm",
+    title="Kolekt",
     description="Professional AI-powered content formatting for social media with comprehensive performance optimizations",
     version="2.0.0",
     lifespan=lifespan
@@ -119,7 +119,7 @@ app.include_router(curation_router, prefix="/api/v1/curation", tags=["Curation"]
 async def root(request: Request):
     """Root endpoint with comprehensive status information"""
     status = {
-        "app": "ThreadStorm",
+        "app": "Kolekt",
         "version": "2.0.0",
         "status": "operational",
         "features": {

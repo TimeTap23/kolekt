@@ -1,4 +1,4 @@
-name: Deploy ThreadStorm
+name: Deploy Kolekt
 
 on:
   push:

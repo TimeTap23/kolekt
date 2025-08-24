@@ -76,7 +76,7 @@ def main():
     """Main function"""
     import asyncio
     
-    print("🚀 ThreadStorm Database Fix")
+    print("🚀 Kolekt Database Fix")
     print("=" * 40)
     
     success = asyncio.run(fix_usage_metrics())

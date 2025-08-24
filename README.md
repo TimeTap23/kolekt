@@ -1,4 +1,4 @@
-# ThreadStorm (Kolekt) - Social Media Management Platform
+# Kolekt (Kolekt) - Social Media Management Platform
 
 A modern, production-ready social media management platform that allows users to connect and manage multiple social media accounts, create content, and post across platforms seamlessly.
 
@@ -35,8 +35,8 @@ A modern, production-ready social media management platform that allows users to
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/threadstorm.git
-   cd threadstorm
+   git clone https://github.com/yourusername/kolekt.git
+   cd kolekt
    ```
 
 2. **Set up environment variables**
@@ -135,4 +135,4 @@ For support and questions:
 
 ---
 
-**ThreadStorm** - Empowering social media management with modern technology.
+**Kolekt** - Empowering social media management with modern technology.

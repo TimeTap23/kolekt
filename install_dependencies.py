@@ -88,7 +88,7 @@ def main():
     print("\n📋 Next steps:")
     print("1. Configure your .env file with Supabase credentials")
     print("2. Run: python setup_supabase.py")
-    print("3. Start the server: python start_threadstorm_simple.py")
+    print("3. Start the server: python start_kolekt_simple.py")
     print("\n🚀 Ready to launch Kolekt!")
 
 if __name__ == "__main__":

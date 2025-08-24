@@ -2,9 +2,9 @@ version: '3.8'
 
 services:
   # ThreadStorm Application
-  threadstorm:
+  kolekt:
     build: .
-    container_name: threadstorm-app
+    container_name: kolekt-app
     restart: unless-stopped
     environment:
       - ENVIRONMENT=production
@@ -26,7 +26,7 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - ENABLE_KMS_ENCRYPTION=${ENABLE_KMS_ENCRYPTION:-false}
       - LOG_LEVEL=INFO
-      - CORS_ORIGINS=${CORS_ORIGINS:-https://threadstorm.com,https://www.threadstorm.com}
+      - CORS_ORIGINS=${CORS_ORIGINS:-https://kolekt.com,https://www.kolekt.com}
     ports:
       - "8000:8000"
     volumes:
@@ -35,7 +35,7 @@ services:
     depends_on:
       - redis
     networks:
-      - threadstorm-network
+      - kolekt-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -46,13 +46,13 @@ services:
   # Redis for caching and job queue
   redis:
     image: redis:7-alpine
-    container_name: threadstorm-redis
+    container_name: kolekt-redis
     restart: unless-stopped
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-threadstorm_redis_2024}
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-kolekt_redis_2024}
     volumes:
       - redis_data:/data
     networks:
-      - threadstorm-network
+      - kolekt-network
     healthcheck:
       test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
       interval: 30s
@@ -62,7 +62,7 @@ services:
   # Nginx Reverse Proxy
   nginx:
     image: nginx:alpine
-    container_name: threadstorm-nginx
+    container_name: kolekt-nginx
     restart: unless-stopped
     ports:
       - "80:80"
@@ -72,9 +72,9 @@ services:
       - ./nginx/ssl:/etc/nginx/ssl:ro
       - ./logs/nginx:/var/log/nginx
     depends_on:
-      - threadstorm
+      - kolekt
     networks:
-      - threadstorm-network
+      - kolekt-network
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
       interval: 30s
@@ -84,7 +84,7 @@ services:
   # Celery Worker for background tasks
   celery:
     build: .
-    container_name: threadstorm-celery
+    container_name: kolekt-celery
     restart: unless-stopped
     command: celery -A src.services.celery_app worker --loglevel=info --concurrency=4
     environment:
@@ -112,12 +112,12 @@ services:
     depends_on:
       - redis
     networks:
-      - threadstorm-network
+      - kolekt-network
 
   # Celery Beat for scheduled tasks
   celery-beat:
     build: .
-    container_name: threadstorm-celery-beat
+    container_name: kolekt-celery-beat
     restart: unless-stopped
     command: celery -A src.services.celery_app beat --loglevel=info
     environment:
@@ -145,12 +145,12 @@ services:
     depends_on:
       - redis
     networks:
-      - threadstorm-network
+      - kolekt-network
 
 volumes:
   redis_data:
     driver: local
 
 networks:
-  threadstorm-network:
+  kolekt-network:
     driver: bridge

@@ -53,7 +53,7 @@ def cleanup_users():
             'admin@kolekt.io',  # Old test admin
             'user@test.com',
             'demo@test.com',
-            'admin@threadstorm.com',  # Old test admin
+            'admin@kolekt.io',  # Old test admin
             'local_test_',  # Any local test users
             'login_local_'  # Any login test users
         ]

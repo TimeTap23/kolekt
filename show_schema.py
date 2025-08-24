@@ -128,7 +128,7 @@ create table if not exists engagement_metrics (
     print("7. Verify tables are created in 'Table Editor'")
     print()
     print("After applying, restart the server and test:")
-    print("python start_threadstorm.py")
+    print("python start_kolekt.py")
     print("python test_curation_api.py")
 
 if __name__ == "__main__":
