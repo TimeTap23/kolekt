@@ -91,7 +91,6 @@ THREADS_API_SECRET=your-threads-api-secret
 
 #### **A. Run Credential Test**
 ```bash
-python test_meta_credentials.py
 ```
 
 This will test:
@@ -151,10 +150,8 @@ This will test:
 
 ```bash
 # Test credentials
-python test_meta_credentials.py
 
 # Test OAuth flow
-python test_meta_credentials.py validate
 
 # Get setup instructions
 python setup_meta_credentials.py instructions

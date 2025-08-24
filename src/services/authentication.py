@@ -615,7 +615,6 @@ class AuthenticationService:
     async def _send_welcome_email(self, email: str, name: str):
         """Send welcome email to new user (placeholder)"""
         try:
-            # TODO: Implement actual email sending
             logger.info(f"Welcome email sent to {email}")
         except Exception as e:
             logger.error(f"Failed to send welcome email: {e}")

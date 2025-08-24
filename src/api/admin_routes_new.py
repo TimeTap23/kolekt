@@ -66,12 +66,6 @@ async def get_admin_dashboard(current_user = Depends(require_admin)):
             "stats": {
                 "total_users": total_users,
                 "active_users": active_users,
-                "total_content_items": 12,  # TODO: Get from database
-                "social_connections": 8,    # TODO: Get from database
-                "monthly_posts": 25,        # TODO: Get from database
-                "total_api_calls": 150,     # TODO: Get from database
-                "storage_used": 2.5,        # TODO: Calculate from database
-                "revenue_monthly": 0.0      # TODO: Get from billing system
             },
             "last_updated": datetime.now(timezone.utc).isoformat()
         }

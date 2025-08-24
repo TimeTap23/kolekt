@@ -126,7 +126,6 @@ kolekt/
 Run our comprehensive test suite:
 
 ```bash
-python test_production_features.py
 ```
 
 This will test:

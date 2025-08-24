@@ -33,7 +33,6 @@ You need to manually apply the authentication schema to your Supabase database:
 ### **Step 2: Test Authentication**
 After applying the schema, test with:
 ```bash
-python test_auth.py
 ```
 
 ## 🧪 **Test Users Created:**

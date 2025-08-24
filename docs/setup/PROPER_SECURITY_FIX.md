@@ -67,7 +67,6 @@ REVOKE EXECUTE ON FUNCTION exec_sql(text) FROM anon;
 After creating the `exec_sql` function, run the automated fix script:
 
 ```bash
-python fix_security_properly.py
 ```
 
 This script will:
@@ -145,7 +144,6 @@ If the fix breaks functionality:
 
 - `create_exec_sql_function.sql` - SQL to create the exec_sql function
 - `fix_rls_security.sql` - Complete RLS fix for all tables
-- `fix_security_properly.py` - Automated fix script
 - `docs/setup/PROPER_SECURITY_FIX.md` - This documentation
 
 ## **Next Steps**

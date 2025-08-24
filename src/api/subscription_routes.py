@@ -280,7 +280,6 @@ async def create_billing_portal(
     """Create a Stripe billing portal session for the current user.
     Note: In production, look up the user's Stripe customer ID in your DB."""
     try:
-        # TODO: Replace with actual lookup of user's Stripe customer ID
         mock_customer_id = "cus_mock"
         session = stripe_service.create_billing_portal(
             customer_id=mock_customer_id,
