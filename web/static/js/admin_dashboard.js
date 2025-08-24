@@ -15,7 +15,7 @@ class KolektAdmin {
         const adminToken = localStorage.getItem('admin_token');
         if (!adminToken) {
             // Redirect to admin login
-            window.location.href = '/admin-login';
+            window.location.href = '/admin/login';
             return;
         }
 
@@ -924,7 +924,7 @@ class KolektAdmin {
         localStorage.removeItem('admin_token');
         
         // Redirect to admin login
-        window.location.href = '/admin-login';
+        window.location.href = '/admin/login';
     }
 }
 

@@ -350,7 +350,7 @@ async def forgot_password_page():
     else:
         return {"message": "Forgot password page not available"}
 
-@app.get("/admin-login")
+@app.get("/admin/login")
 async def admin_login_page():
     """Admin login page"""
     html_path = Path(__file__).parent / "web" / "templates" / "admin_login.html"
