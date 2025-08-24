@@ -10,6 +10,19 @@ from pathlib import Path
 from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 
+# Railway-specific fix: Handle direct uvicorn calls
+if len(sys.argv) > 1 and 'uvicorn' in sys.argv[0]:
+    # If called directly by uvicorn, handle PORT properly
+    port_str = os.getenv("PORT", "8000")
+    try:
+        port = int(port_str)
+    except ValueError:
+        port = 8000
+    
+    # Set the port in environment for uvicorn
+    os.environ["PORT"] = str(port)
+    print(f"🚂 Railway: Fixed PORT to {port}")
+
 # Load environment variables
 load_dotenv()
 
