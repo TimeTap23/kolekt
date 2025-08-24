@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# ThreadStorm AWS EKS Deployment Script
+# Kolekt AWS EKS Deployment Script
 # This script automates the complete AWS EKS deployment process
 
 set -e  # Exit on any error
@@ -13,7 +13,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-CLUSTER_NAME="threadstorm-cluster"
+CLUSTER_NAME="kolekt-cluster"
 REGION="us-west-2"
 NODE_TYPE="t3.medium"
 NODE_COUNT=3
@@ -122,11 +122,11 @@ setup_ecr() {
     # Get AWS account ID
     AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
     ECR_REGISTRY="$AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com"
-    ECR_REPOSITORY="$ECR_REGISTRY/threadstorm"
+    ECR_REPOSITORY="$ECR_REGISTRY/kolekt"
     
     # Create ECR repository if it doesn't exist
-    if ! aws ecr describe-repositories --repository-names threadstorm --region $REGION &> /dev/null; then
-        aws ecr create-repository --repository-name threadstorm --region $REGION
+    if ! aws ecr describe-repositories --repository-names kolekt --region $REGION &> /dev/null; then
+        aws ecr create-repository --repository-name kolekt --region $REGION
         print_status "ECR repository created"
     else
         print_status "ECR repository already exists"
@@ -158,7 +158,7 @@ update_deployment() {
     print_info "Updating deployment configuration..."
     
     # Update image in deployment file
-    sed -i.bak "s|ghcr.io/your-username/threadstorm:latest|$ECR_REPOSITORY:latest|g" k8s/deployment.yaml
+    sed -i.bak "s|ghcr.io/your-username/kolekt:latest|$ECR_REPOSITORY:latest|g" k8s/deployment.yaml
     
     # Add AWS-specific environment variables
     cat >> k8s/deployment.yaml << EOF
@@ -196,9 +196,9 @@ install_components() {
     print_status "Kubernetes components installed"
 }
 
-# Deploy ThreadStorm
-deploy_threadstorm() {
-    print_info "Deploying ThreadStorm to EKS..."
+# Deploy Kolekt
+deploy_kolekt() {
+    print_info "Deploying Kolekt to EKS..."
     
     # Create namespace
     kubectl apply -f k8s/namespace.yaml
@@ -209,24 +209,24 @@ deploy_threadstorm() {
     # Deploy Redis
     kubectl apply -f k8s/redis.yaml
     
-    # Deploy ThreadStorm
+    # Deploy Kolekt
     kubectl apply -f k8s/deployment.yaml
     
     # Deploy monitoring (optional)
     kubectl apply -f k8s/monitoring.yaml
     
-    print_status "ThreadStorm deployed to EKS"
+    print_status "Kolekt deployed to EKS"
 }
 
 # Wait for deployment
 wait_for_deployment() {
     print_info "Waiting for deployment to be ready..."
     
-    # Wait for ThreadStorm deployment
-    kubectl wait --for=condition=available deployment/threadstorm -n threadstorm --timeout=600s
+    # Wait for Kolekt deployment
+    kubectl wait --for=condition=available deployment/kolekt -n kolekt --timeout=600s
     
     # Wait for Redis deployment
-    kubectl wait --for=condition=ready pod -l app=threadstorm-redis -n threadstorm --timeout=300s
+    kubectl wait --for=condition=ready pod -l app=kolekt-redis -n kolekt --timeout=300s
     
     print_status "Deployment is ready"
 }
@@ -236,11 +236,11 @@ get_service_info() {
     print_info "Getting service information..."
     
     # Get LoadBalancer IP
-    LOAD_BALANCER_IP=$(kubectl get service threadstorm-service -n threadstorm -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    LOAD_BALANCER_IP=$(kubectl get service kolekt-service -n kolekt -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     
     if [ -n "$LOAD_BALANCER_IP" ]; then
         echo ""
-        echo "🎉 ThreadStorm is now accessible at:"
+        echo "🎉 Kolekt is now accessible at:"
         echo "   Main Application: http://$LOAD_BALANCER_IP"
         echo "   Admin Panel: http://$LOAD_BALANCER_IP/admin"
         echo "   Health Check: http://$LOAD_BALANCER_IP/health"
@@ -267,15 +267,15 @@ show_cluster_info() {
     echo ""
     echo "Useful Commands:"
     echo "  - Check cluster status: eksctl get cluster --name $CLUSTER_NAME --region $REGION"
-    echo "  - View pods: kubectl get pods -n threadstorm"
-    echo "  - View logs: kubectl logs -f deployment/threadstorm -n threadstorm"
-    echo "  - Scale deployment: kubectl scale deployment threadstorm --replicas=5 -n threadstorm"
+    echo "  - View pods: kubectl get pods -n kolekt"
+    echo "  - View logs: kubectl logs -f deployment/kolekt -n kolekt"
+    echo "  - Scale deployment: kubectl scale deployment kolekt --replicas=5 -n kolekt"
     echo "  - Delete cluster: eksctl delete cluster --name $CLUSTER_NAME --region $REGION"
 }
 
 # Main deployment function
 main() {
-    echo -e "${BLUE}☁️  ThreadStorm AWS EKS Deployment${NC}"
+    echo -e "${BLUE}☁️  Kolekt AWS EKS Deployment${NC}"
     echo "=========================================="
     echo ""
     
@@ -285,7 +285,7 @@ main() {
     build_and_push_image
     update_deployment
     install_components
-    deploy_threadstorm
+    deploy_kolekt
     wait_for_deployment
     get_service_info
     
@@ -313,15 +313,15 @@ case "${1:-}" in
         ;;
     "deploy-app")
         install_components
-        deploy_threadstorm
+        deploy_kolekt
         wait_for_deployment
         get_service_info
         ;;
     "status")
-        kubectl get all -n threadstorm
+        kubectl get all -n kolekt
         ;;
     "logs")
-        kubectl logs -f deployment/threadstorm -n threadstorm
+        kubectl logs -f deployment/kolekt -n kolekt
         ;;
     "delete")
         print_warning "This will delete the entire EKS cluster!"
@@ -342,7 +342,7 @@ case "${1:-}" in
         echo "  cluster     - Create EKS cluster only"
         echo "  ecr         - Setup ECR repository only"
         echo "  image       - Build and push Docker image only"
-        echo "  deploy-app  - Deploy ThreadStorm application only"
+        echo "  deploy-app  - Deploy Kolekt application only"
         echo "  status      - Check deployment status"
         echo "  logs        - View application logs"
         echo "  delete      - Delete EKS cluster"
@@ -351,7 +351,7 @@ case "${1:-}" in
     *)
         echo "Usage: $0 {deploy|cluster|ecr|image|deploy-app|status|logs|delete|help}"
         echo ""
-        echo "This script automates ThreadStorm deployment to AWS EKS."
+        echo "This script automates Kolekt deployment to AWS EKS."
         echo ""
         echo "For complete deployment: $0 deploy"
         echo "For step-by-step deployment: Use individual commands"

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Analytics and Usage Tracking Service for ThreadStorm
+Analytics and Usage Tracking Service for Kolekt
 """
 
 import logging

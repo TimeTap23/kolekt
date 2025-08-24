@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Cache Service for ThreadStorm
+Cache Service for Kolekt
 Handles Redis-based caching for improved performance
 """
 
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 class CacheService:
-    """Redis-based caching service for ThreadStorm"""
+    """Redis-based caching service for Kolekt"""
     
     def __init__(self):
         self.redis_client: Optional[redis.Redis] = None

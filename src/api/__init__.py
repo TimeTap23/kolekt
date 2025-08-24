@@ -1,3 +1,3 @@
 """
-API package for ThreadStorm
+API package for Kolekt
 """

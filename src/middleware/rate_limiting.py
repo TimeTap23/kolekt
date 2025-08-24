@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Rate Limiting Middleware for ThreadStorm
+Rate Limiting Middleware for Kolekt
 Prevents spam and abuse through intelligent rate limiting
 """
 

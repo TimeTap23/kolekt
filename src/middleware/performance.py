@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Performance Monitoring Middleware for ThreadStorm
+Performance Monitoring Middleware for Kolekt
 Tracks request performance metrics and response times
 """
 

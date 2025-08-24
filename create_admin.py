@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script to create an admin user for ThreadStorm
+Script to create an admin user for Kolekt
 Run this script to create your first admin user
 """
 
@@ -19,7 +19,7 @@ from src.services.authentication import auth_service
 
 async def create_admin_user():
     """Create an admin user interactively"""
-    print("🔧 ThreadStorm Admin User Creation")
+    print("🔧 Kolekt Admin User Creation")
     print("=" * 50)
     
     # Get user input
@@ -74,7 +74,7 @@ async def create_admin_user():
 
 def main():
     """Main function"""
-    print("🚀 ThreadStorm Admin Setup")
+    print("🚀 Kolekt Admin Setup")
     print("=" * 50)
     
     # Check if required environment variables are set

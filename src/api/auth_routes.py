@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Authentication API Routes for ThreadStorm
+Authentication API Routes for Kolekt
 Handles user registration, login, logout, and profile management
 """
 

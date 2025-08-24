@@ -1,4 +1,4 @@
-# Load Balancer Configuration for ThreadStorm
+# Load Balancer Configuration for Kolekt
 # Nginx-based load balancer with health checks and auto-scaling
 
 version: '3.8'
@@ -7,7 +7,7 @@ services:
   # Load Balancer
   nginx-lb:
     image: nginx:alpine
-    container_name: threadstorm-lb
+    container_name: kolekt-lb
     ports:
       - "80:80"
       - "443:443"
@@ -15,11 +15,11 @@ services:
       - ./nginx/load-balancer.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
     depends_on:
-      - threadstorm-1
-      - threadstorm-2
-      - threadstorm-3
+      - kolekt-1
+      - kolekt-2
+      - kolekt-3
     networks:
-      - threadstorm-network
+      - kolekt-network
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "nginx", "-t"]
@@ -30,12 +30,12 @@ services:
   # Redis Cluster for Session Management
   redis-master:
     image: redis:7-alpine
-    container_name: threadstorm-redis-master
+    container_name: kolekt-redis-master
     command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis-master-data:/data
     networks:
-      - threadstorm-network
+      - kolekt-network
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
@@ -45,28 +45,28 @@ services:
 
   redis-replica-1:
     image: redis:7-alpine
-    container_name: threadstorm-redis-replica-1
+    container_name: kolekt-redis-replica-1
     command: redis-server --slaveof redis-master 6379 --requirepass ${REDIS_PASSWORD}
     depends_on:
       - redis-master
     networks:
-      - threadstorm-network
+      - kolekt-network
     restart: unless-stopped
 
   redis-replica-2:
     image: redis:7-alpine
-    container_name: threadstorm-redis-replica-2
+    container_name: kolekt-redis-replica-2
     command: redis-server --slaveof redis-master 6379 --requirepass ${REDIS_PASSWORD}
     depends_on:
       - redis-master
     networks:
-      - threadstorm-network
+      - kolekt-network
     restart: unless-stopped
 
   # Application Instances (Auto-scaling)
-  threadstorm-1:
+  kolekt-1:
     build: .
-    container_name: threadstorm-app-1
+    container_name: kolekt-app-1
     environment:
       - REDIS_URL=redis://:${REDIS_PASSWORD}@redis-master:6379
       - DATABASE_URL=${DATABASE_URL}
@@ -75,7 +75,7 @@ services:
     depends_on:
       - redis-master
     networks:
-      - threadstorm-network
+      - kolekt-network
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
@@ -84,9 +84,9 @@ services:
       retries: 3
       start_period: 40s
 
-  threadstorm-2:
+  kolekt-2:
     build: .
-    container_name: threadstorm-app-2
+    container_name: kolekt-app-2
     environment:
       - REDIS_URL=redis://:${REDIS_PASSWORD}@redis-master:6379
       - DATABASE_URL=${DATABASE_URL}
@@ -95,7 +95,7 @@ services:
     depends_on:
       - redis-master
     networks:
-      - threadstorm-network
+      - kolekt-network
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
@@ -104,9 +104,9 @@ services:
       retries: 3
       start_period: 40s
 
-  threadstorm-3:
+  kolekt-3:
     build: .
-    container_name: threadstorm-app-3
+    container_name: kolekt-app-3
     environment:
       - REDIS_URL=redis://:${REDIS_PASSWORD}@redis-master:6379
       - DATABASE_URL=${DATABASE_URL}
@@ -115,7 +115,7 @@ services:
     depends_on:
       - redis-master
     networks:
-      - threadstorm-network
+      - kolekt-network
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
@@ -127,7 +127,7 @@ services:
   # Monitoring and Auto-scaling
   prometheus:
     image: prom/prometheus:latest
-    container_name: threadstorm-prometheus
+    container_name: kolekt-prometheus
     ports:
       - "9090:9090"
     volumes:
@@ -141,12 +141,12 @@ services:
       - '--storage.tsdb.retention.time=200h'
       - '--web.enable-lifecycle'
     networks:
-      - threadstorm-network
+      - kolekt-network
     restart: unless-stopped
 
   grafana:
     image: grafana/grafana:latest
-    container_name: threadstorm-grafana
+    container_name: kolekt-grafana
     ports:
       - "3000:3000"
     environment:
@@ -156,13 +156,13 @@ services:
       - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
       - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
     networks:
-      - threadstorm-network
+      - kolekt-network
     restart: unless-stopped
 
   # Auto-scaling Controller
   autoscaler:
     build: ./autoscaler
-    container_name: threadstorm-autoscaler
+    container_name: kolekt-autoscaler
     environment:
       - PROMETHEUS_URL=http://prometheus:9090
       - DOCKER_HOST=unix:///var/run/docker.sock
@@ -175,7 +175,7 @@ services:
     depends_on:
       - prometheus
     networks:
-      - threadstorm-network
+      - kolekt-network
     restart: unless-stopped
 
 volumes:
@@ -184,7 +184,7 @@ volumes:
   grafana-data:
 
 networks:
-  threadstorm-network:
+  kolekt-network:
     driver: bridge
     ipam:
       config:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Startup script for ThreadStorm with Supabase integration
+Startup script for Kolekt with Supabase integration
 """
 import os
 import sys
@@ -19,7 +19,7 @@ from main import app
 import uvicorn
 
 if __name__ == "__main__":
-    print("🎮 Starting ThreadStorm with Supabase Integration...")
+    print("🎮 Starting Kolekt with Supabase Integration...")
     print("⚡ Server will be available at: http://127.0.0.1:8000")
     print("🌐 Open your browser and navigate to the URL above")
     print("🚀 Press Ctrl+C to stop the server")

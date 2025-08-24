@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Security Service for ThreadStorm
+Security Service for Kolekt
 Handles token encryption, KMS integration, audit logging, and security hardening
 """
 
@@ -116,7 +116,7 @@ class SecurityService:
             # Create encryption context for additional security
             encryption_context = {
                 'user_id': user_id,
-                'service': 'threadstorm',
+                'service': 'kolekt',
                 'token_type': 'oauth'
             }
             

@@ -1,5 +1,5 @@
 """
-Background tasks service for ThreadStorm
+Background tasks service for Kolekt
 """
 
 import logging
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 # Celery configuration
 celery_app = Celery(
-    "threadstorm",
+    "kolekt",
     broker=os.getenv("REDIS_URL", "redis://localhost:6379/0"),
     backend=os.getenv("REDIS_URL", "redis://localhost:6379/0"),
     include=["src.services.background"]
@@ -75,8 +75,8 @@ def process_content_async(content_id: str):
     return {"status": "completed", "content_id": content_id}
 
 @celery_app.task
-def generate_threadstorm_async(text: str, images: Optional[list] = None):
-    """Generate threadstorm asynchronously"""
-    logger.info("Generating threadstorm asynchronously")
-    # Add your threadstorm generation logic here
+def generate_kolekt_async(text: str, images: Optional[list] = None):
+    """Generate kolekt asynchronously"""
+    logger.info("Generating kolekt asynchronously")
+    # Add your kolekt generation logic here
     return {"status": "completed", "thread_count": 5}

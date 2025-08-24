@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Posting Pipeline Service for ThreadStorm
+Posting Pipeline Service for Kolekt
 Handles queue → dedupe → rate-limit gate → poster worker → result sink
 """
 
@@ -238,7 +238,7 @@ class PostingPipeline:
             # Check recent posts with same content hash
             cutoff_time = datetime.now() - self.deduplication_window
             
-            response = await self.supabase.table('threadstorms')\
+            response = await self.supabase.table('kolekts')\
                 .select('id')\
                 .eq('user_id', user_id)\
                 .eq('profile_id', profile_id)\

@@ -366,7 +366,7 @@ def main():
     print("✅ Content pipeline functional")
     
     print("\n📋 Next steps:")
-    print("1. Start the server: python start_threadstorm.py")
+    print("1. Start the server: python start_kolekt.py")
     print("2. Open http://127.0.0.1:8000")
     print("3. Test the 'Review Queue' feature")
     print("4. Add content via the API")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Performance Monitoring Service for ThreadStorm
+Performance Monitoring Service for Kolekt
 Tracks system performance metrics and provides insights
 """
 

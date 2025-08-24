@@ -1,3 +1,3 @@
 """
-Services package for ThreadStorm business logic
+Services package for Kolekt business logic
 """
