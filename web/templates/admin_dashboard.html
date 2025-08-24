@@ -59,6 +59,13 @@
             text-align: center;
         }
 
+        .admin-brand img {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+        }
+        
         .admin-brand h1 {
             margin: 0;
             font-size: 1.5rem;
@@ -620,6 +627,12 @@
                     <div>
                         <h1 class="admin-title">Dashboard</h1>
                         <p class="admin-subtitle">Welcome to Kolekt Admin Dashboard</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-danger" onclick="admin.logout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </button>
                     </div>
                 </div>
 

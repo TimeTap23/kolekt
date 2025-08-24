@@ -350,6 +350,17 @@ async def forgot_password_page():
     else:
         return {"message": "Forgot password page not available"}
 
+@app.get("/admin-login")
+async def admin_login_page():
+    """Admin login page"""
+    html_path = Path(__file__).parent / "web" / "templates" / "admin_login.html"
+    if html_path.exists():
+        with open(html_path, 'r') as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    else:
+        return {"message": "Admin login page not available"}
+
 # Include API routes AFTER page routes to prevent conflicts
 if ROUTES_AVAILABLE:
     app.include_router(api_router, prefix="/api/v1")

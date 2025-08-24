@@ -11,6 +11,14 @@ class KolektAdmin {
     }
 
     init() {
+        // Check if admin is authenticated
+        const adminToken = localStorage.getItem('admin_token');
+        if (!adminToken) {
+            // Redirect to admin login
+            window.location.href = '/admin-login';
+            return;
+        }
+
         this.setupNavigation();
         this.loadDashboard();
         
@@ -76,6 +84,12 @@ class KolektAdmin {
                 'Content-Type': 'application/json',
             }
         };
+
+        // Add admin token if available
+        const adminToken = localStorage.getItem('admin_token');
+        if (adminToken) {
+            options.headers['Authorization'] = `Bearer ${adminToken}`;
+        }
 
         if (data) {
             options.body = JSON.stringify(data);
@@ -903,6 +917,14 @@ class KolektAdmin {
                 this.showError('Failed to delete announcement: ' + error.message);
             }
         }
+    }
+
+    logout() {
+        // Clear admin token
+        localStorage.removeItem('admin_token');
+        
+        // Redirect to admin login
+        window.location.href = '/admin-login';
     }
 }
 
