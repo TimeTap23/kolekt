@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Kolekt Startup Script for DigitalOcean App Platform
+Kolekt Startup Script for Cloud Platform
 Optimized for containerized deployment
 """
 

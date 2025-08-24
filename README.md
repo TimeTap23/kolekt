@@ -17,7 +17,7 @@ A modern, production-ready social media management platform that allows users to
 - **Backend**: FastAPI (Python)
 - **Database**: Supabase (PostgreSQL)
 - **Frontend**: HTML, CSS, JavaScript
-- **Deployment**: Kubernetes (DigitalOcean)
+- **Deployment**: Cloud Platform
 - **Authentication**: JWT with OAuth 2.0
 - **Monitoring**: Prometheus & Grafana
 

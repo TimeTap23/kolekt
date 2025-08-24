@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Kolekt Simple Startup Script for DigitalOcean App Platform
+Kolekt Simple Startup Script for Cloud Platform
 Simplified version to avoid import issues
 """
 

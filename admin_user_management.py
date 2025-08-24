@@ -198,7 +198,7 @@ def main():
         print("\n📋 Admin Login Details:")
         print("  - Email: info@marteklabs.com")
         print("  - Password: kolectio123")
-        print("  - URL: https://threadstorm-v6-kuo7e.ondigitalocean.app/admin-dashboard")
+        print("  - URL: https://your-app-domain.com/admin-dashboard")
     else:
         print("\n⚠️ User cleanup failed. Please check the errors above.")
 

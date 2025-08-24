@@ -18,4 +18,4 @@ Allow: /static/
 Allow: /health
 
 # Sitemap
-Sitemap: https://threadstorm-v6-kuo7e.ondigitalocean.app/sitemap.xml
+Sitemap: https://your-app-domain.com/sitemap.xml

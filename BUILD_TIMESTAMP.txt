@@ -1,3 +1,0 @@
-# Force rebuild timestamp: 1755997940
-# This file forces Digital Ocean to rebuild everything
-# Generated at: Sat Aug 23 20:12:20 CDT 2025
