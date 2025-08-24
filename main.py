@@ -17,7 +17,7 @@ from datetime import datetime, timezone
 
 # Import core services
 from src.core.config import settings
-from src.core.logging_config import setup_logging
+from src.utils.logging_config import setup_logging
 from src.services.cache_service import cache_service
 from src.services.performance_monitor import performance_monitor
 from src.services.database_pool import db_pool
@@ -29,7 +29,7 @@ from src.api.content_routes import content_router
 from src.api.admin_routes_new import admin_router_new
 from src.api.connections_routes import connections_router
 from src.api.curation_routes import curation_router
-from src.api.credit_routes import credit_router
+# from src.api.credit_routes import credit_router
 
 # Setup logging
 setup_logging()
@@ -100,7 +100,7 @@ app.add_middleware(
 )
 
 # Add performance monitoring middleware
-app.add_middleware(performance_monitor.PerformanceMiddleware)
+# app.add_middleware(performance_monitor.PerformanceMiddleware)
 
 # Mount static files
 app.mount("/images", StaticFiles(directory="web/static/images"), name="images")
@@ -113,7 +113,7 @@ app.include_router(content_router, prefix="/api/v1/content", tags=["Content"])
 app.include_router(admin_router_new, prefix="/api/v1/admin", tags=["Admin"])
 app.include_router(connections_router, prefix="/api/v1/connections", tags=["Connections"])
 app.include_router(curation_router, prefix="/api/v1/curation", tags=["Curation"])
-app.include_router(credit_router, prefix="/api/v1/credits", tags=["Credits"])
+# app.include_router(credit_router, prefix="/api/v1/credits", tags=["Credits"])
 
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
