@@ -251,6 +251,17 @@ async def analytics_preview():
     else:
         return {"message": "Analytics preview not available"}
 
+@app.get("/review-queue-preview")
+async def review_queue_preview():
+    """Review queue preview page"""
+    html_path = Path(__file__).parent / "web" / "templates" / "review-queue-preview.html"
+    if html_path.exists():
+        with open(html_path, 'r') as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    else:
+        return {"message": "Review queue preview not available"}
+
 @app.get("/formatter")
 async def formatter():
     """Formatter application page"""

@@ -433,9 +433,10 @@
             <!-- Navigation -->
             <nav>
                 <ul class="nav-menu">
-                                            <li><a href="/formatter-preview" class="nav-link">Formatter</a></li>
-                                            <li><a href="/templates-preview" class="nav-link">Templates</a></li>
-                    <li><a href="/analytics-preview" class="nav-link">Analytics</a></li>
+                                                            <li><a href="/formatter-preview" class="nav-link">Formatter</a></li>
+                <li><a href="/templates-preview" class="nav-link">Templates</a></li>
+                <li><a href="/analytics-preview" class="nav-link">Analytics</a></li>
+                <li><a href="/review-queue-preview" class="nav-link">Review Queue</a></li>
                 </ul>
             </nav>
             
@@ -645,6 +646,10 @@
         
         function openAnalyticsPreview() {
             window.location.href = '/analytics-preview';
+        }
+        
+        function openReviewQueuePreview() {
+            window.location.href = '/review-queue-preview';
         }
         
         // Utility function for notifications

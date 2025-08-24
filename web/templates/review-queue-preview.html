@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Queue - Kolekt</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Refined Kolekt Design System */
+        :root {
+            --kolekt-purple: #7A3FFF;
+            --kolekt-magenta: #E940A4;
+            --kolekt-orange: #FF6A3D;
+            --kolekt-gold: #FFB443;
+            --kolekt-gradient: linear-gradient(135deg, #7A3FFF 0%, #E940A4 50%, #FF6A3D 100%);
+            --kolekt-radial: radial-gradient(circle at center, #7A3FFF 0%, #E940A4 40%, #FF6A3D 75%, #FFB443 100%);
+            --kolekt-glow: rgba(122, 63, 255, 0.3);
+            --bg-dark: #0f0f23;
+            --bg-card: #1a1a2e;
+            --bg-card-hover: #252542;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6b7280;
+            --border-color: #2d2d44;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark) !important;
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem 0;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            object-fit: cover;
+        }
+        
+        .preview-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .preview-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .preview-nav a:hover {
+            color: var(--text-primary);
+            background: var(--bg-card-hover);
+        }
+        
+        .preview-nav a.active {
+            color: var(--text-primary);
+            background: var(--kolekt-gradient);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            background: var(--kolekt-radial);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            border-radius: 24px;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ffffff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--kolekt-gradient);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(122, 63, 255, 0.2);
+            border-color: var(--kolekt-purple);
+        }
+        
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--kolekt-gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Review Queue Demo */
+        .review-demo {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .review-demo h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--text-primary);
+        }
+        
+        .review-item {
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .review-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--kolekt-orange);
+            flex-shrink: 0;
+        }
+        
+        .review-content {
+            flex: 1;
+        }
+        
+        .review-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .review-meta {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+        
+        .review-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-approve {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-approve:hover {
+            background: #059669;
+        }
+        
+        .btn-reject {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-reject:hover {
+            background: #dc2626;
+        }
+        
+        .btn-edit {
+            background: var(--kolekt-purple);
+            color: white;
+        }
+        
+        .btn-edit:hover {
+            background: #6b21a8;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 4rem 0;
+            background: var(--bg-card);
+            border-radius: 16px;
+            margin: 3rem 0;
+        }
+        
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .cta-section p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-button {
+            background: var(--kolekt-gradient);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(122, 63, 255, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .review-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .review-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo-container">
+                <img src="/static/images/Kolekt_icon.png" alt="Kolekt" class="logo-icon">
+            </a>
+            
+            <nav class="preview-nav">
+                <a href="/formatter-preview">Formatter</a>
+                <a href="/templates-preview">Templates</a>
+                <a href="/analytics-preview">Analytics</a>
+                <a href="/review-queue-preview" class="active">Review Queue</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Review Queue</h1>
+                <p>Streamline your content moderation workflow with AI-powered review tools and collaborative approval processes.</p>
+            </div>
+        </section>
+
+        <!-- Features Grid -->
+        <section class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>Smart Content Detection</h3>
+                <p>AI-powered content analysis that automatically flags potential issues, inappropriate content, and quality concerns for human review.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Fast Approval Workflow</h3>
+                <p>Streamlined review process with one-click approvals, bulk actions, and automated notifications to keep your team informed.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3>Team Collaboration</h3>
+                <p>Assign reviewers, add comments, and track approval history with full audit trails for compliance and accountability.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Review Analytics</h3>
+                <p>Monitor review queue performance, track approval rates, and identify bottlenecks to optimize your content workflow.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3>Quality Assurance</h3>
+                <p>Ensure brand consistency and content quality with customizable review criteria and automated quality checks.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔔</div>
+                <h3>Smart Notifications</h3>
+                <p>Get real-time alerts for new content, pending reviews, and approval deadlines to maintain efficient workflows.</p>
+            </div>
+        </section>
+
+        <!-- Review Queue Demo -->
+        <section class="review-demo">
+            <h2>Review Queue Interface</h2>
+            
+            <div class="review-item">
+                <div class="review-status"></div>
+                <div class="review-content">
+                    <div class="review-title">Summer Collection Launch Campaign</div>
+                    <div class="review-meta">Posted by @marketing_team • 2 hours ago • Social Media</div>
+                </div>
+                <div class="review-actions">
+                    <button class="btn btn-edit">Edit</button>
+                    <button class="btn btn-approve">Approve</button>
+                    <button class="btn btn-reject">Reject</button>
+                </div>
+            </div>
+            
+            <div class="review-item">
+                <div class="review-status"></div>
+                <div class="review-content">
+                    <div class="review-title">Product Feature Announcement</div>
+                    <div class="review-meta">Posted by @product_team • 4 hours ago • Blog Post</div>
+                </div>
+                <div class="review-actions">
+                    <button class="btn btn-edit">Edit</button>
+                    <button class="btn btn-approve">Approve</button>
+                    <button class="btn btn-reject">Reject</button>
+                </div>
+            </div>
+            
+            <div class="review-item">
+                <div class="review-status"></div>
+                <div class="review-content">
+                    <div class="review-title">Customer Success Story</div>
+                    <div class="review-meta">Posted by @content_team • 6 hours ago • Case Study</div>
+                </div>
+                <div class="review-actions">
+                    <button class="btn btn-edit">Edit</button>
+                    <button class="btn btn-approve">Approve</button>
+                    <button class="btn btn-reject">Reject</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2>Ready to Streamline Your Content Review?</h2>
+            <p>Join thousands of teams using Kolekt's review queue to maintain content quality and brand consistency across all channels.</p>
+            <a href="/" class="cta-button">Get Started with Review Queue</a>
+        </section>
+    </div>
+
+    <script>
+        // Add interactive functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click handlers for demo buttons
+            const approveButtons = document.querySelectorAll('.btn-approve');
+            const rejectButtons = document.querySelectorAll('.btn-reject');
+            const editButtons = document.querySelectorAll('.btn-edit');
+            
+            approveButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.textContent = 'Approved ✓';
+                    this.style.background = '#10b981';
+                    this.disabled = true;
+                });
+            });
+            
+            rejectButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.textContent = 'Rejected ✗';
+                    this.style.background = '#ef4444';
+                    this.disabled = true;
+                });
+            });
+            
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    alert('Edit functionality would open the content editor in the full application.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
