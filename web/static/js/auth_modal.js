@@ -322,6 +322,7 @@ class KolektAuth {
                     <a href="#" onclick="kolektAuth.showRegisterModal()">Don't have an account? Sign Up</a>
                     <br>
                     <a href="#" onclick="kolektAuth.showForgotPasswordModal()">Forgot Password?</a>
+                    <a href="/" style="margin-top: 10px; display: block; text-align: center;">← Back to Home</a>
                 </div>
             `;
         }
@@ -354,6 +355,7 @@ class KolektAuth {
                 </form>
                 <div class="auth-links">
                     <a href="#" onclick="kolektAuth.showLoginModal()">Already have an account? Sign In</a>
+                    <a href="/" style="margin-top: 10px; display: block; text-align: center;">← Back to Home</a>
                 </div>
             `;
         }

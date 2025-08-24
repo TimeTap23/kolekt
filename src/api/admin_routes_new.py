@@ -2,16 +2,32 @@ from fastapi import APIRouter, Depends, HTTPException, status, Form
 from datetime import datetime, timezone, timedelta
 from typing import List, Optional
 from pydantic import BaseModel
-from src.services.authentication import require_admin
+from src.services.admin_auth import admin_auth_service
 from src.services.cache_service import cache_service, cached, invalidate_cache
 from supabase import create_client, Client
 from src.core.config import settings
+from fastapi import Depends, HTTPException, status, Request
 import logging
 
 logger = logging.getLogger(__name__)
 
 # Create a simple admin router
 admin_router_new = APIRouter(tags=["admin"])
+
+# Admin authentication dependency
+async def require_admin_auth(request: Request):
+    """Require admin authentication"""
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Admin authentication required")
+    
+    token = auth_header.replace("Bearer ", "")
+    session_data = admin_auth_service.verify_session(token)
+    
+    if not session_data:
+        raise HTTPException(status_code=401, detail="Invalid admin session")
+    
+    return session_data
 
 # Initialize Supabase client
 supabase_client: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
@@ -40,13 +56,12 @@ class UserResponse(BaseModel):
     created_at: str
 
 @admin_router_new.get("/test")
-async def admin_test(current_user = Depends(require_admin)):
+async def admin_test(current_user = Depends(require_admin_auth)):
     """Simple test endpoint - requires admin authentication"""
     return {"message": "Admin router is working", "status": "ok", "user": current_user}
 
 @admin_router_new.get("/dashboard")
-@cached("dashboard", ttl=300)  # Cache for 5 minutes
-async def get_admin_dashboard(current_user = Depends(require_admin)):
+async def get_admin_dashboard(current_user = Depends(require_admin_auth)):
     """Get admin dashboard statistics - requires admin authentication"""
     try:
         # Get real statistics from database
@@ -98,7 +113,7 @@ async def admin_login(email: str = Form(...), password: str = Form(...)):
         raise HTTPException(status_code=500, detail="Login failed")
 
 @admin_router_new.post("/logout")
-async def admin_logout(current_user = Depends(require_admin)):
+async def admin_logout(current_user = Depends(require_admin_auth)):
     """Admin logout endpoint"""
     try:
         # Get token from request headers
@@ -118,7 +133,7 @@ async def admin_logout(current_user = Depends(require_admin)):
 
 @admin_router_new.get("/users", response_model=List[UserResponse])
 @cached("admin", ttl=60)  # Cache for 1 minute
-async def get_users(current_user = Depends(require_admin)):
+async def get_users(current_user = Depends(require_admin_auth)):
     """Get all users - requires admin authentication"""
     try:
         response = supabase_client.table('profiles').select('*').order('created_at', desc=True).execute()
@@ -143,7 +158,7 @@ async def get_users(current_user = Depends(require_admin)):
 
 @admin_router_new.get("/users/{user_id}", response_model=UserResponse)
 @cached("user", ttl=300)  # Cache for 5 minutes
-async def get_user(user_id: str, current_user = Depends(require_admin)):
+async def get_user(user_id: str, current_user = Depends(require_admin_auth)):
     """Get specific user - requires admin authentication"""
     try:
         response = supabase_client.table('profiles').select('*').eq('id', user_id).single().execute()
@@ -169,7 +184,7 @@ async def get_user(user_id: str, current_user = Depends(require_admin)):
 
 @admin_router_new.post("/users", response_model=UserResponse)
 @invalidate_cache("admin")  # Invalidate admin cache after user creation
-async def create_user(user_data: UserCreateRequest, current_user = Depends(require_admin)):
+async def create_user(user_data: UserCreateRequest, current_user = Depends(require_admin_auth)):
     """Create a new user - requires admin authentication"""
     try:
         # Create user in Supabase Auth
@@ -221,7 +236,7 @@ async def create_user(user_data: UserCreateRequest, current_user = Depends(requi
 
 @admin_router_new.put("/users/{user_id}", response_model=UserResponse)
 @invalidate_cache("user")  # Invalidate user cache after update
-async def update_user(user_id: str, user_data: UserUpdateRequest, current_user = Depends(require_admin)):
+async def update_user(user_id: str, user_data: UserUpdateRequest, current_user = Depends(require_admin_auth)):
     """Update a user - requires admin authentication"""
     try:
         # Build update data
@@ -267,7 +282,7 @@ async def update_user(user_id: str, user_data: UserUpdateRequest, current_user =
 
 @admin_router_new.delete("/users/{user_id}")
 @invalidate_cache("admin")  # Invalidate admin cache after user deletion
-async def delete_user(user_id: str, current_user = Depends(require_admin)):
+async def delete_user(user_id: str, current_user = Depends(require_admin_auth)):
     """Delete a user - requires admin authentication"""
     try:
         # Check if user exists
@@ -297,7 +312,7 @@ async def delete_user(user_id: str, current_user = Depends(require_admin)):
 
 @admin_router_new.post("/users/create-admin")
 @invalidate_cache("admin")  # Invalidate admin cache after admin creation
-async def create_admin_user(current_user = Depends(require_admin)):
+async def create_admin_user(current_user = Depends(require_admin_auth)):
     """Create admin user - requires admin authentication"""
     try:
         # Check if admin user already exists
@@ -355,7 +370,7 @@ async def create_admin_user(current_user = Depends(require_admin)):
 
 @admin_router_new.post("/users/bulk-delete")
 @invalidate_cache("admin")  # Invalidate admin cache after bulk deletion
-async def bulk_delete_users(user_ids: List[str], current_user = Depends(require_admin)):
+async def bulk_delete_users(user_ids: List[str], current_user = Depends(require_admin_auth)):
     """Bulk delete users - requires admin authentication"""
     try:
         deleted_count = 0
@@ -384,7 +399,7 @@ async def bulk_delete_users(user_ids: List[str], current_user = Depends(require_
         raise HTTPException(status_code=500, detail="Failed to bulk delete users")
 
 @admin_router_new.get("/cache/stats")
-async def get_cache_stats(current_user = Depends(require_admin)):
+async def get_cache_stats(current_user = Depends(require_admin_auth)):
     """Get cache statistics - requires admin authentication"""
     try:
         stats = await cache_service.get_cache_stats()
@@ -397,7 +412,7 @@ async def get_cache_stats(current_user = Depends(require_admin)):
         raise HTTPException(status_code=500, detail="Failed to get cache stats")
 
 @admin_router_new.post("/cache/clear")
-async def clear_cache(current_user = Depends(require_admin)):
+async def clear_cache(current_user = Depends(require_admin_auth)):
     """Clear all cache - requires admin authentication"""
     try:
         # Clear all cache patterns
