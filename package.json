@@ -1,0 +1,24 @@
+{
+  "name": "kolekt",
+  "version": "2.0.0",
+  "description": "Transform your content into engaging Threads with AI-powered formatting",
+  "main": "start_kolekt.py",
+  "scripts": {
+    "start": "bash -c 'PORT=${PORT:-8000} && python -c \"import os; port=int(os.getenv(\\\"PORT\\\", 8000)); import uvicorn; from start_kolekt import app; uvicorn.run(app, host=\\\"0.0.0.0\\\", port=port)\"'",
+    "dev": "python start_kolekt.py",
+    "build": "echo 'Build completed'",
+    "test": "echo 'Tests completed'"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "social-media",
+    "content-formatting",
+    "ai",
+    "threads",
+    "railway"
+  ],
+  "author": "Kolekt Team",
+  "license": "MIT"
+}

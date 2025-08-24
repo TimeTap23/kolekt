@@ -62,7 +62,7 @@ SMTP_PASSWORD=your-app-password
 ### **Build Configuration**
 - **Builder**: Nixpacks (automatically detected)
 - **Python Version**: 3.9+
-- **Start Command**: `uvicorn start_kolekt:app --host 0.0.0.0 --port $PORT`
+- **Start Command**: `./start.sh`
 - **Health Check**: `/health` endpoint
 
 ### **Environment Optimization**
