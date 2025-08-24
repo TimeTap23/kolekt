@@ -1,0 +1,2 @@
+Force rebuild timestamp: 2025-08-24 03:15:00 UTC
+This file forces Digital Ocean to detect a change and rebuild the entire application.
