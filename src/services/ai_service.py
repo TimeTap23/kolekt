@@ -9,6 +9,7 @@ from typing import Dict, Any, Optional, List
 from pydantic import BaseModel
 import requests
 from huggingface_hub import InferenceClient
+from src.core.config_simple import settings
 
 logger = logging.getLogger(__name__)
 
@@ -27,20 +28,41 @@ class ContentGenerationResponse(BaseModel):
     hashtags: List[str]
     platform_suggestions: Dict[str, str]
     confidence_score: float
-    model_used: str
+    ai_model: str  # Changed from model_used to avoid Pydantic warning
+
+class ContentOptimizationResponse(BaseModel):
+    """Response model for content optimization"""
+    optimized_content: str
+    suggestions: List[str]
+    confidence_score: float
+    ai_model: str  # Changed from model_used
+
+class HashtagGenerationResponse(BaseModel):
+    """Response model for hashtag generation"""
+    hashtags: List[str]
+    relevance_scores: List[float]
+    ai_model: str  # Changed from model_used
 
 class AIService:
     """AI service for content generation using Hugging Face models"""
     
     def __init__(self):
-        self.hf_token = os.getenv("HUGGINGFACE_TOKEN")
+        self.hf_token = settings.HUGGINGFACE_TOKEN
         self.client = None
         
-        if self.hf_token:
-            self.client = InferenceClient(token=self.hf_token)
-            logger.info("Hugging Face client initialized successfully")
+        if self.hf_token and settings.AI_ENABLED:
+            try:
+                self.client = InferenceClient(token=self.hf_token)
+                logger.info("Hugging Face client initialized successfully")
+                logger.info(f"Using model: {settings.AI_MODEL_NAME}")
+            except Exception as e:
+                logger.error(f"Failed to initialize Hugging Face client: {e}")
+                self.client = None
         else:
-            logger.warning("Hugging Face token not found. AI features will be limited.")
+            if not settings.AI_ENABLED:
+                logger.info("AI features are disabled in configuration")
+            else:
+                logger.warning("Hugging Face token not found. AI features will be limited.")
     
     def generate_content(self, request: ContentGenerationRequest) -> ContentGenerationResponse:
         """Generate content using Llama 3.1 model"""
@@ -54,7 +76,7 @@ class AIService:
             # Generate content using Llama 3.1
             response = self.client.text_generation(
                 prompt,
-                model="meta-llama/Llama-3.1-8B-Instruct",
+                model=settings.AI_MODEL_NAME,
                 max_new_tokens=512,
                 temperature=0.7,
                 do_sample=True,
@@ -73,7 +95,7 @@ class AIService:
                 hashtags=hashtags,
                 platform_suggestions=platform_suggestions,
                 confidence_score=0.85,
-                model_used="Llama-3.1-8B-Instruct"
+                ai_model=settings.AI_MODEL_NAME
             )
             
         except Exception as e:
@@ -146,7 +168,7 @@ Content:"""
             
             response = self.client.text_generation(
                 prompt,
-                model="meta-llama/Llama-3.1-8B-Instruct",
+                model=settings.AI_MODEL_NAME,
                 max_new_tokens=100,
                 temperature=0.7,
                 do_sample=True
@@ -206,7 +228,7 @@ Content:"""
             
             response = self.client.text_generation(
                 prompt,
-                model="meta-llama/Llama-3.1-8B-Instruct",
+                model=settings.AI_MODEL_NAME,
                 max_new_tokens=500,
                 temperature=0.8,
                 do_sample=True
@@ -280,7 +302,7 @@ Content:"""
                 "facebook": mock_content
             },
             confidence_score=0.5,
-            model_used="mock"
+            ai_model="mock"
         )
 
 # Global AI service instance

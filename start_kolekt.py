@@ -58,14 +58,10 @@ except ImportError:
 
 # Import API routes
 try:
-    from src.api.auth_routes import auth_router
-    from src.api.content_routes import content_router
-    from src.api.admin_routes_new import admin_router_new
-    from src.api.connections_routes import connections_router
-    from src.api.curation_routes import curation_router
+    from src.api.routes import api_router
     ROUTES_AVAILABLE = True
-except ImportError:
-    print("⚠️  API routes not available")
+except ImportError as e:
+    print(f"⚠️  API routes not available: {e}")
     ROUTES_AVAILABLE = False
 
 # Import middleware
@@ -176,11 +172,7 @@ if static_path.exists():
 
 # Include API routes if available
 if ROUTES_AVAILABLE:
-    app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
-    app.include_router(content_router, prefix="/api/v1/content", tags=["Content"])
-    app.include_router(admin_router_new, prefix="/api/v1/admin", tags=["Admin"])
-    app.include_router(connections_router, prefix="/api/v1/connections", tags=["Connections"])
-    app.include_router(curation_router, prefix="/api/v1/curation", tags=["Curation"])
+    app.include_router(api_router, prefix="/api/v1")
 
 # Define routes
 @app.get("/")

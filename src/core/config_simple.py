@@ -68,6 +68,12 @@ class Settings(BaseSettings):
     RATE_LIMIT_ENABLED: bool = Field(default=True, env="RATE_LIMIT_ENABLED")
     RATE_LIMIT_REQUESTS_PER_MINUTE: int = Field(default=60, env="RATE_LIMIT_REQUESTS_PER_MINUTE")
     
+    # AI/Hugging Face Configuration
+    HUGGINGFACE_TOKEN: Optional[str] = Field(default=None, env="HUGGINGFACE_TOKEN")
+    HUGGINGFACE_API_URL: str = Field(default="https://api-inference.huggingface.co", env="HUGGINGFACE_API_URL")
+    AI_MODEL_NAME: str = Field(default="meta-llama/Llama-3.1-8B-Instruct", env="AI_MODEL_NAME")
+    AI_ENABLED: bool = Field(default=True, env="AI_ENABLED")
+    
     class Config:
         env_file = ".env"
         case_sensitive = False

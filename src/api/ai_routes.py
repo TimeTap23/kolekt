@@ -32,7 +32,7 @@ class ContentOptimizationResponse(BaseModel):
     optimized_content: str
     suggestions: List[str]
     confidence_score: float
-    model_used: str
+    ai_model: str  # Changed from model_used
 
 class HashtagGenerationRequest(BaseModel):
     """Request model for hashtag generation"""
@@ -44,7 +44,7 @@ class HashtagGenerationResponse(BaseModel):
     """Response model for hashtag generation"""
     hashtags: List[str]
     relevance_scores: List[float]
-    model_used: str
+    ai_model: str  # Changed from model_used
 
 @router.post("/generate-content", response_model=ContentGenerationResponse)
 async def generate_content(
@@ -57,7 +57,7 @@ async def generate_content(
         
         response = ai_service.generate_content(request)
         
-        logger.info(f"Content generated successfully using {response.model_used}")
+        logger.info(f"Content generated successfully using {response.ai_model}")
         return response
         
     except Exception as e:
@@ -88,7 +88,7 @@ async def optimize_content(
             optimized_content=optimized_content,
             suggestions=suggestions,
             confidence_score=0.75,
-            model_used="content-optimizer"
+            ai_model="content-optimizer"
         )
         
     except Exception as e:
@@ -116,7 +116,7 @@ async def generate_hashtags(
         return HashtagGenerationResponse(
             hashtags=hashtags,
             relevance_scores=relevance_scores,
-            model_used="hashtag-generator"
+            ai_model="hashtag-generator"
         )
         
     except Exception as e:
