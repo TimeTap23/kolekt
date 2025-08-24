@@ -157,7 +157,6 @@ class CurationService:
             
             return items
         except Exception as e:
-            print(f"Error fetching review queue: {e}")
             return []
 
     def approve_item(self, user_id: str, item_id: str) -> bool:
@@ -170,7 +169,6 @@ class CurationService:
             
             return len(result.data) > 0
         except Exception as e:
-            print(f"Error approving item: {e}")
             return False
 
     def reject_item(self, user_id: str, item_id: str) -> bool:
@@ -183,7 +181,6 @@ class CurationService:
             
             return len(result.data) > 0
         except Exception as e:
-            print(f"Error rejecting item: {e}")
             return False
 
 

@@ -7,6 +7,7 @@ Handles secure admin authentication and session management
 import logging
 import hashlib
 import secrets
+import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Dict, Any
 from fastapi import HTTPException, status
@@ -23,10 +24,13 @@ class AdminAuthService:
         self.supabase_client: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
         self.admin_sessions: Dict[str, Dict[str, Any]] = {}
         
-        # Admin credentials (should be moved to environment variables)
+        # Admin credentials from environment variables
+        admin_email = os.getenv("ADMIN_EMAIL", "info@marteklabs.com")
+        admin_password = os.getenv("ADMIN_PASSWORD", "kolectio123")
+        
         self.admin_credentials = {
-            "info@marteklabs.com": {
-                "password_hash": self._hash_password("kolectio123"),
+            admin_email: {
+                "password_hash": self._hash_password(admin_password),
                 "name": "Admin User",
                 "role": "admin"
             }

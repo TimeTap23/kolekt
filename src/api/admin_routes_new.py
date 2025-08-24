@@ -63,12 +63,6 @@ async def get_admin_dashboard(current_user = Depends(require_admin)):
         
         # Get content statistics
         content_stats = {
-            "total_content_items": 0,  # TODO: Get from database
-            "social_connections": 0,   # TODO: Get from database
-            "monthly_posts": 0,        # TODO: Get from database
-            "total_api_calls": 0,      # TODO: Get from database
-            "storage_used": 0.0,       # TODO: Calculate from database
-            "revenue_monthly": 0.0     # TODO: Get from billing system
         }
         
         return {
