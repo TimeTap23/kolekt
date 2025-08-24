@@ -550,7 +550,7 @@ def main():
             if not code:
                 return {"success": False, "error": "missing_code"}
             
-            # Exchange code for access token
+            import requests
             import requests
             import urllib.parse
             
