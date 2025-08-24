@@ -61,11 +61,22 @@ async def get_admin_dashboard(current_user = Depends(require_admin)):
             active_users = sum(1 for user in users_response.data 
                              if user.get('last_login') and user['last_login'] > thirty_days_ago)
         
+        # Get content statistics
+        content_stats = {
+            "total_content_items": 0,  # TODO: Get from database
+            "social_connections": 0,   # TODO: Get from database
+            "monthly_posts": 0,        # TODO: Get from database
+            "total_api_calls": 0,      # TODO: Get from database
+            "storage_used": 0.0,       # TODO: Calculate from database
+            "revenue_monthly": 0.0     # TODO: Get from billing system
+        }
+        
         return {
             "success": True,
             "stats": {
                 "total_users": total_users,
                 "active_users": active_users,
+                **content_stats
             },
             "last_updated": datetime.now(timezone.utc).isoformat()
         }
@@ -73,24 +84,16 @@ async def get_admin_dashboard(current_user = Depends(require_admin)):
         logger.error(f"Dashboard error: {e}")
         raise HTTPException(status_code=500, detail="Failed to get dashboard data")
 
+from src.services.admin_auth import admin_auth_service
+
 @admin_router_new.post("/login")
 async def admin_login(email: str = Form(...), password: str = Form(...)):
     """Admin login endpoint - no authentication required"""
     try:
-        # Simple hardcoded credentials for now
-        if (email == "admin@kolekt.io" and password == "admin123") or \
-           (email == "info@marteklabs.com" and password == "kolectio123"):
-            return {
-                "success": True,
-                "user": {
-                    "id": "admin-user-id",
-                    "email": email,
-                    "name": "Admin User",
-                    "role": "admin"
-                },
-                "access_token": "admin_token_mock",  # Mock token for development
-                "token_type": "bearer"
-            }
+        result = admin_auth_service.authenticate_admin(email, password)
+        
+        if result:
+            return result
         else:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
@@ -99,6 +102,25 @@ async def admin_login(email: str = Form(...), password: str = Form(...)):
     except Exception as e:
         logger.error(f"Admin login error: {e}")
         raise HTTPException(status_code=500, detail="Login failed")
+
+@admin_router_new.post("/logout")
+async def admin_logout(current_user = Depends(require_admin)):
+    """Admin logout endpoint"""
+    try:
+        # Get token from request headers
+        from fastapi import Request
+        request = Request
+        auth_header = request.headers.get("Authorization")
+        
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.replace("Bearer ", "")
+            admin_auth_service.logout_admin(token)
+        
+        return {"success": True, "message": "Logged out successfully"}
+        
+    except Exception as e:
+        logger.error(f"Admin logout error: {e}")
+        raise HTTPException(status_code=500, detail="Logout failed")
 
 @admin_router_new.get("/users", response_model=List[UserResponse])
 @cached("admin", ttl=60)  # Cache for 1 minute
