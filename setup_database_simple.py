@@ -106,7 +106,7 @@ def create_storage_bucket():
         
         client = create_client(url, key)
         
-        bucket_name = "threadstorm"
+        bucket_name = "kolekt"
         
         try:
             # Try to create bucket
@@ -180,7 +180,7 @@ def test_basic_operations():
 def main():
     """Main setup function"""
     
-    print("🗄️ ThreadStorm Database Setup (Simple)")
+    print("🗄️ Kolekt Database Setup (Simple)")
     print("=" * 50)
     
     # Check connection
@@ -219,7 +219,7 @@ def main():
     print("1. Follow the manual setup instructions above")
     print("2. Run the SQL schema in your Supabase dashboard")
     print("3. Test Meta credentials: python test_meta_credentials.py")
-    print("4. Start ThreadStorm: python main.py")
+    print("4. Start Kolekt: python main.py")
     
     print("\n💡 Tip: After setting up the schema, run this script again")
     print("   to verify everything is working correctly")

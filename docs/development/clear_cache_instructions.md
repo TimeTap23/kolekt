@@ -2,7 +2,7 @@
 
 ## Browser Cache Issues
 
-If you're still seeing the old ThreadStorm branding, your browser is caching the old CSS and JavaScript files.
+If you're still seeing the old Kolekt branding, your browser is caching the old CSS and JavaScript files.
 
 ## How to Clear Cache:
 
@@ -27,7 +27,7 @@ If you're still seeing the old ThreadStorm branding, your browser is caching the
 - New color scheme throughout
 
 ✅ **Updated Content:**
-- "Kolekt" instead of "ThreadStorm" everywhere
+- "Kolekt" instead of "Kolekt" everywhere
 - New gradient styling on all UI elements
 - Modern, vibrant appearance
 

@@ -1,10 +1,10 @@
 # 📱 Meta & Threads API Setup Guide
 
-This guide will help you configure your Meta and Threads app credentials for ThreadStorm.
+This guide will help you configure your Meta and Threads app credentials for Kolekt.
 
 ## 🎯 **Overview**
 
-ThreadStorm integrates with Meta's platform to:
+Kolekt integrates with Meta's platform to:
 - **Authenticate users** via OAuth
 - **Publish content** directly to Threads
 - **Manage permissions** and rate limits
@@ -34,7 +34,7 @@ ThreadStorm integrates with Meta's platform to:
 #### **C. Configure App Settings**
 1. Go to **App Settings > Basic**
 2. Note your **App ID** and **App Secret**
-3. Add your **App Domain** (e.g., `threadstorm.com`)
+3. Add your **App Domain** (e.g., `kolekt.com`)
 4. Add **Privacy Policy URL** (required for production)
 
 ### **2. Configure OAuth Settings**
@@ -56,7 +56,7 @@ ThreadStorm integrates with Meta's platform to:
    - `instagram_basic` - Read Instagram data (if needed)
    - `instagram_content_publish` - Publish to Instagram (if needed)
 
-### **3. Configure ThreadStorm**
+### **3. Configure Kolekt**
 
 #### **A. Run Setup Script**
 ```bash
@@ -101,7 +101,7 @@ This will test:
 - ✅ API endpoints
 
 #### **B. Manual OAuth Test**
-1. Start ThreadStorm: `python main.py`
+1. Start Kolekt: `python main.py`
 2. Navigate to: `http://localhost:8000`
 3. Click **"Connect Threads"** or **"Threads API"**
 4. Complete the OAuth flow
@@ -192,7 +192,7 @@ from src.services.threads_api import threads_service
 
 response = await threads_service.post_thread(
     user_id="your-user-id",
-    content="Test post from ThreadStorm!",
+    content="Test post from Kolekt!",
     access_token="your-access-token"
 )
 print(f"Post Response: {response}")
@@ -301,7 +301,7 @@ export ENVIRONMENT="production"
 - [Meta Developer Community](https://developers.facebook.com/community/)
 - [Meta App Review Guidelines](https://developers.facebook.com/docs/app-review/)
 
-### **ThreadStorm Support**
+### **Kolekt Support**
 - Check logs for detailed error messages
 - Verify configuration with test scripts
 - Review Meta Developer Console for app status
@@ -309,4 +309,4 @@ export ENVIRONMENT="production"
 
 ---
 
-**ThreadStorm Meta Integration** - Secure, compliant, and production-ready Meta/Threads API integration.
+**Kolekt Meta Integration** - Secure, compliant, and production-ready Meta/Threads API integration.

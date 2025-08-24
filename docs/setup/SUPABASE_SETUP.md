@@ -1,6 +1,6 @@
-# Supabase Setup Guide for ThreadStorm
+# Supabase Setup Guide for Kolekt
 
-This guide will help you set up Supabase for ThreadStorm, enabling user authentication, template storage, draft management, and file storage.
+This guide will help you set up Supabase for Kolekt, enabling user authentication, template storage, draft management, and file storage.
 
 ## 🚀 **Step 1: Create a Supabase Project**
 
@@ -8,7 +8,7 @@ This guide will help you set up Supabase for ThreadStorm, enabling user authenti
 2. Click "New Project"
 3. Choose your organization
 4. Enter project details:
-   - **Name**: `threadstorm` (or your preferred name)
+   - **Name**: `kolekt` (or your preferred name)
    - **Database Password**: Create a strong password
    - **Region**: Choose closest to your users
 5. Click "Create new project"
@@ -36,7 +36,7 @@ This guide will help you set up Supabase for ThreadStorm, enabling user authenti
 
 ## ⚙️ **Step 4: Configure Environment Variables**
 
-Create a `.env` file in your ThreadStorm project root:
+Create a `.env` file in your Kolekt project root:
 
 ```bash
 # Supabase Configuration
@@ -63,7 +63,7 @@ HUGGINGFACE_API_KEY=your-huggingface-key
 
 1. Go to **Storage** in your Supabase dashboard
 2. Click **Create a new bucket**
-3. Name it `threadstorm`
+3. Name it `kolekt`
 4. Set it to **Public** (for easy image access)
 5. Click **Create bucket**
 
@@ -99,7 +99,7 @@ In your Supabase **Table Editor**, you should see:
 - ✅ `profiles` - User profiles
 - ✅ `templates` - Threadstorm templates
 - ✅ `drafts` - User drafts
-- ✅ `threadstorms` - Completed threadstorms
+- ✅ `kolekts` - Completed kolekts
 - ✅ `user_settings` - User preferences
 
 ## 🔒 **Step 9: Row Level Security (RLS)**
@@ -151,10 +151,10 @@ Once Supabase is set up, you can:
 
 ## 🎯 **Features Enabled**
 
-With Supabase integration, ThreadStorm now supports:
+With Supabase integration, Kolekt now supports:
 
 - ✅ **User Authentication** - Sign up, sign in, profile management
-- ✅ **Template Storage** - Save and share threadstorm templates
+- ✅ **Template Storage** - Save and share kolekt templates
 - ✅ **Draft Management** - Save work in progress
 - ✅ **File Storage** - Upload and store images
 - ✅ **User Settings** - Personalized preferences
@@ -168,8 +168,8 @@ If you encounter issues:
 
 1. Check the [Supabase documentation](https://supabase.com/docs)
 2. Review the [Supabase community](https://github.com/supabase/supabase/discussions)
-3. Check the ThreadStorm logs for detailed error messages
+3. Check the Kolekt logs for detailed error messages
 
 ---
 
-**🎉 Congratulations!** Your ThreadStorm application is now powered by Supabase and ready for production use!
+**🎉 Congratulations!** Your Kolekt application is now powered by Supabase and ready for production use!

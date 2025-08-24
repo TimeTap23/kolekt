@@ -2,7 +2,7 @@
 
 ## 🚀 **Meta Threads API Integration**
 
-ThreadStorm now supports Meta's official Threads API! This guide will help you set up the integration.
+Kolekt now supports Meta's official Threads API! This guide will help you set up the integration.
 
 ## 📋 **Prerequisites**
 
@@ -24,7 +24,7 @@ ThreadStorm now supports Meta's official Threads API! This guide will help you s
 1. In the Developer Console, click "Create App"
 2. Select "Business" as the app type
 3. Fill in your app details:
-   - **App Name**: ThreadStorm
+   - **App Name**: Kolekt
    - **App Contact Email**: your-email@domain.com
    - **Business Account**: Select your business account (if applicable)
 
@@ -66,7 +66,7 @@ ThreadStorm now supports Meta's official Threads API! This guide will help you s
 2. Copy your **App ID** and **App Secret**
 3. Save your **Access Token** from the previous step
 
-## ⚙️ **Step 4: Configure ThreadStorm**
+## ⚙️ **Step 4: Configure Kolekt**
 
 ### **4.1 Update Environment Variables**
 
@@ -82,7 +82,7 @@ THREADS_ACCESS_TOKEN_SECRET=your-access-token-secret-here
 
 ### **4.2 Test the Connection**
 
-1. Start your ThreadStorm application
+1. Start your Kolekt application
 2. Go to the Threads API section in the UI
 3. Click "Test Connection"
 4. Verify that the connection is successful
@@ -91,9 +91,9 @@ THREADS_ACCESS_TOKEN_SECRET=your-access-token-secret-here
 
 ### **5.1 Authorize Your Account**
 
-1. In ThreadStorm, go to "Threads Integration"
+1. In Kolekt, go to "Threads Integration"
 2. Click "Connect Threads Account"
-3. Follow the OAuth flow to authorize ThreadStorm
+3. Follow the OAuth flow to authorize Kolekt
 4. Grant the required permissions
 
 ### **5.2 Verify Permissions**
@@ -108,9 +108,9 @@ Make sure your account has the following permissions:
 
 ### **6.1 Create a Test Threadstorm**
 
-1. Go to the ThreadStorm formatter
+1. Go to the Kolekt formatter
 2. Enter some test content
-3. Format it into a threadstorm
+3. Format it into a kolekt
 4. Click "Publish to Threads"
 
 ### **6.2 Verify Publication**
@@ -184,7 +184,7 @@ This will provide detailed information about API requests and responses.
 
 ### **9.1 Track API Usage**
 
-ThreadStorm automatically tracks:
+Kolekt automatically tracks:
 - API call frequency
 - Response times
 - Error rates
@@ -228,6 +228,6 @@ If you encounter issues:
 1. Check the [Meta Developer Documentation](https://developers.facebook.com/docs/instagram-basic-display-api/)
 2. Review the [Threads API Reference](https://developers.facebook.com/docs/instagram-api/reference/)
 3. Contact Meta Developer Support
-4. Check ThreadStorm logs for detailed error information
+4. Check Kolekt logs for detailed error information
 
-Your ThreadStorm is now ready to publish directly to Threads! 🚀
+Your Kolekt is now ready to publish directly to Threads! 🚀

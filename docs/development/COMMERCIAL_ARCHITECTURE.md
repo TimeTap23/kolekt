@@ -1,16 +1,16 @@
-# ThreadStorm Commercial Architecture
+# Kolekt Commercial Architecture
 
 ## 🏢 **Business Model Options**
 
 ### **SaaS Subscription Model**
-- **Free Tier**: 10 threadstorms/month, basic templates
-- **Pro Tier ($9.99/month)**: 100 threadstorms/month, all templates, analytics
-- **Business Tier ($29.99/month)**: Unlimited threadstorms, team collaboration, API access
+- **Free Tier**: 10 kolekts/month, basic templates
+- **Pro Tier ($9.99/month)**: 100 kolekts/month, all templates, analytics
+- **Business Tier ($29.99/month)**: Unlimited kolekts, team collaboration, API access
 - **Enterprise Tier ($99.99/month)**: White-label, custom integrations, priority support
 
 ### **Usage-Based Pricing**
-- **Pay-per-threadstorm**: $0.10 per formatted threadstorm
-- **Volume discounts**: 10% off for 1000+ threadstorms/month
+- **Pay-per-kolekt**: $0.10 per formatted kolekt
+- **Volume discounts**: 10% off for 1000+ kolekts/month
 - **API usage**: $0.05 per API call
 
 ### **Freemium Model**
@@ -39,14 +39,14 @@ CREATE TABLE public.organizations (
 -- Add organization_id to existing tables
 ALTER TABLE public.profiles ADD COLUMN organization_id UUID REFERENCES public.organizations(id);
 ALTER TABLE public.templates ADD COLUMN organization_id UUID REFERENCES public.organizations(id);
-ALTER TABLE public.threadstorms ADD COLUMN organization_id UUID REFERENCES public.organizations(id);
+ALTER TABLE public.kolekts ADD COLUMN organization_id UUID REFERENCES public.organizations(id);
 
 -- Usage tracking
 CREATE TABLE public.usage_metrics (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     organization_id UUID REFERENCES public.organizations(id),
     user_id UUID REFERENCES auth.users(id),
-    metric_type VARCHAR(50) NOT NULL, -- 'threadstorm', 'api_call', 'template_use'
+    metric_type VARCHAR(50) NOT NULL, -- 'kolekt', 'api_call', 'template_use'
     count INTEGER DEFAULT 1,
     metadata JSONB DEFAULT '{}',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -68,10 +68,10 @@ class RateLimiter:
     async def check_rate_limit(self, request: Request, user_id: str, plan_type: str):
         # Define limits based on plan
         limits = {
-            'free': {'requests_per_minute': 10, 'threadstorms_per_month': 10},
-            'pro': {'requests_per_minute': 100, 'threadstorms_per_month': 100},
-            'business': {'requests_per_minute': 500, 'threadstorms_per_month': 1000},
-            'enterprise': {'requests_per_minute': 2000, 'threadstorms_per_month': 10000}
+            'free': {'requests_per_minute': 10, 'kolekts_per_month': 10},
+            'pro': {'requests_per_minute': 100, 'kolekts_per_month': 100},
+            'business': {'requests_per_minute': 500, 'kolekts_per_month': 1000},
+            'enterprise': {'requests_per_minute': 2000, 'kolekts_per_month': 10000}
         }
         
         limit = limits.get(plan_type, limits['free'])
@@ -125,11 +125,11 @@ class PaymentService:
 ```python
 # Analytics service
 class AnalyticsService:
-    async def track_threadstorm_creation(self, user_id: str, organization_id: str, metadata: dict):
+    async def track_kolekt_creation(self, user_id: str, organization_id: str, metadata: dict):
         await self.supabase.table('usage_metrics').insert({
             'organization_id': organization_id,
             'user_id': user_id,
-            'metric_type': 'threadstorm',
+            'metric_type': 'kolekt',
             'metadata': {
                 'posts_count': metadata.get('total_posts'),
                 'character_count': metadata.get('total_characters'),
@@ -179,7 +179,7 @@ services:
   postgres:
     image: postgres:15
     environment:
-      - POSTGRES_DB=threadstorm
+      - POSTGRES_DB=kolekt
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
@@ -234,7 +234,7 @@ jobs:
       - name: Deploy to production
         run: |
           # Deploy to your cloud provider
-          # AWS, Google Cloud, or DigitalOcean
+          # AWS, Google Cloud, or Railway
 ```
 
 ## 🔐 **Security & Compliance**
@@ -251,20 +251,20 @@ class DataProtectionService:
             .eq('id', user_id)\
             .execute()
         
-        threadstorms = await self.supabase.table('threadstorms')\
+        kolekts = await self.supabase.table('kolekts')\
             .select('*')\
             .eq('user_id', user_id)\
             .execute()
         
         return {
             'profile': user_data.data[0] if user_data.data else None,
-            'threadstorms': threadstorms.data,
+            'kolekts': kolekts.data,
             'export_date': datetime.utcnow().isoformat()
         }
     
     async def delete_user_data(self, user_id: str):
         """Delete all user data for GDPR compliance"""
-        await self.supabase.table('threadstorms')\
+        await self.supabase.table('kolekts')\
             .delete()\
             .eq('user_id', user_id)\
             .execute()
@@ -359,7 +359,7 @@ app = FastAPI()
 app.add_middleware(
     SessionMiddleware,
     secret_key=settings.SECRET_KEY,
-    session_cookie="threadstorm_session",
+    session_cookie="kolekt_session",
     max_age=3600,
     same_site="lax",
     https_only=True
@@ -504,4 +504,4 @@ class IntegrationService:
         return integrations
 ```
 
-This commercial architecture provides a solid foundation for monetizing ThreadStorm while maintaining scalability, security, and user experience.
+This commercial architecture provides a solid foundation for monetizing Kolekt while maintaining scalability, security, and user experience.

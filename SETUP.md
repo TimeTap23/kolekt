@@ -1,8 +1,8 @@
-# ThreadStorm Setup Guide
+# Kolekt Setup Guide
 
 ## 🚀 Quick Start
 
-Congratulations! ThreadStorm has been successfully created - your specialized formatter for Meta's Threads app! Here's how to get it running:
+Congratulations! Kolekt has been successfully created - your specialized formatter for Meta's Threads app! Here's how to get it running:
 
 ### 1. Environment Setup
 ```bash
@@ -52,7 +52,7 @@ make docker-run
 ## 📁 Project Structure
 
 ```
-threadstorm/
+kolekt/
 ├── src/                    # Core application code
 │   ├── core/              # Configuration and database
 │   ├── models/            # Data models (User, Thread, Content, Research)
@@ -151,4 +151,4 @@ make db-reset     # Reset database
 
 ## 🎉 You're Ready!
 
-ThreadStorm is now ready to transform your content into engaging Threads posts! The formatter is specialized for Meta's platform, the interface is beautiful, and the optimization tools will help you maximize engagement. Start creating viral threadstorms! ⚡
+Kolekt is now ready to transform your content into engaging Threads posts! The formatter is specialized for Meta's platform, the interface is beautiful, and the optimization tools will help you maximize engagement. Start creating viral kolekts! ⚡

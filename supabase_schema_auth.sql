@@ -1,4 +1,4 @@
--- ThreadStorm Authentication Schema
+-- Kolekt Authentication Schema
 -- This file contains all the database tables needed for user authentication
 
 -- Enable necessary extensions
@@ -285,7 +285,7 @@ SELECT cron.schedule(
 -- INSERT INTO profiles (id, email, name, role, plan, email_verified) 
 -- VALUES (
 --     '00000000-0000-0000-0000-000000000001',
---     'admin@threadstorm.com',
+--     'admin@kolekt.io',
 --     'Admin User',
 --     'admin',
 --     'business',

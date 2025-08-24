@@ -89,7 +89,7 @@ curl -X POST http://localhost:8000/api/v1/auth/register \
 After fixing the Site URL:
 
 1. **Commit your changes** to Git
-2. **Push to GitHub** for Digital Ocean deployment
+2. **Push to GitHub** for Railway deployment
 3. **Test registration** on your live site
 4. **Verify Google OAuth** works correctly
 
@@ -102,7 +102,7 @@ After fixing the Site URL:
 
 ### **If OAuth Still Doesn't Work**
 1. Update **Google OAuth settings** with correct redirect URLs
-2. Verify **Digital Ocean environment variables** are set correctly
+2. Verify **Railway environment variables** are set correctly
 3. Check **Supabase Auth logs** for specific errors
 
 ## 📝 **Summary**

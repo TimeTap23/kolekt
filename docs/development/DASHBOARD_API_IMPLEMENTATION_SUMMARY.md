@@ -86,7 +86,7 @@ Successfully implemented and tested a comprehensive set of backend APIs to suppo
 
 ### Threads APIs (`/api/v1/threads/`):
 - `POST /post` - Post to Threads
-- `POST /thread` - Post threadstorm (multiple posts)
+- `POST /thread` - Post kolekt (multiple posts)
 - `GET /user-info` - Get Threads user information
 - `GET /posts` - Get recent Threads posts
 - `POST /schedule` - Schedule Threads posts

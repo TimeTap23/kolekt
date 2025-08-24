@@ -1,4 +1,4 @@
--- Database Optimization Scripts for ThreadStorm
+-- Database Optimization Scripts for Kolekt
 -- Improves query performance through indexing and optimization
 
 -- 1. Create composite indexes for frequently queried tables
@@ -233,5 +233,5 @@ ALTER FUNCTION perform_maintenance() SECURITY DEFINER;
 
 -- 25. Final optimization commands
 -- These should be run after all indexes are created
-REINDEX DATABASE threadstorm;
+REINDEX DATABASE kolekt;
 ANALYZE;

@@ -1,13 +1,13 @@
-# ThreadStorm Kubernetes - Complete Setup Summary
+# Kolekt Kubernetes - Complete Setup Summary
 
 ## 🎉 **KUBERNETES ENVIRONMENT: 100% READY FOR DEPLOYMENT**
 
-ThreadStorm now has a complete, enterprise-grade Kubernetes deployment infrastructure with comprehensive setup guides, automation scripts, and production-ready configurations.
+Kolekt now has a complete, enterprise-grade Kubernetes deployment infrastructure with comprehensive setup guides, automation scripts, and production-ready configurations.
 
 ## 📋 **What's Been Implemented**
 
 ### ✅ **1. Complete Kubernetes Infrastructure**
-- **Namespace isolation** - `threadstorm` namespace for resource isolation
+- **Namespace isolation** - `kolekt` namespace for resource isolation
 - **Deployment configuration** - 3 replicas with auto-scaling (3-10 replicas)
 - **Service configuration** - Internal service discovery and load balancing
 - **Ingress configuration** - SSL termination and external access
@@ -27,7 +27,7 @@ ThreadStorm now has a complete, enterprise-grade Kubernetes deployment infrastru
 ### ✅ **3. Monitoring & Observability**
 - **Prometheus deployment** - Metrics collection and storage
 - **Grafana deployment** - Complete monitoring dashboard
-- **Custom dashboards** - ThreadStorm-specific monitoring panels
+- **Custom dashboards** - Kolekt-specific monitoring panels
 - **Health checks** - Application and service health monitoring
 - **Log aggregation** - Centralized logging and analysis
 - **Performance metrics** - Response time, error rates, throughput
@@ -70,11 +70,11 @@ nano .env.production
 # 4. Encode secrets
 ./k8s/encode-secrets.sh
 
-# 5. Deploy ThreadStorm
+# 5. Deploy Kolekt
 ./k8s/deploy.sh deploy
 
 # 6. Access application
-kubectl port-forward service/threadstorm-service 8000:80 -n threadstorm
+kubectl port-forward service/kolekt-service 8000:80 -n kolekt
 ```
 
 ### **Option 2: Cloud Production**
@@ -92,10 +92,10 @@ nano .env.production
 ./k8s/encode-secrets.sh
 
 # 6. Build and push image
-docker build -t ghcr.io/your-username/threadstorm:latest .
-docker push ghcr.io/your-username/threadstorm:latest
+docker build -t ghcr.io/your-username/kolekt:latest .
+docker push ghcr.io/your-username/kolekt:latest
 
-# 7. Deploy ThreadStorm
+# 7. Deploy Kolekt
 ./k8s/deploy.sh deploy
 ```
 
@@ -164,19 +164,19 @@ docker push ghcr.io/your-username/threadstorm:latest
 ### **Manual kubectl Commands**
 ```bash
 # Check all resources
-kubectl get all -n threadstorm
+kubectl get all -n kolekt
 
 # Check pod status
-kubectl get pods -n threadstorm
+kubectl get pods -n kolekt
 
 # View logs
-kubectl logs -f deployment/threadstorm -n threadstorm
+kubectl logs -f deployment/kolekt -n kolekt
 
 # Port forward for local access
-kubectl port-forward service/threadstorm-service 8000:80 -n threadstorm
+kubectl port-forward service/kolekt-service 8000:80 -n kolekt
 
 # Scale manually
-kubectl scale deployment threadstorm --replicas=5 -n threadstorm
+kubectl scale deployment kolekt --replicas=5 -n kolekt
 ```
 
 ## 🔒 **Security Features**
@@ -200,7 +200,7 @@ kubectl scale deployment threadstorm --replicas=5 -n threadstorm
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: threadstorm-hpa
+  name: kolekt-hpa
 spec:
   minReplicas: 3
   maxReplicas: 10
@@ -253,11 +253,11 @@ resources:
 ### **Backup Commands**
 ```bash
 # Backup configuration
-tar -czf threadstorm_k8s_backup_$(date +%Y%m%d).tar.gz \
+tar -czf kolekt_k8s_backup_$(date +%Y%m%d).tar.gz \
     k8s/ .env.production
 
 # Restore from backup
-tar -xzf threadstorm_k8s_backup_20241201.tar.gz
+tar -xzf kolekt_k8s_backup_20241201.tar.gz
 kubectl apply -f k8s/
 ```
 
@@ -273,19 +273,19 @@ kubectl apply -f k8s/
 ### **Debug Commands**
 ```bash
 # Check pod status
-kubectl get pods -n threadstorm
+kubectl get pods -n kolekt
 
 # View pod events
-kubectl describe pod <pod-name> -n threadstorm
+kubectl describe pod <pod-name> -n kolekt
 
 # Check service endpoints
-kubectl get endpoints -n threadstorm
+kubectl get endpoints -n kolekt
 
 # View resource usage
-kubectl top pods -n threadstorm
+kubectl top pods -n kolekt
 
 # Check events
-kubectl get events -n threadstorm --sort-by='.lastTimestamp'
+kubectl get events -n kolekt --sort-by='.lastTimestamp'
 ```
 
 ## 🎯 **Production Readiness**
@@ -315,7 +315,7 @@ kubectl get events -n threadstorm --sort-by='.lastTimestamp'
 ## 🏆 **Success Metrics**
 
 ### **Deployment Success Indicators**
-- ✅ **All pods running** - `kubectl get pods -n threadstorm`
+- ✅ **All pods running** - `kubectl get pods -n kolekt`
 - ✅ **Services accessible** - Health checks passing
 - ✅ **Ingress working** - SSL certificates valid
 - ✅ **Monitoring active** - Prometheus/Grafana accessible
@@ -329,11 +329,11 @@ kubectl get events -n threadstorm --sort-by='.lastTimestamp'
 - **Error rate**: < 1% 5xx errors
 - **Throughput**: 1000+ requests/second
 
-## 🎉 **ThreadStorm Kubernetes Status**
+## 🎉 **Kolekt Kubernetes Status**
 
 **🎯 COMPLETION: 100%**
 
-ThreadStorm is now **production-ready on Kubernetes** with:
+Kolekt is now **production-ready on Kubernetes** with:
 - ✅ **Enterprise-grade infrastructure** - Complete Kubernetes deployment
 - ✅ **High availability** - Multiple replicas with auto-scaling
 - ✅ **Load balancing** - Ingress with SSL termination
@@ -352,7 +352,7 @@ ThreadStorm is now **production-ready on Kubernetes** with:
 3. **Configure environment**: Edit `.env.production`
 4. **Encode secrets**: `./k8s/encode-secrets.sh`
 5. **Deploy**: `./k8s/deploy.sh deploy`
-6. **Access**: `kubectl port-forward service/threadstorm-service 8000:80 -n threadstorm`
+6. **Access**: `kubectl port-forward service/kolekt-service 8000:80 -n kolekt`
 
 ### **For Cloud Production**
 1. **Choose cloud provider** (AWS EKS, Google GKE, Azure AKS)
@@ -384,9 +384,9 @@ ThreadStorm is now **production-ready on Kubernetes** with:
 
 ---
 
-## 🎉 **ThreadStorm Kubernetes Deployment Complete!**
+## 🎉 **Kolekt Kubernetes Deployment Complete!**
 
-Your ThreadStorm application is now ready for enterprise Kubernetes deployment with:
+Your Kolekt application is now ready for enterprise Kubernetes deployment with:
 - ✅ **Complete infrastructure** - All components implemented
 - ✅ **Automation scripts** - One-command deployment
 - ✅ **Security hardening** - Production-ready security
@@ -394,7 +394,7 @@ Your ThreadStorm application is now ready for enterprise Kubernetes deployment w
 - ✅ **Scaling capabilities** - Auto-scaling and load balancing
 - ✅ **Documentation** - Comprehensive guides and troubleshooting
 
-**ThreadStorm is ready for production Kubernetes deployment!** 🚀
+**Kolekt is ready for production Kubernetes deployment!** 🚀
 
 ---
 

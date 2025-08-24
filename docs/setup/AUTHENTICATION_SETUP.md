@@ -1,6 +1,6 @@
-# 🔐 ThreadStorm Authentication Setup Guide
+# 🔐 Kolekt Authentication Setup Guide
 
-This guide covers the complete authentication system implementation for ThreadStorm, including user registration, login, JWT tokens, role-based access control, and security features.
+This guide covers the complete authentication system implementation for Kolekt, including user registration, login, JWT tokens, role-based access control, and security features.
 
 ## 📋 **Table of Contents**
 
@@ -14,7 +14,7 @@ This guide covers the complete authentication system implementation for ThreadSt
 
 ## 🎯 **Overview**
 
-ThreadStorm uses a comprehensive authentication system with the following features:
+Kolekt uses a comprehensive authentication system with the following features:
 
 - **Supabase Auth Integration**: Leverages Supabase for user management
 - **JWT Tokens**: Secure access and refresh tokens
@@ -252,8 +252,8 @@ Check browser console for errors:
 
 ```javascript
 // Test authentication state
-console.log('Access Token:', localStorage.getItem('threadstorm_access_token'));
-console.log('User:', localStorage.getItem('threadstorm_user'));
+console.log('Access Token:', localStorage.getItem('kolekt_access_token'));
+console.log('User:', localStorage.getItem('kolekt_user'));
 ```
 
 #### **4. CORS Issues**
@@ -362,4 +362,4 @@ For authentication issues:
 
 ---
 
-**ThreadStorm Authentication System** - Secure, scalable, and production-ready user authentication for your Threads formatting platform.
+**Kolekt Authentication System** - Secure, scalable, and production-ready user authentication for your Threads formatting platform.

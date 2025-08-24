@@ -34,11 +34,11 @@ You'll receive:
 - **Client ID**: `123456789-abcdefghijklmnop.apps.googleusercontent.com`
 - **Client Secret**: `GOCSPX-abcdefghijklmnopqrstuvwxyz`
 
-## 🔧 **Add to Digital Ocean**
+## 🔧 **Add to Railway**
 
 ### **Option 1: App Platform Environment Variables**
 
-1. Go to your Digital Ocean App Platform
+1. Go to your Railway App Platform
 2. Select your Kolekt app
 3. Go to **Settings** → **Environment Variables**
 4. Add these variables:
@@ -103,13 +103,13 @@ curl https://www.kolekt.io/api/v1/auth/google/authorize
 - [ ] OAuth 2.0 client created
 - [ ] Redirect URIs added
 - [ ] Credentials saved securely
-- [ ] Environment variables set in Digital Ocean
+- [ ] Environment variables set in Railway
 - [ ] OAuth endpoints tested
 - [ ] User registration/login working
 
 ## 🎯 **Next Steps**
 
-1. **Deploy to Digital Ocean** with new credentials
+1. **Deploy to Railway** with new credentials
 2. **Test OAuth flow** end-to-end
 3. **Monitor logs** for any OAuth errors
 4. **Set up monitoring** for OAuth success rates

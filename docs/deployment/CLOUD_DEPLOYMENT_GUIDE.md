@@ -1,8 +1,8 @@
-# ThreadStorm Cloud Deployment Guide
+# Kolekt Cloud Deployment Guide
 
-## ☁️ **Complete Cloud Deployment for ThreadStorm**
+## ☁️ **Complete Cloud Deployment for Kolekt**
 
-This guide provides step-by-step instructions for deploying ThreadStorm to major cloud providers with production-ready configurations.
+This guide provides step-by-step instructions for deploying Kolekt to major cloud providers with production-ready configurations.
 
 ## 🎯 **Cloud Provider Options**
 
@@ -21,7 +21,7 @@ This guide provides step-by-step instructions for deploying ThreadStorm to major
 - **Pros**: Windows containers, enterprise features, compliance
 - **Cons**: Limited regions, Microsoft ecosystem dependency
 
-### **4. DigitalOcean Kubernetes**
+### **4. Railway Kubernetes**
 - **Best for**: Simple deployments, cost-effective, developer-friendly
 - **Pros**: Simple pricing, easy setup, good performance
 - **Cons**: Limited advanced features, smaller ecosystem
@@ -57,7 +57,7 @@ export AWS_REGION=us-west-2
 ```bash
 # Create cluster with managed node groups
 eksctl create cluster \
-  --name threadstorm-cluster \
+  --name kolekt-cluster \
   --region us-west-2 \
   --nodegroup-name standard-workers \
   --node-type t3.medium \
@@ -71,10 +71,10 @@ eksctl create cluster \
   --full-ecr-access
 
 # Update kubeconfig
-aws eks update-kubeconfig --name threadstorm-cluster --region us-west-2
+aws eks update-kubeconfig --name kolekt-cluster --region us-west-2
 ```
 
-### **Deploy ThreadStorm to EKS**
+### **Deploy Kolekt to EKS**
 ```bash
 # Install required components
 ./setup-kubernetes.sh components
@@ -87,14 +87,14 @@ nano .env.production
 ./k8s/encode-secrets.sh
 
 # Build and push Docker image
-docker build -t your-aws-account.dkr.ecr.us-west-2.amazonaws.com/threadstorm:latest .
+docker build -t your-aws-account.dkr.ecr.us-west-2.amazonaws.com/kolekt:latest .
 aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin your-aws-account.dkr.ecr.us-west-2.amazonaws.com
-docker push your-aws-account.dkr.ecr.us-west-2.amazonaws.com/threadstorm:latest
+docker push your-aws-account.dkr.ecr.us-west-2.amazonaws.com/kolekt:latest
 
 # Update image in deployment
-sed -i 's|ghcr.io/your-username/threadstorm:latest|your-aws-account.dkr.ecr.us-west-2.amazonaws.com/threadstorm:latest|g' k8s/deployment.yaml
+sed -i 's|ghcr.io/your-username/kolekt:latest|your-aws-account.dkr.ecr.us-west-2.amazonaws.com/kolekt:latest|g' k8s/deployment.yaml
 
-# Deploy ThreadStorm
+# Deploy Kolekt
 ./k8s/deploy.sh deploy
 ```
 
@@ -119,7 +119,7 @@ gcloud init
 gcloud config set project your-project-id
 
 # Create cluster
-gcloud container clusters create threadstorm-cluster \
+gcloud container clusters create kolekt-cluster \
   --zone us-central1-a \
   --num-nodes 3 \
   --machine-type e2-medium \
@@ -131,10 +131,10 @@ gcloud container clusters create threadstorm-cluster \
   --enable-network-policy
 
 # Get credentials
-gcloud container clusters get-credentials threadstorm-cluster --zone us-central1-a
+gcloud container clusters get-credentials kolekt-cluster --zone us-central1-a
 ```
 
-### **Deploy ThreadStorm to GKE**
+### **Deploy Kolekt to GKE**
 ```bash
 # Install required components
 ./setup-kubernetes.sh components
@@ -147,14 +147,14 @@ nano .env.production
 ./k8s/encode-secrets.sh
 
 # Build and push Docker image
-docker build -t gcr.io/your-project-id/threadstorm:latest .
+docker build -t gcr.io/your-project-id/kolekt:latest .
 gcloud auth configure-docker
-docker push gcr.io/your-project-id/threadstorm:latest
+docker push gcr.io/your-project-id/kolekt:latest
 
 # Update image in deployment
-sed -i 's|ghcr.io/your-username/threadstorm:latest|gcr.io/your-project-id/threadstorm:latest|g' k8s/deployment.yaml
+sed -i 's|ghcr.io/your-username/kolekt:latest|gcr.io/your-project-id/kolekt:latest|g' k8s/deployment.yaml
 
-# Deploy ThreadStorm
+# Deploy Kolekt
 ./k8s/deploy.sh deploy
 ```
 
@@ -178,12 +178,12 @@ az login
 az account set --subscription your-subscription-id
 
 # Create resource group
-az group create --name threadstorm-rg --location eastus
+az group create --name kolekt-rg --location eastus
 
 # Create cluster
 az aks create \
-  --resource-group threadstorm-rg \
-  --name threadstorm-cluster \
+  --resource-group kolekt-rg \
+  --name kolekt-cluster \
   --node-count 3 \
   --enable-addons monitoring \
   --generate-ssh-keys \
@@ -192,10 +192,10 @@ az aks create \
   --max-count 5
 
 # Get credentials
-az aks get-credentials --resource-group threadstorm-rg --name threadstorm-cluster
+az aks get-credentials --resource-group kolekt-rg --name kolekt-cluster
 ```
 
-### **Deploy ThreadStorm to AKS**
+### **Deploy Kolekt to AKS**
 ```bash
 # Install required components
 ./setup-kubernetes.sh components
@@ -208,30 +208,30 @@ nano .env.production
 ./k8s/encode-secrets.sh
 
 # Build and push Docker image
-docker build -t your-registry.azurecr.io/threadstorm:latest .
+docker build -t your-registry.azurecr.io/kolekt:latest .
 az acr login --name your-registry
-docker push your-registry.azurecr.io/threadstorm:latest
+docker push your-registry.azurecr.io/kolekt:latest
 
 # Update image in deployment
-sed -i 's|ghcr.io/your-username/threadstorm:latest|your-registry.azurecr.io/threadstorm:latest|g' k8s/deployment.yaml
+sed -i 's|ghcr.io/your-username/kolekt:latest|your-registry.azurecr.io/kolekt:latest|g' k8s/deployment.yaml
 
-# Deploy ThreadStorm
+# Deploy Kolekt
 ./k8s/deploy.sh deploy
 ```
 
-## 🐳 **DigitalOcean Kubernetes Deployment**
+## 🐳 **Railway Kubernetes Deployment**
 
 ### **Prerequisites**
 ```bash
-# Install doctl
+# Install railway
 # macOS
-brew install doctl
+brew install railway
 
 # Linux
-snap install doctl
+snap install railway
 
 # Windows
-# Download from https://github.com/digitalocean/doctl/releases
+# Download from https://github.com/digitalocean/railway/releases
 
 # Install kubectl
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -241,20 +241,20 @@ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 ### **Create DOKS Cluster**
 ```bash
 # Authenticate
-doctl auth init
+railway auth init
 
 # Create cluster
-doctl kubernetes cluster create threadstorm-cluster \
+railway kubernetes cluster create kolekt-cluster \
   --region nyc1 \
   --size s-2vcpu-4gb \
   --count 3 \
   --version 1.24.4-do.0
 
 # Save kubeconfig
-doctl kubernetes cluster kubeconfig save threadstorm-cluster
+railway kubernetes cluster kubeconfig save kolekt-cluster
 ```
 
-### **Deploy ThreadStorm to DOKS**
+### **Deploy Kolekt to DOKS**
 ```bash
 # Install required components
 ./setup-kubernetes.sh components
@@ -267,14 +267,14 @@ nano .env.production
 ./k8s/encode-secrets.sh
 
 # Build and push Docker image
-docker build -t registry.digitalocean.com/your-registry/threadstorm:latest .
-doctl registry login
-docker push registry.digitalocean.com/your-registry/threadstorm:latest
+docker build -t registry.digitalocean.com/your-registry/kolekt:latest .
+railway registry login
+docker push registry.digitalocean.com/your-registry/kolekt:latest
 
 # Update image in deployment
-sed -i 's|ghcr.io/your-username/threadstorm:latest|registry.digitalocean.com/your-registry/threadstorm:latest|g' k8s/deployment.yaml
+sed -i 's|ghcr.io/your-username/kolekt:latest|registry.digitalocean.com/your-registry/kolekt:latest|g' k8s/deployment.yaml
 
-# Deploy ThreadStorm
+# Deploy Kolekt
 ./k8s/deploy.sh deploy
 ```
 
@@ -286,14 +286,14 @@ sed -i 's|ghcr.io/your-username/threadstorm:latest|registry.digitalocean.com/you
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: threadstorm
-  namespace: threadstorm
+  name: kolekt
+  namespace: kolekt
 spec:
   template:
     spec:
       containers:
-      - name: threadstorm
-        image: your-aws-account.dkr.ecr.us-west-2.amazonaws.com/threadstorm:latest
+      - name: kolekt
+        image: your-aws-account.dkr.ecr.us-west-2.amazonaws.com/kolekt:latest
         env:
         - name: AWS_REGION
           value: "us-west-2"
@@ -307,14 +307,14 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: threadstorm
-  namespace: threadstorm
+  name: kolekt
+  namespace: kolekt
 spec:
   template:
     spec:
       containers:
-      - name: threadstorm
-        image: gcr.io/your-project-id/threadstorm:latest
+      - name: kolekt
+        image: gcr.io/your-project-id/kolekt:latest
         env:
         - name: GOOGLE_CLOUD_PROJECT
           value: "your-project-id"
@@ -326,14 +326,14 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: threadstorm
-  namespace: threadstorm
+  name: kolekt
+  namespace: kolekt
 spec:
   template:
     spec:
       containers:
-      - name: threadstorm
-        image: your-registry.azurecr.io/threadstorm:latest
+      - name: kolekt
+        image: your-registry.azurecr.io/kolekt:latest
         env:
         - name: AZURE_SUBSCRIPTION_ID
           value: "your-subscription-id"
@@ -345,18 +345,18 @@ spec:
 ```bash
 # Create IAM roles for service accounts
 eksctl create iamserviceaccount \
-  --name threadstorm-sa \
-  --namespace threadstorm \
-  --cluster threadstorm-cluster \
+  --name kolekt-sa \
+  --namespace kolekt \
+  --cluster kolekt-cluster \
   --attach-policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess \
   --approve
 
 # Enable pod identity
 eksctl create iamserviceaccount \
-  --name threadstorm-pod-identity \
-  --namespace threadstorm \
-  --cluster threadstorm-cluster \
-  --role-name threadstorm-pod-role \
+  --name kolekt-pod-identity \
+  --namespace kolekt \
+  --cluster kolekt-cluster \
+  --role-name kolekt-pod-role \
   --attach-policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess \
   --approve
 ```
@@ -364,17 +364,17 @@ eksctl create iamserviceaccount \
 ### **Google GKE Security**
 ```bash
 # Enable workload identity
-gcloud container clusters update threadstorm-cluster \
+gcloud container clusters update kolekt-cluster \
   --zone us-central1-a \
   --workload-pool=your-project-id.svc.id.goog
 
 # Create service account
-gcloud iam service-accounts create threadstorm-sa \
-  --display-name="ThreadStorm Service Account"
+gcloud iam service-accounts create kolekt-sa \
+  --display-name="Kolekt Service Account"
 
 # Grant permissions
 gcloud projects add-iam-policy-binding your-project-id \
-  --member="serviceAccount:threadstorm-sa@your-project-id.iam.gserviceaccount.com" \
+  --member="serviceAccount:kolekt-sa@your-project-id.iam.gserviceaccount.com" \
   --role="roles/storage.objectViewer"
 ```
 
@@ -382,20 +382,20 @@ gcloud projects add-iam-policy-binding your-project-id \
 ```bash
 # Enable managed identity
 az aks update \
-  --resource-group threadstorm-rg \
-  --name threadstorm-cluster \
+  --resource-group kolekt-rg \
+  --name kolekt-cluster \
   --enable-managed-identity
 
 # Create user-assigned managed identity
 az identity create \
-  --resource-group threadstorm-rg \
-  --name threadstorm-identity
+  --resource-group kolekt-rg \
+  --name kolekt-identity
 
 # Assign permissions
 az role assignment create \
   --assignee "your-identity-client-id" \
   --role "Storage Blob Data Reader" \
-  --scope "/subscriptions/your-subscription-id/resourceGroups/threadstorm-rg"
+  --scope "/subscriptions/your-subscription-id/resourceGroups/kolekt-rg"
 ```
 
 ## 📊 **Cloud Monitoring Integration**
@@ -443,13 +443,13 @@ volumes:
 ```bash
 # Create hosted zone
 aws route53 create-hosted-zone \
-  --name threadstorm.com \
+  --name kolekt.com \
   --caller-reference $(date +%s)
 
 # Request SSL certificate
 aws acm request-certificate \
-  --domain-name threadstorm.com \
-  --subject-alternative-names www.threadstorm.com \
+  --domain-name kolekt.com \
+  --subject-alternative-names www.kolekt.com \
   --validation-method DNS
 
 # Update DNS records
@@ -461,13 +461,13 @@ aws route53 change-resource-record-sets \
 ### **Google Cloud DNS + Certificate Manager**
 ```bash
 # Create managed zone
-gcloud dns managed-zones create threadstorm-zone \
-  --dns-name="threadstorm.com." \
-  --description="ThreadStorm DNS zone"
+gcloud dns managed-zones create kolekt-zone \
+  --dns-name="kolekt.com." \
+  --description="Kolekt DNS zone"
 
 # Create SSL certificate
-gcloud compute ssl-certificates create threadstorm-cert \
-  --domains=threadstorm.com,www.threadstorm.com \
+gcloud compute ssl-certificates create kolekt-cert \
+  --domains=kolekt.com,www.kolekt.com \
   --global
 ```
 
@@ -475,14 +475,14 @@ gcloud compute ssl-certificates create threadstorm-cert \
 ```bash
 # Create DNS zone
 az network dns zone create \
-  --resource-group threadstorm-rg \
-  --name threadstorm.com
+  --resource-group kolekt-rg \
+  --name kolekt.com
 
 # Create SSL certificate in Key Vault
 az keyvault certificate create \
-  --vault-name threadstorm-vault \
-  --name threadstorm-cert \
-  --policy '{"x509CertificateProperties":{"subject":"CN=threadstorm.com"},"issuerParameters":{"name":"Self"}}'
+  --vault-name kolekt-vault \
+  --name kolekt-cert \
+  --policy '{"x509CertificateProperties":{"subject":"CN=kolekt.com"},"issuerParameters":{"name":"Self"}}'
 ```
 
 ## 🔄 **CI/CD Pipeline Setup**
@@ -507,12 +507,12 @@ jobs:
         aws-region: us-west-2
     - name: Build and push Docker image
       run: |
-        docker build -t ${{ secrets.ECR_REGISTRY }}/threadstorm:${{ github.sha }} .
-        docker push ${{ secrets.ECR_REGISTRY }}/threadstorm:${{ github.sha }}
+        docker build -t ${{ secrets.ECR_REGISTRY }}/kolekt:${{ github.sha }} .
+        docker push ${{ secrets.ECR_REGISTRY }}/kolekt:${{ github.sha }}
     - name: Deploy to EKS
       run: |
-        aws eks update-kubeconfig --name threadstorm-cluster --region us-west-2
-        kubectl set image deployment/threadstorm threadstorm=${{ secrets.ECR_REGISTRY }}/threadstorm:${{ github.sha }} -n threadstorm
+        aws eks update-kubeconfig --name kolekt-cluster --region us-west-2
+        kubectl set image deployment/kolekt kolekt=${{ secrets.ECR_REGISTRY }}/kolekt:${{ github.sha }} -n kolekt
 ```
 
 ### **GitHub Actions for Google GKE**
@@ -534,12 +534,12 @@ jobs:
         service_account_key: ${{ secrets.GCP_SA_KEY }}
     - name: Build and push Docker image
       run: |
-        docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/threadstorm:${{ github.sha }} .
-        docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/threadstorm:${{ github.sha }}
+        docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/kolekt:${{ github.sha }} .
+        docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/kolekt:${{ github.sha }}
     - name: Deploy to GKE
       run: |
-        gcloud container clusters get-credentials threadstorm-cluster --zone us-central1-a
-        kubectl set image deployment/threadstorm threadstorm=gcr.io/${{ secrets.GCP_PROJECT_ID }}/threadstorm:${{ github.sha }} -n threadstorm
+        gcloud container clusters get-credentials kolekt-cluster --zone us-central1-a
+        kubectl set image deployment/kolekt kolekt=gcr.io/${{ secrets.GCP_PROJECT_ID }}/kolekt:${{ github.sha }} -n kolekt
 ```
 
 ## 📈 **Scaling and Performance**
@@ -550,8 +550,8 @@ jobs:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: threadstorm-hpa
-  namespace: threadstorm
+  name: kolekt-hpa
+  namespace: kolekt
 spec:
   minReplicas: 3
   maxReplicas: 20  # Higher for cloud
@@ -588,7 +588,7 @@ resources:
 ```bash
 # AWS CloudWatch Alarms
 aws cloudwatch put-metric-alarm \
-  --alarm-name threadstorm-cpu-high \
+  --alarm-name kolekt-cpu-high \
   --alarm-description "CPU utilization is high" \
   --metric-name CPUUtilization \
   --namespace AWS/ECS \
@@ -603,9 +603,9 @@ gcloud alpha monitoring policies create \
 
 # Azure Monitor Alerts
 az monitor metrics alert create \
-  --name "threadstorm-cpu-alert" \
-  --resource-group threadstorm-rg \
-  --scopes /subscriptions/your-subscription-id/resourceGroups/threadstorm-rg/providers/Microsoft.ContainerService/managedClusters/threadstorm-cluster \
+  --name "kolekt-cpu-alert" \
+  --resource-group kolekt-rg \
+  --scopes /subscriptions/your-subscription-id/resourceGroups/kolekt-rg/providers/Microsoft.ContainerService/managedClusters/kolekt-cluster \
   --condition "avg Percentage CPU > 80" \
   --description "CPU utilization is high"
 ```
@@ -639,7 +639,7 @@ az monitor metrics alert create \
 ### **AWS EKS (Complete)**
 ```bash
 # 1. Create cluster
-eksctl create cluster --name threadstorm-cluster --region us-west-2 --node-type t3.medium --nodes 3
+eksctl create cluster --name kolekt-cluster --region us-west-2 --node-type t3.medium --nodes 3
 
 # 2. Setup environment
 ./setup-kubernetes.sh components
@@ -648,15 +648,15 @@ nano .env.production
 
 # 3. Deploy
 ./k8s/encode-secrets.sh
-docker build -t your-account.dkr.ecr.us-west-2.amazonaws.com/threadstorm:latest .
-docker push your-account.dkr.ecr.us-west-2.amazonaws.com/threadstorm:latest
+docker build -t your-account.dkr.ecr.us-west-2.amazonaws.com/kolekt:latest .
+docker push your-account.dkr.ecr.us-west-2.amazonaws.com/kolekt:latest
 ./k8s/deploy.sh deploy
 ```
 
 ### **Google GKE (Complete)**
 ```bash
 # 1. Create cluster
-gcloud container clusters create threadstorm-cluster --zone us-central1-a --num-nodes 3
+gcloud container clusters create kolekt-cluster --zone us-central1-a --num-nodes 3
 
 # 2. Setup environment
 ./setup-kubernetes.sh components
@@ -665,21 +665,21 @@ nano .env.production
 
 # 3. Deploy
 ./k8s/encode-secrets.sh
-docker build -t gcr.io/your-project/threadstorm:latest .
-docker push gcr.io/your-project/threadstorm:latest
+docker build -t gcr.io/your-project/kolekt:latest .
+docker push gcr.io/your-project/kolekt:latest
 ./k8s/deploy.sh deploy
 ```
 
 ---
 
-## 🎉 **ThreadStorm Cloud Deployment Complete!**
+## 🎉 **Kolekt Cloud Deployment Complete!**
 
-Your ThreadStorm application is now ready for cloud deployment with:
-- ✅ **Multi-cloud support** - AWS, Google, Azure, DigitalOcean
+Your Kolekt application is now ready for cloud deployment with:
+- ✅ **Multi-cloud support** - AWS, Google, Azure, Railway
 - ✅ **Production-ready configurations** - Auto-scaling, monitoring, security
 - ✅ **CI/CD integration** - Automated deployments
 - ✅ **Cloud-native features** - Managed services, monitoring, alerting
 - ✅ **Cost optimization** - Resource management and scaling
 - ✅ **Security hardening** - Cloud-specific security features
 
-**ThreadStorm is ready for production cloud deployment!** 🚀
+**Kolekt is ready for production cloud deployment!** 🚀

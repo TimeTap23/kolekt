@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Observability Service for ThreadStorm
+Observability Service for Kolekt
 Handles centralized logging, metrics, and alerting
 """
 
@@ -69,7 +69,7 @@ class ObservabilityService:
                 'profile_id': profile_id,
                 'severity': severity,
                 'timestamp': datetime.now().isoformat(),
-                'service': 'threadstorm',
+                'service': 'kolekt',
                 'version': settings.APP_VERSION
             }
             

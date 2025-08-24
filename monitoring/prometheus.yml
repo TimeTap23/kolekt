@@ -12,10 +12,10 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  # ThreadStorm application
-  - job_name: 'threadstorm'
+  # Kolekt application
+  - job_name: 'kolekt'
     static_configs:
-      - targets: ['threadstorm:8000']
+      - targets: ['kolekt:8000']
     metrics_path: '/metrics'
     scrape_interval: 30s
     scrape_timeout: 10s
@@ -23,7 +23,7 @@ scrape_configs:
   # Redis
   - job_name: 'redis'
     static_configs:
-      - targets: ['threadstorm-redis:6379']
+      - targets: ['kolekt-redis:6379']
     metrics_path: '/metrics'
     scrape_interval: 30s
 
@@ -70,10 +70,10 @@ scrape_configs:
         action: replace
         target_label: kubernetes_pod_name
 
-  # ThreadStorm specific metrics
-  - job_name: 'threadstorm-api'
+  # Kolekt specific metrics
+  - job_name: 'kolekt-api'
     static_configs:
-      - targets: ['threadstorm:8000']
+      - targets: ['kolekt:8000']
     metrics_path: '/api/v1/metrics'
     scrape_interval: 60s
     scrape_timeout: 15s

@@ -1,8 +1,8 @@
-# ThreadStorm Commercial Setup Guide
+# Kolekt Commercial Setup Guide
 
 ## 🚀 **Quick Start for Commercial Deployment**
 
-This guide will help you set up ThreadStorm for commercial deployment with all the necessary infrastructure and configurations.
+This guide will help you set up Kolekt for commercial deployment with all the necessary infrastructure and configurations.
 
 ## 📋 **Prerequisites**
 
@@ -30,7 +30,7 @@ FROM information_schema.tables
 WHERE table_schema = 'public' 
 AND table_name IN (
     'organizations', 'profiles', 'templates', 'drafts', 
-    'threadstorms', 'usage_metrics', 'api_keys', 
+    'kolekts', 'usage_metrics', 'api_keys', 
     'subscriptions', 'payments', 'referrals', 
     'referral_rewards', 'user_settings'
 );
@@ -60,7 +60,7 @@ nano .env.production
 
 ```bash
 # App Configuration
-APP_NAME=ThreadStorm
+APP_NAME=Kolekt
 APP_VERSION=1.0.0
 DEBUG=false
 HOST=0.0.0.0
@@ -71,7 +71,7 @@ SECRET_KEY=your-super-secret-production-key-here
 SUPABASE_URL=https://your-project-id.supabase.co
 SUPABASE_KEY=your-service-role-key
 SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_STORAGE_BUCKET=threadstorm
+SUPABASE_STORAGE_BUCKET=kolekt
 
 # Stripe Configuration (for payments)
 STRIPE_SECRET_KEY=sk_live_your-live-stripe-secret-key
@@ -119,17 +119,17 @@ USAGE_LIMIT_ENTERPRISE=10000
 3. Create the following products:
 
 **Pro Plan**
-- Name: ThreadStorm Pro
+- Name: Kolekt Pro
 - Price: $9.99/month
 - Price ID: `price_1ABC123DEF456`
 
 **Business Plan**
-- Name: ThreadStorm Business
+- Name: Kolekt Business
 - Price: $29.99/month
 - Price ID: `price_1ABC123DEF789`
 
 **Enterprise Plan**
-- Name: ThreadStorm Enterprise
+- Name: Kolekt Enterprise
 - Price: $99.99/month
 - Price ID: `price_1ABC123DEF012`
 
@@ -249,7 +249,7 @@ volumes:
 Create `nginx.conf`:
 
 ```nginx
-upstream threadstorm {
+upstream kolekt {
     server app:8000;
 }
 
@@ -277,7 +277,7 @@ server {
     limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
     
     location / {
-        proxy_pass http://threadstorm;
+        proxy_pass http://kolekt;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -286,7 +286,7 @@ server {
     
     location /api/ {
         limit_req zone=api burst=20 nodelay;
-        proxy_pass http://threadstorm;
+        proxy_pass http://kolekt;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -322,10 +322,10 @@ docker-compose -f docker-compose.prod.yml up -d --scale app=3
 # Test health endpoint
 curl https://yourdomain.com/health
 
-# Test threadstorm formatting
+# Test kolekt formatting
 curl -X POST https://yourdomain.com/api/v1/format \
   -H "Content-Type: application/json" \
-  -d '{"content": "Test content for ThreadStorm formatting.", "tone": "professional"}'
+  -d '{"content": "Test content for Kolekt formatting.", "tone": "professional"}'
 
 # Test usage tracking
 curl https://yourdomain.com/api/v1/usage
@@ -455,4 +455,4 @@ cp nginx.conf /backup/config/
 4. **Expand to other platforms** beyond Threads
 5. **Build a mobile app** for iOS and Android
 
-Your ThreadStorm commercial deployment is now ready! 🚀
+Your Kolekt commercial deployment is now ready! 🚀

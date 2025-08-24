@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script to help update the ThreadStorm database schema
+Script to help update the Kolekt database schema
 This script will show you the SQL commands to run in your Supabase dashboard
 """
 
@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 
 def main():
-    print("🗄️ ThreadStorm Database Schema Update")
+    print("🗄️ Kolekt Database Schema Update")
     print("=" * 50)
     
     # Read the schema file
@@ -29,7 +29,7 @@ def main():
     print("1. Go to your Supabase dashboard:")
     print("   https://supabase.com/dashboard")
     print()
-    print("2. Select your ThreadStorm project")
+    print("2. Select your Kolekt project")
     print()
     print("3. Go to SQL Editor")
     print()

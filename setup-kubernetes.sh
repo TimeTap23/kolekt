@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# ThreadStorm Kubernetes Environment Setup Script
+# Kolekt Kubernetes Environment Setup Script
 # This script helps set up a complete Kubernetes environment
 
 set -e  # Exit on any error
@@ -14,7 +14,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 CLUSTER_TYPE=""
-CLUSTER_NAME="threadstorm-cluster"
+CLUSTER_NAME="kolekt-cluster"
 
 # Function to print colored output
 print_status() {
@@ -125,12 +125,12 @@ setup_ssl() {
         print_info "Generating self-signed SSL certificate..."
         openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
             -keyout tls.key -out tls.crt \
-            -subj "/CN=threadstorm.local"
+            -subj "/CN=kolekt.local"
     fi
     
     # Create TLS secret
     print_info "Creating TLS secret..."
-    kubectl create secret tls threadstorm-tls \
+    kubectl create secret tls kolekt-tls \
         --key tls.key --cert tls.crt \
         --dry-run=client -o yaml > k8s/tls-secret.yaml
     
@@ -181,7 +181,7 @@ verify_setup() {
 
 # Show next steps
 show_next_steps() {
-    print_info "Next steps for ThreadStorm deployment:"
+    print_info "Next steps for Kolekt deployment:"
     echo ""
     echo "1. Configure environment:"
     echo "   nano .env.production"
@@ -190,23 +190,23 @@ show_next_steps() {
     echo "   ./k8s/encode-secrets.sh"
     echo ""
     echo "3. Build and push Docker image:"
-    echo "   docker build -t ghcr.io/your-username/threadstorm:latest ."
-    echo "   docker push ghcr.io/your-username/threadstorm:latest"
+    echo "   docker build -t ghcr.io/your-username/kolekt:latest ."
+    echo "   docker push ghcr.io/your-username/kolekt:latest"
     echo ""
-    echo "4. Deploy ThreadStorm:"
+    echo "4. Deploy Kolekt:"
     echo "   ./k8s/deploy.sh deploy"
     echo ""
     echo "5. Access the application:"
-    echo "   kubectl port-forward service/threadstorm-service 8000:80 -n threadstorm"
+    echo "   kubectl port-forward service/kolekt-service 8000:80 -n kolekt"
     echo ""
     echo "6. Access monitoring:"
-    echo "   kubectl port-forward service/prometheus-service 9090:9090 -n threadstorm"
-    echo "   kubectl port-forward service/grafana-service 3000:3000 -n threadstorm"
+    echo "   kubectl port-forward service/prometheus-service 9090:9090 -n kolekt"
+    echo "   kubectl port-forward service/grafana-service 3000:3000 -n kolekt"
 }
 
 # Main setup function
 main() {
-    echo -e "${BLUE}☸️  ThreadStorm Kubernetes Environment Setup${NC}"
+    echo -e "${BLUE}☸️  Kolekt Kubernetes Environment Setup${NC}"
     echo "=========================================="
     echo ""
     
@@ -250,7 +250,7 @@ case "${1:-}" in
     *)
         echo "Usage: $0 {local|verify|components|ssl|help}"
         echo ""
-        echo "This script sets up a complete Kubernetes environment for ThreadStorm."
+        echo "This script sets up a complete Kubernetes environment for Kolekt."
         echo ""
         echo "For local development: $0 local"
         echo "For cloud deployment: Follow KUBERNETES_SETUP_GUIDE.md"

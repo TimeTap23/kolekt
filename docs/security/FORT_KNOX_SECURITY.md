@@ -40,7 +40,7 @@ This document outlines the comprehensive security implementation that makes the 
 1. `profiles` - User profile data
 2. `user_settings` - User preferences
 3. `api_usage` - API usage tracking
-4. `threadstorms` - Thread management
+4. `kolekts` - Thread management
 5. `content_sources` - Content sources
 6. `content_items` - Content items
 7. `content_embeddings` - AI embeddings

@@ -1,8 +1,8 @@
-# Meta Platform Compliance Guide for ThreadStorm
+# Meta Platform Compliance Guide for Kolekt
 
 ## 🛡️ **Meta-Legal & Production-Safe Implementation**
 
-This guide ensures ThreadStorm is fully compliant with Meta's Platform Terms and ready for production deployment.
+This guide ensures Kolekt is fully compliant with Meta's Platform Terms and ready for production deployment.
 
 ## 📋 **1. Meta App Configuration**
 
@@ -175,7 +175,7 @@ PLATFORM_TERMS_VERSION=2024-01-01
 ```bash
 APP_REVIEW_SCREENCAST_URL=https://your-domain.com/screencast
 APP_REVIEW_TEST_CREDENTIALS=test-credentials-url
-APP_REVIEW_DATA_USAGE_DESCRIPTION=ThreadStorm formats and publishes content to Threads. We collect content you choose to publish, basic profile information, and usage analytics to provide our service.
+APP_REVIEW_DATA_USAGE_DESCRIPTION=Kolekt formats and publishes content to Threads. We collect content you choose to publish, basic profile information, and usage analytics to provide our service.
 ```
 
 ## 🛡️ **8. Platform Terms Compliance**
@@ -291,7 +291,7 @@ WEBHOOK_SECRET=your-webhook-secret
 - [Data Use Checkup](https://developers.facebook.com/docs/app-review/data-use-checkup/)
 
 ### **Compliance Support**
-- **Email**: privacy@threadstorm.com
+- **Email**: privacy@kolekt.com
 - **Response Time**: Within 48 hours
 - **Documentation**: This guide and inline code comments
 - **Monitoring**: Real-time compliance dashboard
@@ -325,6 +325,6 @@ WEBHOOK_SECRET=your-webhook-secret
 
 ---
 
-**ThreadStorm is now Meta-legal and production-safe!** 🛡️✨
+**Kolekt is now Meta-legal and production-safe!** 🛡️✨
 
 This implementation ensures full compliance with Meta's Platform Terms while providing a robust, scalable, and user-friendly experience.

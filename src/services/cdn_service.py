@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-CDN Service for ThreadStorm
+CDN Service for Kolekt
 Handles static asset optimization and CDN integration
 """
 

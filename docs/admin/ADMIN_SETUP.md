@@ -1,13 +1,13 @@
-# ThreadStorm Admin Panel Setup Guide
+# Kolekt Admin Panel Setup Guide
 
 ## Overview
 
-The ThreadStorm Admin Panel provides comprehensive site administration capabilities including user management, announcement publishing, and system monitoring. This guide will help you set up and use the admin panel.
+The Kolekt Admin Panel provides comprehensive site administration capabilities including user management, announcement publishing, and system monitoring. This guide will help you set up and use the admin panel.
 
 ## 🔧 Setup Requirements
 
 ### Prerequisites
-- ThreadStorm application running
+- Kolekt application running
 - Supabase database configured
 - Admin user account
 
@@ -44,13 +44,13 @@ http://127.0.0.1:8000/admin
 ## 🎯 Admin Panel Features
 
 ### Dashboard
-- **User Statistics**: Total users, active users, threadstorms created
+- **User Statistics**: Total users, active users, kolekts created
 - **API Usage**: Total API calls, storage usage, revenue metrics
 - **Real-time Updates**: Refresh stats and export data
 
 ### User Management
 - **User List**: View all users with pagination and search
-- **User Details**: See user profiles, threadstorms, and API usage
+- **User Details**: See user profiles, kolekts, and API usage
 - **User Actions**: Edit user information, change plans, activate/deactivate accounts
 - **Filtering**: Filter by plan (Free/Pro/Business) and status (Active/Inactive)
 
@@ -80,7 +80,7 @@ http://127.0.0.1:8000/admin
 ## 📱 User Interface
 
 ### Cyberpunk Theme
-- **Consistent Design**: Matches the main ThreadStorm theme
+- **Consistent Design**: Matches the main Kolekt theme
 - **Responsive Layout**: Works on desktop and mobile devices
 - **Interactive Elements**: Hover effects, animations, and visual feedback
 
@@ -195,7 +195,7 @@ If you encounter issues with the admin panel:
 3. Ensure all required tables exist in your database
 4. Check that your admin user has the correct role
 
-For additional support, refer to the main ThreadStorm documentation or contact the development team.
+For additional support, refer to the main Kolekt documentation or contact the development team.
 
 ---
 

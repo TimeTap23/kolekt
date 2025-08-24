@@ -1,4 +1,4 @@
--- ThreadStorm Supabase Database Schema
+-- Kolekt Supabase Database Schema
 -- Run this in your Supabase SQL editor
 
 -- Create custom types
@@ -10,7 +10,7 @@ CREATE TYPE draft_status AS ENUM (
     'draft', 'published', 'archived'
 );
 
-CREATE TYPE threadstorm_status AS ENUM (
+CREATE TYPE kolekt_status AS ENUM (
     'draft', 'completed', 'published', 'archived'
 );
 
@@ -66,8 +66,8 @@ CREATE TABLE public.drafts (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Threadstorms table (completed threadstorms)
-CREATE TABLE public.threadstorms (
+-- Threadstorms table (completed kolekts)
+CREATE TABLE public.kolekts (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
     title VARCHAR(200),
@@ -80,7 +80,7 @@ CREATE TABLE public.threadstorms (
     images TEXT[] DEFAULT '{}',
     tone VARCHAR(50),
     include_numbering BOOLEAN DEFAULT TRUE,
-    status threadstorm_status DEFAULT 'completed',
+    status kolekt_status DEFAULT 'completed',
     metadata JSONB DEFAULT '{}',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -124,9 +124,9 @@ CREATE INDEX idx_templates_category ON public.templates(category);
 CREATE INDEX idx_templates_is_public ON public.templates(is_public);
 CREATE INDEX idx_drafts_user_id ON public.drafts(user_id);
 CREATE INDEX idx_drafts_status ON public.drafts(status);
-CREATE INDEX idx_threadstorms_user_id ON public.threadstorms(user_id);
-CREATE INDEX idx_threadstorms_status ON public.threadstorms(status);
-CREATE INDEX idx_threadstorms_created_at ON public.threadstorms(created_at);
+CREATE INDEX idx_kolekts_user_id ON public.kolekts(user_id);
+CREATE INDEX idx_kolekts_status ON public.kolekts(status);
+CREATE INDEX idx_kolekts_created_at ON public.kolekts(created_at);
 CREATE INDEX idx_refresh_tokens_user_id ON public.refresh_tokens(user_id);
 CREATE INDEX idx_refresh_tokens_token_hash ON public.refresh_tokens(token_hash);
 CREATE INDEX idx_api_usage_user_id ON public.api_usage(user_id);
@@ -136,7 +136,7 @@ CREATE INDEX idx_api_usage_endpoint ON public.api_usage(endpoint);
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.templates ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.drafts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.threadstorms ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.kolekts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.refresh_tokens ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.api_usage ENABLE ROW LEVEL SECURITY;
@@ -180,17 +180,17 @@ CREATE POLICY "Users can update their own drafts" ON public.drafts
 CREATE POLICY "Users can delete their own drafts" ON public.drafts
     FOR DELETE USING (auth.uid() = user_id);
 
--- RLS Policies for threadstorms
-CREATE POLICY "Users can view their own threadstorms" ON public.threadstorms
+-- RLS Policies for kolekts
+CREATE POLICY "Users can view their own kolekts" ON public.kolekts
     FOR SELECT USING (auth.uid() = user_id);
 
-CREATE POLICY "Users can create their own threadstorms" ON public.threadstorms
+CREATE POLICY "Users can create their own kolekts" ON public.kolekts
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
-CREATE POLICY "Users can update their own threadstorms" ON public.threadstorms
+CREATE POLICY "Users can update their own kolekts" ON public.kolekts
     FOR UPDATE USING (auth.uid() = user_id);
 
-CREATE POLICY "Users can delete their own threadstorms" ON public.threadstorms
+CREATE POLICY "Users can delete their own kolekts" ON public.kolekts
     FOR DELETE USING (auth.uid() = user_id);
 
 -- RLS Policies for user_settings
@@ -239,8 +239,8 @@ CREATE TRIGGER update_drafts_updated_at
     BEFORE UPDATE ON public.drafts
     FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
-CREATE TRIGGER update_threadstorms_updated_at
-    BEFORE UPDATE ON public.threadstorms
+CREATE TRIGGER update_kolekts_updated_at
+    BEFORE UPDATE ON public.kolekts
     FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 CREATE TRIGGER update_user_settings_updated_at

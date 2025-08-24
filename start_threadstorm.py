@@ -186,7 +186,7 @@ def main():
                 "stats": {
                     "total_users": total_users,
                     "active_users": total_users,
-                    "total_threadstorms": 0,
+                    "total_kolekts": 0,
                     "total_api_calls": 0,
                     "storage_used": 0.0,
                     "revenue_monthly": 0.0

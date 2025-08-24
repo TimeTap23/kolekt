@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Job Queue Service for ThreadStorm
+Job Queue Service for Kolekt
 Handles rate limiting, backoff strategies, and Meta API compliance
 """
 

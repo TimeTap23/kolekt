@@ -17,7 +17,7 @@ from src.services.supabase import supabase_service
 
 async def make_user_admin():
     """Make an existing user an admin"""
-    print("🔧 ThreadStorm Admin User Setup")
+    print("🔧 Kolekt Admin User Setup")
     print("=" * 50)
     
     # Get user input
@@ -63,7 +63,7 @@ async def make_user_admin():
 
 def main():
     """Main function"""
-    print("🚀 ThreadStorm Admin Setup")
+    print("🚀 Kolekt Admin Setup")
     print("=" * 50)
     
     # Check if required environment variables are set

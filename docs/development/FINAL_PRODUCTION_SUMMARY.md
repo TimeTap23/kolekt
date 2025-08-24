@@ -93,7 +93,7 @@ We have successfully transformed Kolekt from a basic scaffold into a **fully fun
 6. **User Experience**: Professional dashboard and UI
 
 ### **Ready to Deploy:**
-- ✅ Vercel, Railway, DigitalOcean, AWS, GCP, Azure
+- ✅ Vercel, Railway, Railway, AWS, GCP, Azure
 - ✅ Environment variables configured
 - ✅ Database schema applied
 - ✅ All dependencies documented

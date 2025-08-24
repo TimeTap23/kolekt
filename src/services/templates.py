@@ -1,7 +1,7 @@
 """
-Template Library for ThreadStorm
+Template Library for Kolekt
 
-Pre-built threadstorm templates for different industries and use cases.
+Pre-built kolekt templates for different industries and use cases.
 """
 
 from typing import List, Dict, Optional
@@ -32,7 +32,7 @@ class Template:
 
 
 class TemplateLibrary:
-    """Template library for ThreadStorm"""
+    """Template library for Kolekt"""
     
     def __init__(self):
         self.templates = self._load_templates()

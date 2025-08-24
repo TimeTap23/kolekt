@@ -1,8 +1,8 @@
-# ThreadStorm Kubernetes Deployment Guide
+# Kolekt Kubernetes Deployment Guide
 
-## 🎯 **Complete Kubernetes Deployment for ThreadStorm**
+## 🎯 **Complete Kubernetes Deployment for Kolekt**
 
-This guide provides step-by-step instructions for deploying ThreadStorm to Kubernetes with monitoring, scaling, and production-ready features.
+This guide provides step-by-step instructions for deploying Kolekt to Kubernetes with monitoring, scaling, and production-ready features.
 
 ## 📋 **Prerequisites**
 
@@ -23,8 +23,8 @@ This guide provides step-by-step instructions for deploying ThreadStorm to Kuber
 ### **Step 1: Prepare Environment**
 ```bash
 # Clone repository (if not already done)
-git clone https://github.com/your-username/threadstorm.git
-cd threadstorm
+git clone https://github.com/your-username/kolekt.git
+cd kolekt
 
 # Create production environment
 cp env.production .env.production
@@ -108,10 +108,10 @@ Copy these values to `k8s/secrets.yaml`, replacing the placeholder values.
 
 ```bash
 # Build the image
-docker build -t ghcr.io/your-username/threadstorm:latest .
+docker build -t ghcr.io/your-username/kolekt:latest .
 
 # Push to registry
-docker push ghcr.io/your-username/threadstorm:latest
+docker push ghcr.io/your-username/kolekt:latest
 ```
 
 **Note**: Update the image name in `k8s/deployment.yaml` to match your registry.
@@ -134,7 +134,7 @@ kubectl apply -f k8s/secrets.yaml
 # Deploy Redis
 kubectl apply -f k8s/redis.yaml
 
-# Deploy ThreadStorm
+# Deploy Kolekt
 kubectl apply -f k8s/deployment.yaml
 
 # Deploy monitoring (optional)
@@ -145,16 +145,16 @@ kubectl apply -f k8s/monitoring.yaml
 
 ```bash
 # Check all resources
-kubectl get all -n threadstorm
+kubectl get all -n kolekt
 
 # Check pod status
-kubectl get pods -n threadstorm
+kubectl get pods -n kolekt
 
 # Check services
-kubectl get services -n threadstorm
+kubectl get services -n kolekt
 
 # Check ingress
-kubectl get ingress -n threadstorm
+kubectl get ingress -n kolekt
 ```
 
 ## 📊 **Monitoring Setup**
@@ -169,14 +169,14 @@ kubectl apply -f k8s/monitoring.yaml
 #### **Prometheus**
 ```bash
 # Port forward to access Prometheus
-kubectl port-forward service/prometheus-service 9090:9090 -n threadstorm
+kubectl port-forward service/prometheus-service 9090:9090 -n kolekt
 ```
 Access: http://localhost:9090
 
 #### **Grafana**
 ```bash
 # Port forward to access Grafana
-kubectl port-forward service/grafana-service 3000:3000 -n threadstorm
+kubectl port-forward service/grafana-service 3000:3000 -n kolekt
 ```
 Access: http://localhost:3000
 - Username: `admin`
@@ -200,14 +200,14 @@ Access: http://localhost:3000
 ./k8s/deploy.sh scale 5
 
 # Or use kubectl directly
-kubectl scale deployment threadstorm --replicas=5 -n threadstorm
+kubectl scale deployment kolekt --replicas=5 -n kolekt
 ```
 
 ### **Upgrade Deployment**
 ```bash
 # Build and push new image
-docker build -t ghcr.io/your-username/threadstorm:latest .
-docker push ghcr.io/your-username/threadstorm:latest
+docker build -t ghcr.io/your-username/kolekt:latest .
+docker push ghcr.io/your-username/kolekt:latest
 
 # Upgrade deployment
 ./k8s/deploy.sh upgrade
@@ -223,19 +223,19 @@ docker push ghcr.io/your-username/threadstorm:latest
 ### **Get Service URLs**
 ```bash
 # Get LoadBalancer IP
-kubectl get service threadstorm-service -n threadstorm
+kubectl get service kolekt-service -n kolekt
 
 # Get Ingress information
-kubectl get ingress threadstorm-ingress -n threadstorm
+kubectl get ingress kolekt-ingress -n kolekt
 ```
 
 ### **Port Forwarding (for local access)**
 ```bash
 # Forward main application
-kubectl port-forward service/threadstorm-service 8000:80 -n threadstorm
+kubectl port-forward service/kolekt-service 8000:80 -n kolekt
 
 # Forward admin panel
-kubectl port-forward service/threadstorm-service 8001:80 -n threadstorm
+kubectl port-forward service/kolekt-service 8001:80 -n kolekt
 ```
 
 ### **Access URLs**
@@ -277,12 +277,12 @@ EOF
 # Generate self-signed certificate
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
     -keyout tls.key -out tls.crt \
-    -subj "/CN=threadstorm.com"
+    -subj "/CN=kolekt.com"
 
 # Create TLS secret
-kubectl create secret tls threadstorm-tls \
+kubectl create secret tls kolekt-tls \
     --key tls.key --cert tls.crt \
-    -n threadstorm
+    -n kolekt
 ```
 
 ### **Network Policies**
@@ -300,7 +300,7 @@ The HPA is already configured in `k8s/deployment.yaml`:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: threadstorm-hpa
+  name: kolekt-hpa
 spec:
   minReplicas: 3
   maxReplicas: 10
@@ -329,7 +329,7 @@ To increase resource limits:
 
 ```bash
 # Edit deployment
-kubectl edit deployment threadstorm -n threadstorm
+kubectl edit deployment kolekt -n kolekt
 
 # Or update the YAML file and reapply
 kubectl apply -f k8s/deployment.yaml
@@ -347,14 +347,14 @@ pg_dump $DATABASE_URL > backup_$(date +%Y%m%d_%H%M%S).sql
 ### **Application Backup**
 ```bash
 # Backup configuration
-tar -czf threadstorm_k8s_backup_$(date +%Y%m%d).tar.gz \
+tar -czf kolekt_k8s_backup_$(date +%Y%m%d).tar.gz \
     k8s/ .env.production
 ```
 
 ### **Disaster Recovery**
 ```bash
 # Restore from backup
-tar -xzf threadstorm_k8s_backup_20241201.tar.gz
+tar -xzf kolekt_k8s_backup_20241201.tar.gz
 kubectl apply -f k8s/
 ```
 
@@ -365,31 +365,31 @@ kubectl apply -f k8s/
 #### **1. Pods Not Starting**
 ```bash
 # Check pod status
-kubectl get pods -n threadstorm
+kubectl get pods -n kolekt
 
 # Check pod events
-kubectl describe pod <pod-name> -n threadstorm
+kubectl describe pod <pod-name> -n kolekt
 
 # Check pod logs
-kubectl logs <pod-name> -n threadstorm
+kubectl logs <pod-name> -n kolekt
 ```
 
 #### **2. Services Not Accessible**
 ```bash
 # Check service status
-kubectl get services -n threadstorm
+kubectl get services -n kolekt
 
 # Check endpoints
-kubectl get endpoints -n threadstorm
+kubectl get endpoints -n kolekt
 
 # Test service connectivity
-kubectl run test-pod --image=busybox -it --rm --restart=Never -- nslookup threadstorm-service
+kubectl run test-pod --image=busybox -it --rm --restart=Never -- nslookup kolekt-service
 ```
 
 #### **3. Ingress Issues**
 ```bash
 # Check ingress status
-kubectl get ingress -n threadstorm
+kubectl get ingress -n kolekt
 
 # Check ingress controller
 kubectl get pods -n ingress-nginx
@@ -401,31 +401,31 @@ kubectl logs -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx
 #### **4. Resource Issues**
 ```bash
 # Check resource usage
-kubectl top pods -n threadstorm
+kubectl top pods -n kolekt
 
 # Check node resources
 kubectl top nodes
 
 # Check events
-kubectl get events -n threadstorm --sort-by='.lastTimestamp'
+kubectl get events -n kolekt --sort-by='.lastTimestamp'
 ```
 
 ### **Debug Commands**
 ```bash
 # Get all resources in namespace
-kubectl get all -n threadstorm
+kubectl get all -n kolekt
 
 # Check configuration
-kubectl get configmaps -n threadstorm
-kubectl get secrets -n threadstorm
+kubectl get configmaps -n kolekt
+kubectl get secrets -n kolekt
 
 # Check persistent volumes
-kubectl get pvc -n threadstorm
+kubectl get pvc -n kolekt
 kubectl get pv
 
 # Check HPA status
-kubectl get hpa -n threadstorm
-kubectl describe hpa threadstorm-hpa -n threadstorm
+kubectl get hpa -n kolekt
+kubectl describe hpa kolekt-hpa -n kolekt
 ```
 
 ## 🎯 **Production Checklist**
@@ -459,13 +459,13 @@ kubectl describe hpa threadstorm-hpa -n threadstorm
 ./k8s/deploy.sh upgrade
 
 # Check resource usage
-kubectl top pods -n threadstorm
+kubectl top pods -n kolekt
 
 # Review logs
-kubectl logs -f deployment/threadstorm -n threadstorm
+kubectl logs -f deployment/kolekt -n kolekt
 
 # Monitor HPA
-kubectl get hpa -n threadstorm
+kubectl get hpa -n kolekt
 ```
 
 ### **Useful Commands**
@@ -489,7 +489,7 @@ kubectl get hpa -n threadstorm
 ## 🎉 **Success Metrics**
 
 ### **Deployment Success Indicators**
-- ✅ **All pods running** - `kubectl get pods -n threadstorm`
+- ✅ **All pods running** - `kubectl get pods -n kolekt`
 - ✅ **Services accessible** - Health checks passing
 - ✅ **Ingress working** - SSL certificates valid
 - ✅ **Monitoring active** - Prometheus/Grafana accessible
@@ -505,9 +505,9 @@ kubectl get hpa -n threadstorm
 
 ---
 
-## 🚀 **ThreadStorm Kubernetes Deployment Complete!**
+## 🚀 **Kolekt Kubernetes Deployment Complete!**
 
-Your ThreadStorm application is now running on Kubernetes with:
+Your Kolekt application is now running on Kubernetes with:
 - ✅ **High availability** - Multiple replicas with auto-scaling
 - ✅ **Load balancing** - Ingress with SSL termination
 - ✅ **Monitoring** - Prometheus and Grafana
@@ -515,4 +515,4 @@ Your ThreadStorm application is now running on Kubernetes with:
 - ✅ **Scalability** - Horizontal and vertical scaling
 - ✅ **Backup** - Data protection and recovery
 
-**ThreadStorm is ready for production use!** 🎉
+**Kolekt is ready for production use!** 🎉

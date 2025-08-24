@@ -1,18 +1,18 @@
 {
   "dashboard": {
     "id": null,
-    "title": "ThreadStorm Dashboard",
-    "tags": ["threadstorm", "monitoring"],
+    "title": "Kolekt Dashboard",
+    "tags": ["kolekt", "monitoring"],
     "style": "dark",
     "timezone": "browser",
     "panels": [
       {
         "id": 1,
-        "title": "ThreadStorm Application Health",
+        "title": "Kolekt Application Health",
         "type": "stat",
         "targets": [
           {
-            "expr": "up{job=\"threadstorm\"}",
+            "expr": "up{job=\"kolekt\"}",
             "legendFormat": "{{instance}}"
           }
         ],
@@ -37,7 +37,7 @@
         "type": "graph",
         "targets": [
           {
-            "expr": "rate(http_requests_total{job=\"threadstorm\"}[5m])",
+            "expr": "rate(http_requests_total{job=\"kolekt\"}[5m])",
             "legendFormat": "{{method}} {{endpoint}}"
           }
         ],
@@ -49,11 +49,11 @@
         "type": "graph",
         "targets": [
           {
-            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=\"threadstorm\"}[5m]))",
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=\"kolekt\"}[5m]))",
             "legendFormat": "95th percentile"
           },
           {
-            "expr": "histogram_quantile(0.50, rate(http_request_duration_seconds_bucket{job=\"threadstorm\"}[5m]))",
+            "expr": "histogram_quantile(0.50, rate(http_request_duration_seconds_bucket{job=\"kolekt\"}[5m]))",
             "legendFormat": "50th percentile"
           }
         ],
@@ -71,11 +71,11 @@
         "type": "graph",
         "targets": [
           {
-            "expr": "rate(http_requests_total{job=\"threadstorm\", status=~\"5..\"}[5m])",
+            "expr": "rate(http_requests_total{job=\"kolekt\", status=~\"5..\"}[5m])",
             "legendFormat": "5xx errors"
           },
           {
-            "expr": "rate(http_requests_total{job=\"threadstorm\", status=~\"4..\"}[5m])",
+            "expr": "rate(http_requests_total{job=\"kolekt\", status=~\"4..\"}[5m])",
             "legendFormat": "4xx errors"
           }
         ],
@@ -87,7 +87,7 @@
         "type": "graph",
         "targets": [
           {
-            "expr": "process_resident_memory_bytes{job=\"threadstorm\"} / 1024 / 1024",
+            "expr": "process_resident_memory_bytes{job=\"kolekt\"} / 1024 / 1024",
             "legendFormat": "Memory (MB)"
           }
         ],
@@ -105,7 +105,7 @@
         "type": "graph",
         "targets": [
           {
-            "expr": "rate(process_cpu_seconds_total{job=\"threadstorm\"}[5m]) * 100",
+            "expr": "rate(process_cpu_seconds_total{job=\"kolekt\"}[5m]) * 100",
             "legendFormat": "CPU %"
           }
         ],
@@ -144,11 +144,11 @@
       },
       {
         "id": 8,
-        "title": "ThreadStorm API Calls",
+        "title": "Kolekt API Calls",
         "type": "graph",
         "targets": [
           {
-            "expr": "rate(threadstorm_api_calls_total[5m])",
+            "expr": "rate(kolekt_api_calls_total[5m])",
             "legendFormat": "API calls/sec"
           }
         ],
@@ -160,7 +160,7 @@
         "type": "stat",
         "targets": [
           {
-            "expr": "threadstorm_active_users",
+            "expr": "kolekt_active_users",
             "legendFormat": "Active Users"
           }
         ],
@@ -180,7 +180,7 @@
         "type": "graph",
         "targets": [
           {
-            "expr": "rate(threadstorm_created_total[5m])",
+            "expr": "rate(kolekt_created_total[5m])",
             "legendFormat": "Threadstorms/min"
           }
         ],

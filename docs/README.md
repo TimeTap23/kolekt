@@ -11,14 +11,14 @@ Welcome to the Kolekt documentation! This directory contains all the setup guide
 - **Social Connections** - Manual setup for social media integrations
 
 ### 🚀 **Deployment** (`/deployment/`)
-- **Cloud Deployment** - Digital Ocean and cloud platform deployment
+- **Cloud Deployment** - Railway and cloud platform deployment
 - **Production Deployment** - Production environment setup
 - **Kubernetes** - K8s deployment and configuration
 - **Deployment Summaries** - Quick deployment guides
 
 ### 🔐 **OAuth Integration** (`/oauth/`)
 - **Google OAuth** - Complete Google OAuth setup guide
-- **Digital Ocean OAuth** - OAuth configuration in Digital Ocean
+- **Railway OAuth** - OAuth configuration in Railway
 - **Meta OAuth** - Facebook/Instagram OAuth setup
 - **OAuth Compliance** - Meta platform compliance requirements
 
@@ -46,7 +46,7 @@ Welcome to the Kolekt documentation! This directory contains all the setup guide
 3. Follow [Local Development](/development/) for dev environment
 
 ### **For Deployment:**
-1. Follow [Cloud Deployment](/deployment/) for Digital Ocean setup
+1. Follow [Cloud Deployment](/deployment/) for Railway setup
 2. Configure [OAuth](/oauth/) for production authentication
 3. Review [Security Hardening](/setup/) for production security
 
@@ -59,7 +59,7 @@ Welcome to the Kolekt documentation! This directory contains all the setup guide
 - **Admin**: `/admin/`
 
 ### **By Platform:**
-- **Digital Ocean**: `/deployment/` and `/oauth/`
+- **Railway**: `/deployment/` and `/oauth/`
 - **Google OAuth**: `/oauth/`
 - **Meta/Facebook**: `/oauth/`
 - **Kubernetes**: `/deployment/`
@@ -85,7 +85,7 @@ When adding new documentation:
 ## 🔗 **External Resources**
 
 - **GitHub Repository**: [Kolekt on GitHub](https://github.com/TimeTap23/kolekt)
-- **Digital Ocean**: [App Platform Documentation](https://docs.digitalocean.com/products/app-platform/)
+- **Railway**: [App Platform Documentation](https://docs.digitalocean.com/products/app-platform/)
 - **Google OAuth**: [Google OAuth Documentation](https://developers.google.com/identity/protocols/oauth2)
 - **Supabase**: [Supabase Documentation](https://supabase.com/docs)
 

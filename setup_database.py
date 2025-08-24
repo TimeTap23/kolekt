@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Database Schema Setup Script
-Sets up the ThreadStorm database schema in Supabase
+Sets up the Kolekt database schema in Supabase
 """
 
 import asyncio
@@ -15,7 +15,7 @@ sys.path.append(str(Path(__file__).parent / "src"))
 async def setup_database():
     """Set up the database schema"""
     
-    print("🗄️ ThreadStorm Database Schema Setup")
+    print("🗄️ Kolekt Database Schema Setup")
     print("=" * 50)
     
     # Load environment variables
@@ -106,7 +106,7 @@ async def create_storage_bucket():
         supabase = SupabaseService()
         
         # Create storage bucket
-        bucket_name = "threadstorm"
+        bucket_name = "kolekt"
         
         try:
             # Try to create bucket
@@ -202,7 +202,7 @@ def main():
             print("\n🎉 Database setup completed successfully!")
             print("\n📋 Next Steps:")
             print("1. Test Meta credentials: python test_meta_credentials.py")
-            print("2. Start ThreadStorm: python main.py")
+            print("2. Start Kolekt: python main.py")
             print("3. Open http://localhost:8000 in your browser")
         else:
             print("\n⚠️  Some setup steps failed. Please check the errors above.")

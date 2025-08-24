@@ -1,10 +1,10 @@
-# ThreadStorm Makefile
+# Kolekt Makefile
 
 .PHONY: help install dev test lint format clean docker-build docker-run docker-stop
 
 # Default target
 help:
-	@echo "ThreadStorm - Available commands:"
+	@echo "Kolekt - Available commands:"
 	@echo ""
 	@echo "Development:"
 	@echo "  install     - Install dependencies"
@@ -61,10 +61,10 @@ clean:
 # Docker commands
 docker-build:
 	@echo "Building Docker image..."
-	docker build -t threadstorm .
+	docker build -t kolekt .
 
 docker-run:
-	@echo "Starting ThreadStorm with Docker Compose..."
+	@echo "Starting Kolekt with Docker Compose..."
 	docker-compose up -d
 
 docker-stop:
@@ -84,7 +84,7 @@ db-reset:
 # Production commands
 prod-build:
 	@echo "Building for production..."
-	docker build -t threadstorm:prod --target production .
+	docker build -t kolekt:prod --target production .
 
 prod-run:
 	@echo "Running production server..."
@@ -97,7 +97,7 @@ logs:
 
 shell:
 	@echo "Opening shell in container..."
-	docker-compose exec threadstorm bash
+	docker-compose exec kolekt bash
 
 # Setup commands
 setup-dev:

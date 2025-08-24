@@ -1,13 +1,13 @@
-# ThreadStorm Kubernetes Deployment - Complete Implementation
+# Kolekt Kubernetes Deployment - Complete Implementation
 
 ## 🎉 **KUBERNETES DEPLOYMENT: 100% COMPLETE**
 
-ThreadStorm now has a complete, enterprise-grade Kubernetes deployment infrastructure with monitoring, scaling, security, and production-ready features.
+Kolekt now has a complete, enterprise-grade Kubernetes deployment infrastructure with monitoring, scaling, security, and production-ready features.
 
 ## 📋 **What We've Implemented**
 
 ### ☸️ **1. Complete Kubernetes Infrastructure**
-- ✅ **Namespace isolation** - `threadstorm` namespace for resource isolation
+- ✅ **Namespace isolation** - `kolekt` namespace for resource isolation
 - ✅ **Deployment configuration** - 3 replicas with auto-scaling
 - ✅ **Service configuration** - Internal service discovery and load balancing
 - ✅ **Ingress configuration** - SSL termination and external access
@@ -27,7 +27,7 @@ ThreadStorm now has a complete, enterprise-grade Kubernetes deployment infrastru
 ### 📊 **3. Monitoring & Observability**
 - ✅ **Prometheus deployment** - Metrics collection and storage
 - ✅ **Grafana deployment** - Complete monitoring dashboard
-- ✅ **Custom dashboards** - ThreadStorm-specific monitoring panels
+- ✅ **Custom dashboards** - Kolekt-specific monitoring panels
 - ✅ **Health checks** - Application and service health monitoring
 - ✅ **Log aggregation** - Centralized logging and analysis
 - ✅ **Performance metrics** - Response time, error rates, throughput
@@ -74,7 +74,7 @@ kubectl apply -f k8s/secrets.yaml
 # 3. Deploy Redis
 kubectl apply -f k8s/redis.yaml
 
-# 4. Deploy ThreadStorm
+# 4. Deploy Kolekt
 kubectl apply -f k8s/deployment.yaml
 
 # 5. Deploy monitoring (optional)
@@ -85,7 +85,7 @@ kubectl apply -f k8s/monitoring.yaml
 - **AWS EKS** - Use provided YAML files directly
 - **Google GKE** - Container-native deployment
 - **Azure AKS** - Microsoft cloud deployment
-- **DigitalOcean Kubernetes** - Simple cloud deployment
+- **Railway Kubernetes** - Simple cloud deployment
 
 ## 📊 **Monitoring Stack**
 
@@ -146,19 +146,19 @@ kubectl apply -f k8s/monitoring.yaml
 ### **Manual kubectl Commands**
 ```bash
 # Check all resources
-kubectl get all -n threadstorm
+kubectl get all -n kolekt
 
 # Check pod status
-kubectl get pods -n threadstorm
+kubectl get pods -n kolekt
 
 # View logs
-kubectl logs -f deployment/threadstorm -n threadstorm
+kubectl logs -f deployment/kolekt -n kolekt
 
 # Scale manually
-kubectl scale deployment threadstorm --replicas=5 -n threadstorm
+kubectl scale deployment kolekt --replicas=5 -n kolekt
 
 # Port forward for local access
-kubectl port-forward service/threadstorm-service 8000:80 -n threadstorm
+kubectl port-forward service/kolekt-service 8000:80 -n kolekt
 ```
 
 ## 🔒 **Security Features**
@@ -182,7 +182,7 @@ kubectl port-forward service/threadstorm-service 8000:80 -n threadstorm
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: threadstorm-hpa
+  name: kolekt-hpa
 spec:
   minReplicas: 3
   maxReplicas: 10
@@ -235,11 +235,11 @@ resources:
 ### **Backup Commands**
 ```bash
 # Backup configuration
-tar -czf threadstorm_k8s_backup_$(date +%Y%m%d).tar.gz \
+tar -czf kolekt_k8s_backup_$(date +%Y%m%d).tar.gz \
     k8s/ .env.production
 
 # Restore from backup
-tar -xzf threadstorm_k8s_backup_20241201.tar.gz
+tar -xzf kolekt_k8s_backup_20241201.tar.gz
 kubectl apply -f k8s/
 ```
 
@@ -255,19 +255,19 @@ kubectl apply -f k8s/
 ### **Debug Commands**
 ```bash
 # Check pod status
-kubectl get pods -n threadstorm
+kubectl get pods -n kolekt
 
 # View pod events
-kubectl describe pod <pod-name> -n threadstorm
+kubectl describe pod <pod-name> -n kolekt
 
 # Check service endpoints
-kubectl get endpoints -n threadstorm
+kubectl get endpoints -n kolekt
 
 # View resource usage
-kubectl top pods -n threadstorm
+kubectl top pods -n kolekt
 
 # Check events
-kubectl get events -n threadstorm --sort-by='.lastTimestamp'
+kubectl get events -n kolekt --sort-by='.lastTimestamp'
 ```
 
 ## 🎯 **Production Readiness**
@@ -294,7 +294,7 @@ kubectl get events -n threadstorm --sort-by='.lastTimestamp'
 ## 🏆 **Success Metrics**
 
 ### **Deployment Success Indicators**
-- ✅ **All pods running** - `kubectl get pods -n threadstorm`
+- ✅ **All pods running** - `kubectl get pods -n kolekt`
 - ✅ **Services accessible** - Health checks passing
 - ✅ **Ingress working** - SSL certificates valid
 - ✅ **Monitoring active** - Prometheus/Grafana accessible
@@ -308,11 +308,11 @@ kubectl get events -n threadstorm --sort-by='.lastTimestamp'
 - **Error rate**: < 1% 5xx errors
 - **Throughput**: 1000+ requests/second
 
-## 🎉 **ThreadStorm Kubernetes Status**
+## 🎉 **Kolekt Kubernetes Status**
 
 **🎯 COMPLETION: 100%**
 
-ThreadStorm is now **production-ready on Kubernetes** with:
+Kolekt is now **production-ready on Kubernetes** with:
 - ✅ **Enterprise-grade infrastructure** - Complete Kubernetes deployment
 - ✅ **High availability** - Multiple replicas with auto-scaling
 - ✅ **Load balancing** - Ingress with SSL termination
@@ -333,7 +333,7 @@ ThreadStorm is now **production-ready on Kubernetes** with:
 6. **Monitor** - Access Prometheus and Grafana dashboards
 7. **Scale** - Adjust resources based on usage
 
-**ThreadStorm is ready for enterprise Kubernetes deployment!** 🎉
+**Kolekt is ready for enterprise Kubernetes deployment!** 🎉
 
 ---
 
@@ -345,4 +345,4 @@ ThreadStorm is now **production-ready on Kubernetes** with:
 - **Scaling**: Use HPA or manual scaling commands
 - **Backup**: Follow backup procedures for data protection
 
-**ThreadStorm Kubernetes deployment is complete and ready for production!** 🚀
+**Kolekt Kubernetes deployment is complete and ready for production!** 🚀

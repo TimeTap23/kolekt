@@ -17,7 +17,7 @@ from src.services.supabase import supabase_service
 
 async def fix_user_profile():
     """Fix user profile and make them admin"""
-    print("🔧 ThreadStorm Admin User Fix")
+    print("🔧 Kolekt Admin User Fix")
     print("=" * 50)
     
     user_id = "d917b37a-456d-440a-a7e6-488af7b5c0dc"
@@ -56,7 +56,7 @@ async def fix_user_profile():
 
 def main():
     """Main function"""
-    print("🚀 ThreadStorm Admin Setup")
+    print("🚀 Kolekt Admin Setup")
     print("=" * 50)
     
     # Check if required environment variables are set

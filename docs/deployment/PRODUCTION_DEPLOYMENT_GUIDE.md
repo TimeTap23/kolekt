@@ -58,7 +58,7 @@ npm i -g @railway/cli
 railway up
 ```
 
-### Option 3: DigitalOcean App Platform
+### Option 3: Railway App Platform
 - Connect your GitHub repository
 - Set environment variables
 - Deploy with one click
@@ -98,7 +98,7 @@ REDIS_URL=redis://localhost:6379
 
 ```
 kolekt/
-├── start_threadstorm.py          # Main application entry point
+├── start_kolekt.py          # Main application entry point
 ├── src/
 │   ├── api/                      # API routes
 │   │   ├── routes.py            # Main router

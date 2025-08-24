@@ -1,8 +1,8 @@
-# ThreadStorm Kubernetes Environment Setup Guide
+# Kolekt Kubernetes Environment Setup Guide
 
 ## 🎯 **Complete Kubernetes Environment Setup**
 
-This guide covers setting up a complete Kubernetes environment for ThreadStorm deployment, including local development and production cloud options.
+This guide covers setting up a complete Kubernetes environment for Kolekt deployment, including local development and production cloud options.
 
 ## 📋 **Prerequisites**
 
@@ -115,7 +115,7 @@ nodes:
 EOF
 
 # Create cluster
-kind create cluster --name threadstorm --config kind-config.yaml
+kind create cluster --name kolekt --config kind-config.yaml
 
 # Verify
 kubectl get nodes
@@ -144,7 +144,7 @@ aws configure
 ```bash
 # Create cluster
 eksctl create cluster \
-  --name threadstorm-cluster \
+  --name kolekt-cluster \
   --region us-west-2 \
   --nodegroup-name standard-workers \
   --node-type t3.medium \
@@ -154,7 +154,7 @@ eksctl create cluster \
   --managed
 
 # Update kubeconfig
-aws eks update-kubeconfig --name threadstorm-cluster --region us-west-2
+aws eks update-kubeconfig --name kolekt-cluster --region us-west-2
 ```
 
 ### **2.2 Google GKE Setup**
@@ -172,7 +172,7 @@ gcloud init
 #### **Create GKE Cluster**
 ```bash
 # Create cluster
-gcloud container clusters create threadstorm-cluster \
+gcloud container clusters create kolekt-cluster \
   --zone us-central1-a \
   --num-nodes 3 \
   --machine-type e2-medium \
@@ -181,7 +181,7 @@ gcloud container clusters create threadstorm-cluster \
   --max-nodes 5
 
 # Get credentials
-gcloud container clusters get-credentials threadstorm-cluster --zone us-central1-a
+gcloud container clusters get-credentials kolekt-cluster --zone us-central1-a
 ```
 
 ### **2.3 Azure AKS Setup**
@@ -198,47 +198,47 @@ az login
 #### **Create AKS Cluster**
 ```bash
 # Create resource group
-az group create --name threadstorm-rg --location eastus
+az group create --name kolekt-rg --location eastus
 
 # Create cluster
 az aks create \
-  --resource-group threadstorm-rg \
-  --name threadstorm-cluster \
+  --resource-group kolekt-rg \
+  --name kolekt-cluster \
   --node-count 3 \
   --enable-addons monitoring \
   --generate-ssh-keys
 
 # Get credentials
-az aks get-credentials --resource-group threadstorm-rg --name threadstorm-cluster
+az aks get-credentials --resource-group kolekt-rg --name kolekt-cluster
 ```
 
-## 🔧 **Option 3: DigitalOcean Kubernetes**
+## 🔧 **Option 3: Railway Kubernetes**
 
-### **Install doctl**
+### **Install railway**
 ```bash
 # macOS
-brew install doctl
+brew install railway
 
 # Linux
-snap install doctl
+snap install railway
 
 # Windows
-# Download from https://github.com/digitalocean/doctl/releases
+# Download from https://github.com/digitalocean/railway/releases
 ```
 
 ### **Create DOKS Cluster**
 ```bash
 # Authenticate
-doctl auth init
+railway auth init
 
 # Create cluster
-doctl kubernetes cluster create threadstorm-cluster \
+railway kubernetes cluster create kolekt-cluster \
   --region nyc1 \
   --size s-2vcpu-4gb \
   --count 3
 
 # Save kubeconfig
-doctl kubernetes cluster kubeconfig save threadstorm-cluster
+railway kubernetes cluster kubeconfig save kolekt-cluster
 ```
 
 ## 🛠️ **Required Kubernetes Components**
@@ -306,10 +306,10 @@ EOF
 # Generate self-signed certificate
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
     -keyout tls.key -out tls.crt \
-    -subj "/CN=threadstorm.local"
+    -subj "/CN=kolekt.local"
 
 # Create TLS secret (will be used in deployment)
-kubectl create secret tls threadstorm-tls \
+kubectl create secret tls kolekt-tls \
     --key tls.key --cert tls.crt \
     --dry-run=client -o yaml > k8s/tls-secret.yaml
 ```
@@ -357,8 +357,8 @@ nano .env.production
 
 ```bash
 # Build and push Docker image
-docker build -t ghcr.io/your-username/threadstorm:latest .
-docker push ghcr.io/your-username/threadstorm:latest
+docker build -t ghcr.io/your-username/kolekt:latest .
+docker push ghcr.io/your-username/kolekt:latest
 
 # Update image in deployment
 # Edit k8s/deployment.yaml to use your image
@@ -385,7 +385,7 @@ kubectl apply -f k8s/secrets.yaml
 # 3. Deploy Redis
 kubectl apply -f k8s/redis.yaml
 
-# 4. Deploy ThreadStorm
+# 4. Deploy Kolekt
 kubectl apply -f k8s/deployment.yaml
 
 # 5. Deploy monitoring (optional)
@@ -410,27 +410,27 @@ kubectl get all --all-namespaces
 kubectl get pods -n ingress-nginx
 ```
 
-### **6.2 Check ThreadStorm Deployment**
+### **6.2 Check Kolekt Deployment**
 
 ```bash
 # Check namespace
-kubectl get all -n threadstorm
+kubectl get all -n kolekt
 
 # Check pods
-kubectl get pods -n threadstorm
+kubectl get pods -n kolekt
 
 # Check services
-kubectl get services -n threadstorm
+kubectl get services -n kolekt
 
 # Check ingress
-kubectl get ingress -n threadstorm
+kubectl get ingress -n kolekt
 ```
 
 ### **6.3 Test Application**
 
 ```bash
 # Port forward for local access
-kubectl port-forward service/threadstorm-service 8000:80 -n threadstorm
+kubectl port-forward service/kolekt-service 8000:80 -n kolekt
 
 # Test health endpoint
 curl http://localhost:8000/health
@@ -445,10 +445,10 @@ curl http://localhost:8000/
 
 ```bash
 # Get LoadBalancer IP
-kubectl get service threadstorm-service -n threadstorm
+kubectl get service kolekt-service -n kolekt
 
 # Get Ingress IP
-kubectl get ingress threadstorm-ingress -n threadstorm
+kubectl get ingress kolekt-ingress -n kolekt
 ```
 
 ### **7.2 Configure DNS (Production)**
@@ -456,18 +456,18 @@ kubectl get ingress threadstorm-ingress -n threadstorm
 ```bash
 # Point your domain to the LoadBalancer IP
 # Example DNS records:
-# A     threadstorm.com     → <load-balancer-ip>
-# A     www.threadstorm.com → <load-balancer-ip>
+# A     kolekt.com     → <load-balancer-ip>
+# A     www.kolekt.com → <load-balancer-ip>
 ```
 
 ### **7.3 Local Development Access**
 
 ```bash
 # For minikube
-minikube service threadstorm-service -n threadstorm
+minikube service kolekt-service -n kolekt
 
 # For kind
-kubectl port-forward service/threadstorm-service 8000:80 -n threadstorm
+kubectl port-forward service/kolekt-service 8000:80 -n kolekt
 
 # For cloud clusters
 # Use LoadBalancer IP or Ingress URL
@@ -492,31 +492,31 @@ kubectl get pods -n kube-system
 #### **Pods Not Starting**
 ```bash
 # Check pod status
-kubectl get pods -n threadstorm
+kubectl get pods -n kolekt
 
 # Check pod events
-kubectl describe pod <pod-name> -n threadstorm
+kubectl describe pod <pod-name> -n kolekt
 
 # Check pod logs
-kubectl logs <pod-name> -n threadstorm
+kubectl logs <pod-name> -n kolekt
 ```
 
 #### **Services Not Accessible**
 ```bash
 # Check service status
-kubectl get services -n threadstorm
+kubectl get services -n kolekt
 
 # Check endpoints
-kubectl get endpoints -n threadstorm
+kubectl get endpoints -n kolekt
 
 # Test service connectivity
-kubectl run test-pod --image=busybox -it --rm --restart=Never -- nslookup threadstorm-service
+kubectl run test-pod --image=busybox -it --rm --restart=Never -- nslookup kolekt-service
 ```
 
 #### **Ingress Issues**
 ```bash
 # Check ingress status
-kubectl get ingress -n threadstorm
+kubectl get ingress -n kolekt
 
 # Check ingress controller
 kubectl get pods -n ingress-nginx
@@ -529,16 +529,16 @@ kubectl logs -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx
 
 ```bash
 # Get all resources
-kubectl get all -n threadstorm
+kubectl get all -n kolekt
 
 # Check events
-kubectl get events -n threadstorm --sort-by='.lastTimestamp'
+kubectl get events -n kolekt --sort-by='.lastTimestamp'
 
 # Check resource usage
-kubectl top pods -n threadstorm
+kubectl top pods -n kolekt
 
 # Check HPA status
-kubectl get hpa -n threadstorm
+kubectl get hpa -n kolekt
 ```
 
 ## 📊 **Monitoring Access**
@@ -547,7 +547,7 @@ kubectl get hpa -n threadstorm
 
 ```bash
 # Port forward Prometheus
-kubectl port-forward service/prometheus-service 9090:9090 -n threadstorm
+kubectl port-forward service/prometheus-service 9090:9090 -n kolekt
 
 # Access: http://localhost:9090
 ```
@@ -556,7 +556,7 @@ kubectl port-forward service/prometheus-service 9090:9090 -n threadstorm
 
 ```bash
 # Port forward Grafana
-kubectl port-forward service/grafana-service 3000:3000 -n threadstorm
+kubectl port-forward service/grafana-service 3000:3000 -n kolekt
 
 # Access: http://localhost:3000
 # Username: admin
@@ -594,8 +594,8 @@ kubectl port-forward service/grafana-service 3000:3000 -n threadstorm
 # 1. Install Docker Desktop and enable Kubernetes
 # 2. Install kubectl
 # 3. Clone repository
-git clone https://github.com/your-username/threadstorm.git
-cd threadstorm
+git clone https://github.com/your-username/kolekt.git
+cd kolekt
 
 # 4. Configure environment
 cp env.production .env.production
@@ -608,7 +608,7 @@ cp env.production .env.production
 ./k8s/deploy.sh deploy
 
 # 7. Access application
-kubectl port-forward service/threadstorm-service 8000:80 -n threadstorm
+kubectl port-forward service/kolekt-service 8000:80 -n kolekt
 ```
 
 ### **Complete Setup (Cloud)**
@@ -616,8 +616,8 @@ kubectl port-forward service/threadstorm-service 8000:80 -n threadstorm
 # 1. Create cloud cluster (EKS/GKE/AKS)
 # 2. Install kubectl and configure access
 # 3. Clone repository
-git clone https://github.com/your-username/threadstorm.git
-cd threadstorm
+git clone https://github.com/your-username/kolekt.git
+cd kolekt
 
 # 4. Configure environment
 cp env.production .env.production
@@ -627,8 +627,8 @@ cp env.production .env.production
 ./k8s/encode-secrets.sh
 
 # 6. Build and push image
-docker build -t ghcr.io/your-username/threadstorm:latest .
-docker push ghcr.io/your-username/threadstorm:latest
+docker build -t ghcr.io/your-username/kolekt:latest .
+docker push ghcr.io/your-username/kolekt:latest
 
 # 7. Deploy
 ./k8s/deploy.sh deploy
@@ -640,7 +640,7 @@ docker push ghcr.io/your-username/threadstorm:latest
 
 ## 🎉 **Kubernetes Environment Setup Complete!**
 
-Your Kubernetes environment is now ready for ThreadStorm deployment with:
+Your Kubernetes environment is now ready for Kolekt deployment with:
 - ✅ **Complete cluster setup** (local or cloud)
 - ✅ **Required components** (Ingress, cert-manager, metrics)
 - ✅ **SSL configuration** (Let's Encrypt or self-signed)
@@ -648,4 +648,4 @@ Your Kubernetes environment is now ready for ThreadStorm deployment with:
 - ✅ **Deployment automation** (scripts and guides)
 - ✅ **Troubleshooting** (debug commands and solutions)
 
-**ThreadStorm is ready for Kubernetes deployment!** 🚀
+**Kolekt is ready for Kubernetes deployment!** 🚀

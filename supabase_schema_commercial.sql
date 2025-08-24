@@ -1,4 +1,4 @@
--- ThreadStorm Commercial Database Schema
+-- Kolekt Commercial Database Schema
 -- Enhanced version with multi-tenancy and commercial features
 
 -- Create custom types
@@ -10,7 +10,7 @@ CREATE TYPE draft_status AS ENUM (
     'draft', 'published', 'archived'
 );
 
-CREATE TYPE threadstorm_status AS ENUM (
+CREATE TYPE kolekt_status AS ENUM (
     'draft', 'completed', 'published', 'archived'
 );
 
@@ -98,8 +98,8 @@ CREATE TABLE public.drafts (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Enhanced threadstorms table
-CREATE TABLE public.threadstorms (
+-- Enhanced kolekts table
+CREATE TABLE public.kolekts (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE,
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -113,7 +113,7 @@ CREATE TABLE public.threadstorms (
     images TEXT[] DEFAULT '{}',
     tone VARCHAR(50),
     include_numbering BOOLEAN DEFAULT TRUE,
-    status threadstorm_status DEFAULT 'completed',
+    status kolekt_status DEFAULT 'completed',
     metadata JSONB DEFAULT '{}',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -222,7 +222,7 @@ CREATE INDEX idx_profiles_organization_id ON public.profiles(organization_id);
 CREATE INDEX idx_templates_organization_id ON public.templates(organization_id);
 CREATE INDEX idx_templates_is_premium ON public.templates(is_premium);
 CREATE INDEX idx_drafts_organization_id ON public.drafts(organization_id);
-CREATE INDEX idx_threadstorms_organization_id ON public.threadstorms(organization_id);
+CREATE INDEX idx_kolekts_organization_id ON public.kolekts(organization_id);
 CREATE INDEX idx_usage_metrics_organization_id ON public.usage_metrics(organization_id);
 CREATE INDEX idx_usage_metrics_user_id ON public.usage_metrics(user_id);
 CREATE INDEX idx_usage_metrics_created_at ON public.usage_metrics(created_at);
@@ -239,7 +239,7 @@ ALTER TABLE public.organizations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.templates ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.drafts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.threadstorms ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.kolekts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.usage_metrics ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.api_keys ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.subscriptions ENABLE ROW LEVEL SECURITY;
@@ -354,8 +354,8 @@ CREATE TRIGGER update_drafts_updated_at
     BEFORE UPDATE ON public.drafts
     FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
-CREATE TRIGGER update_threadstorms_updated_at
-    BEFORE UPDATE ON public.threadstorms
+CREATE TRIGGER update_kolekts_updated_at
+    BEFORE UPDATE ON public.kolekts
     FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 CREATE TRIGGER update_api_keys_updated_at

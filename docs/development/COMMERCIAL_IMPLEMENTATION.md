@@ -1,4 +1,4 @@
-# ThreadStorm Commercial Implementation Guide
+# Kolekt Commercial Implementation Guide
 
 ## 🚀 **Phase 1: Foundation (Week 1-2)**
 
@@ -78,10 +78,10 @@ class RateLimitMiddleware:
         
         # Define limits
         limits = {
-            'free': {'requests_per_minute': 10, 'threadstorms_per_month': 10},
-            'pro': {'requests_per_minute': 100, 'threadstorms_per_month': 100},
-            'business': {'requests_per_minute': 500, 'threadstorms_per_month': 1000},
-            'enterprise': {'requests_per_minute': 2000, 'threadstorms_per_month': 10000}
+            'free': {'requests_per_minute': 10, 'kolekts_per_month': 10},
+            'pro': {'requests_per_minute': 100, 'kolekts_per_month': 100},
+            'business': {'requests_per_minute': 500, 'kolekts_per_month': 1000},
+            'enterprise': {'requests_per_minute': 2000, 'kolekts_per_month': 10000}
         }
         
         limit = limits.get(plan_type, limits['free'])
@@ -114,11 +114,11 @@ class AnalyticsService:
     def __init__(self):
         self.supabase = SupabaseService()
     
-    async def track_threadstorm_creation(self, user_id: str, metadata: dict):
-        """Track threadstorm creation for analytics"""
+    async def track_kolekt_creation(self, user_id: str, metadata: dict):
+        """Track kolekt creation for analytics"""
         await self.supabase.table('usage_metrics').insert({
             'user_id': user_id,
-            'metric_type': 'threadstorm',
+            'metric_type': 'kolekt',
             'metadata': {
                 'posts_count': metadata.get('total_posts'),
                 'character_count': metadata.get('total_characters'),
@@ -142,19 +142,19 @@ class AnalyticsService:
     
     def aggregate_usage(self, data):
         """Aggregate usage data"""
-        total_threadstorms = len([d for d in data if d['metric_type'] == 'threadstorm'])
+        total_kolekts = len([d for d in data if d['metric_type'] == 'kolekt'])
         total_characters = sum([
             d['metadata'].get('character_count', 0) 
-            for d in data if d['metric_type'] == 'threadstorm'
+            for d in data if d['metric_type'] == 'kolekt'
         ])
         
         return {
-            'total_threadstorms': total_threadstorms,
+            'total_kolekts': total_kolekts,
             'total_characters': total_characters,
             'average_engagement': sum([
                 d['metadata'].get('engagement_score', 0) 
-                for d in data if d['metric_type'] == 'threadstorm'
-            ]) / max(total_threadstorms, 1)
+                for d in data if d['metric_type'] == 'kolekt'
+            ]) / max(total_kolekts, 1)
         }
 ```
 
@@ -207,8 +207,8 @@ async def create_checkout_session(user_id: str, plan_type: str):
                 'quantity': 1,
             }],
             mode='subscription',
-            success_url='https://threadstorm.com/success?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url='https://threadstorm.com/cancel',
+            success_url='https://kolekt.com/success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url='https://kolekt.com/cancel',
             metadata={'user_id': user_id, 'plan_type': plan_type}
         )
         return {"session_id": session.id, "url": session.url}
@@ -281,13 +281,13 @@ class SubscriptionManager {
             {
                 name: 'Pro',
                 price: '$9.99/month',
-                features: ['100 threadstorms/month', 'All templates', 'Analytics', 'Priority support'],
+                features: ['100 kolekts/month', 'All templates', 'Analytics', 'Priority support'],
                 plan_type: 'pro'
             },
             {
                 name: 'Business',
                 price: '$29.99/month',
-                features: ['Unlimited threadstorms', 'Team collaboration', 'API access', 'White-label options'],
+                features: ['Unlimited kolekts', 'Team collaboration', 'API access', 'White-label options'],
                 plan_type: 'business'
             },
             {
@@ -436,8 +436,8 @@ class GDPRService:
             .eq('id', user_id)\
             .execute()
         
-        # Get threadstorms
-        threadstorms = await self.supabase.table('threadstorms')\
+        # Get kolekts
+        kolekts = await self.supabase.table('kolekts')\
             .select('*')\
             .eq('user_id', user_id)\
             .execute()
@@ -450,15 +450,15 @@ class GDPRService:
         
         return {
             'profile': profile.data[0] if profile.data else None,
-            'threadstorms': threadstorms.data,
+            'kolekts': kolekts.data,
             'usage_metrics': usage.data,
             'export_date': datetime.utcnow().isoformat()
         }
     
     async def delete_user_data(self, user_id: str):
         """Delete all user data for GDPR compliance"""
-        # Delete threadstorms
-        await self.supabase.table('threadstorms')\
+        # Delete kolekts
+        await self.supabase.table('kolekts')\
             .delete()\
             .eq('user_id', user_id)\
             .execute()
@@ -485,7 +485,7 @@ class GDPRService:
 
 ```bash
 # .env.production
-DATABASE_URL=postgresql://user:pass@host:5432/threadstorm
+DATABASE_URL=postgresql://user:pass@host:5432/kolekt
 REDIS_URL=redis://host:6379
 STRIPE_SECRET_KEY=sk_live_your_live_key
 STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
@@ -537,19 +537,19 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 ```nginx
 # nginx.conf
-upstream threadstorm {
+upstream kolekt {
     server app:8000;
 }
 
 server {
     listen 80;
-    server_name threadstorm.com;
+    server_name kolekt.com;
     return 301 https://$server_name$request_uri;
 }
 
 server {
     listen 443 ssl http2;
-    server_name threadstorm.com;
+    server_name kolekt.com;
     
     ssl_certificate /etc/nginx/ssl/cert.pem;
     ssl_certificate_key /etc/nginx/ssl/key.pem;
@@ -565,7 +565,7 @@ server {
     limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
     
     location / {
-        proxy_pass http://threadstorm;
+        proxy_pass http://kolekt;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -574,7 +574,7 @@ server {
     
     location /api/ {
         limit_req zone=api burst=20 nodelay;
-        proxy_pass http://threadstorm;
+        proxy_pass http://kolekt;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -678,12 +678,12 @@ class EmailService:
     
     async def send_welcome_email(self, user_email: str, user_name: str):
         """Send welcome email to new user"""
-        subject = "Welcome to ThreadStorm! 🚀"
+        subject = "Welcome to Kolekt! 🚀"
         
         html_content = f"""
         <html>
         <body>
-            <h1>Welcome to ThreadStorm, {user_name}!</h1>
+            <h1>Welcome to Kolekt, {user_name}!</h1>
             <p>You're now ready to create engaging Threads content that drives engagement.</p>
             <p>Here's what you can do:</p>
             <ul>
@@ -692,7 +692,7 @@ class EmailService:
                 <li>Track your engagement analytics</li>
                 <li>Collaborate with your team</li>
             </ul>
-            <p><a href="https://threadstorm.com/dashboard">Get Started</a></p>
+            <p><a href="https://kolekt.com/dashboard">Get Started</a></p>
         </body>
         </html>
         """
@@ -701,20 +701,20 @@ class EmailService:
     
     async def send_upgrade_reminder(self, user_email: str, user_name: str):
         """Send upgrade reminder to free users"""
-        subject = "Upgrade to ThreadStorm Pro! 🚀"
+        subject = "Upgrade to Kolekt Pro! 🚀"
         
         html_content = f"""
         <html>
         <body>
             <h1>Ready to scale your Threads game, {user_name}?</h1>
-            <p>You've used 8/10 free threadstorms this month. Upgrade to Pro for:</p>
+            <p>You've used 8/10 free kolekts this month. Upgrade to Pro for:</p>
             <ul>
-                <li>100 threadstorms per month</li>
+                <li>100 kolekts per month</li>
                 <li>Advanced analytics</li>
                 <li>Priority support</li>
                 <li>All premium templates</li>
             </ul>
-            <p><a href="https://threadstorm.com/upgrade">Upgrade Now</a></p>
+            <p><a href="https://kolekt.com/upgrade">Upgrade Now</a></p>
         </body>
         </html>
         """
@@ -755,4 +755,4 @@ class EmailService:
 - **Break-even**: 50 Pro users or 25 Business users
 - **Profitability**: Achievable within 6 months
 
-This implementation guide provides a roadmap for transforming ThreadStorm into a profitable commercial SaaS application while maintaining the core functionality and user experience.
+This implementation guide provides a roadmap for transforming Kolekt into a profitable commercial SaaS application while maintaining the core functionality and user experience.

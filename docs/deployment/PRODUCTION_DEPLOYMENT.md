@@ -1,6 +1,6 @@
-# ThreadStorm Production Deployment Guide
+# Kolekt Production Deployment Guide
 
-This guide covers the complete production deployment of ThreadStorm using multiple deployment strategies.
+This guide covers the complete production deployment of Kolekt using multiple deployment strategies.
 
 ## 🚀 Quick Start
 
@@ -8,8 +8,8 @@ This guide covers the complete production deployment of ThreadStorm using multip
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-username/threadstorm.git
-cd threadstorm
+git clone https://github.com/your-username/kolekt.git
+cd kolekt
 
 # 2. Configure environment
 cp env.production .env.production
@@ -31,7 +31,7 @@ kubectl apply -f k8s/secrets.yaml
 # 3. Deploy Redis
 kubectl apply -f k8s/redis.yaml
 
-# 4. Deploy ThreadStorm
+# 4. Deploy Kolekt
 kubectl apply -f k8s/deployment.yaml
 ```
 
@@ -104,11 +104,11 @@ ENABLE_KMS_ENCRYPTION=false
 sudo apt install certbot
 
 # Generate certificate
-sudo certbot certonly --standalone -d threadstorm.com -d www.threadstorm.com
+sudo certbot certonly --standalone -d kolekt.com -d www.kolekt.com
 
 # Copy certificates
-sudo cp /etc/letsencrypt/live/threadstorm.com/fullchain.pem nginx/ssl/threadstorm.crt
-sudo cp /etc/letsencrypt/live/threadstorm.com/privkey.pem nginx/ssl/threadstorm.key
+sudo cp /etc/letsencrypt/live/kolekt.com/fullchain.pem nginx/ssl/kolekt.crt
+sudo cp /etc/letsencrypt/live/kolekt.com/privkey.pem nginx/ssl/kolekt.key
 ```
 
 #### Option B: Self-Signed (Development)
@@ -116,9 +116,9 @@ sudo cp /etc/letsencrypt/live/threadstorm.com/privkey.pem nginx/ssl/threadstorm.
 ```bash
 # Generate self-signed certificate
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-    -keyout nginx/ssl/threadstorm.key \
-    -out nginx/ssl/threadstorm.crt \
-    -subj "/C=US/ST=State/L=City/O=ThreadStorm/CN=threadstorm.com"
+    -keyout nginx/ssl/kolekt.key \
+    -out nginx/ssl/kolekt.crt \
+    -subj "/C=US/ST=State/L=City/O=Kolekt/CN=kolekt.com"
 ```
 
 ### 3. Domain Configuration
@@ -126,9 +126,9 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 Configure your DNS records:
 
 ```
-A     threadstorm.com     → Your server IP
-A     www.threadstorm.com → Your server IP
-CNAME  api.threadstorm.com → threadstorm.com
+A     kolekt.com     → Your server IP
+A     www.kolekt.com → Your server IP
+CNAME  api.kolekt.com → kolekt.com
 ```
 
 ## 🐳 Docker Compose Deployment
@@ -168,7 +168,7 @@ Edit `docker-compose.yml` to scale services:
 
 ```yaml
 services:
-  threadstorm:
+  kolekt:
     deploy:
       replicas: 3  # Scale to 3 instances
 ```
@@ -228,23 +228,23 @@ kubectl apply -f k8s/secrets.yaml
 # Deploy Redis
 kubectl apply -f k8s/redis.yaml
 
-# Deploy ThreadStorm
+# Deploy Kolekt
 kubectl apply -f k8s/deployment.yaml
 
 # Check deployment
-kubectl get pods -n threadstorm
-kubectl get services -n threadstorm
-kubectl get ingress -n threadstorm
+kubectl get pods -n kolekt
+kubectl get services -n kolekt
+kubectl get ingress -n kolekt
 ```
 
 ### 4. Scaling
 
 ```bash
-# Scale ThreadStorm deployment
-kubectl scale deployment threadstorm --replicas=5 -n threadstorm
+# Scale Kolekt deployment
+kubectl scale deployment kolekt --replicas=5 -n kolekt
 
 # Check HPA status
-kubectl get hpa -n threadstorm
+kubectl get hpa -n kolekt
 ```
 
 ## 🔄 CI/CD Pipeline
@@ -269,11 +269,11 @@ kubectl get hpa -n threadstorm
 
 ```bash
 # Build and push Docker image
-docker build -t ghcr.io/your-username/threadstorm:latest .
-docker push ghcr.io/your-username/threadstorm:latest
+docker build -t ghcr.io/your-username/kolekt:latest .
+docker push ghcr.io/your-username/kolekt:latest
 
 # Deploy to Kubernetes
-kubectl rollout restart deployment/threadstorm -n threadstorm
+kubectl rollout restart deployment/kolekt -n kolekt
 ```
 
 ## 📊 Monitoring & Logging
@@ -282,32 +282,32 @@ kubectl rollout restart deployment/threadstorm -n threadstorm
 
 ```bash
 # Docker Compose
-docker-compose logs -f threadstorm
+docker-compose logs -f kolekt
 
 # Kubernetes
-kubectl logs -f deployment/threadstorm -n threadstorm
+kubectl logs -f deployment/kolekt -n kolekt
 ```
 
 ### 2. Health Monitoring
 
 ```bash
 # Health check endpoint
-curl https://threadstorm.com/health
+curl https://kolekt.com/health
 
 # Kubernetes health
-kubectl get pods -n threadstorm -o wide
-kubectl describe pod <pod-name> -n threadstorm
+kubectl get pods -n kolekt -o wide
+kubectl describe pod <pod-name> -n kolekt
 ```
 
 ### 3. Performance Monitoring
 
 ```bash
 # Resource usage
-kubectl top pods -n threadstorm
+kubectl top pods -n kolekt
 kubectl top nodes
 
 # Metrics
-kubectl get hpa -n threadstorm
+kubectl get hpa -n kolekt
 ```
 
 ## 🔒 Security Hardening
@@ -348,7 +348,7 @@ docker-compose up -d
 1. **Application won't start**
    ```bash
    # Check logs
-   docker-compose logs threadstorm
+   docker-compose logs kolekt
    
    # Check environment variables
    docker-compose config
@@ -363,7 +363,7 @@ docker-compose up -d
 3. **SSL certificate issues**
    ```bash
    # Check certificate validity
-   openssl x509 -in nginx/ssl/threadstorm.crt -text -noout
+   openssl x509 -in nginx/ssl/kolekt.crt -text -noout
    
    # Renew Let's Encrypt certificate
    sudo certbot renew
@@ -372,10 +372,10 @@ docker-compose up -d
 4. **Kubernetes deployment issues**
    ```bash
    # Check pod status
-   kubectl describe pod <pod-name> -n threadstorm
+   kubectl describe pod <pod-name> -n kolekt
    
    # Check events
-   kubectl get events -n threadstorm --sort-by='.lastTimestamp'
+   kubectl get events -n kolekt --sort-by='.lastTimestamp'
    ```
 
 ### Performance Issues
@@ -384,7 +384,7 @@ docker-compose up -d
    ```bash
    # Check memory usage
    docker stats
-   kubectl top pods -n threadstorm
+   kubectl top pods -n kolekt
    
    # Scale up resources
    # Edit docker-compose.yml or k8s/deployment.yaml
@@ -393,7 +393,7 @@ docker-compose up -d
 2. **Slow response times**
    ```bash
    # Check Redis connection
-   docker exec -it threadstorm-redis redis-cli ping
+   docker exec -it kolekt-redis redis-cli ping
    
    # Check database performance
    # Monitor Supabase dashboard
@@ -405,10 +405,10 @@ docker-compose up -d
 
 ```bash
 # Docker Compose
-docker-compose up -d --scale threadstorm=3
+docker-compose up -d --scale kolekt=3
 
 # Kubernetes
-kubectl scale deployment threadstorm --replicas=5 -n threadstorm
+kubectl scale deployment kolekt --replicas=5 -n kolekt
 ```
 
 ### Vertical Scaling
@@ -428,10 +428,10 @@ resources:
 
 ```bash
 # Configure NGINX upstream
-upstream threadstorm_backend {
-    server threadstorm:8000 weight=1;
-    server threadstorm:8001 weight=1;
-    server threadstorm:8002 weight=1;
+upstream kolekt_backend {
+    server kolekt:8000 weight=1;
+    server kolekt:8001 weight=1;
+    server kolekt:8002 weight=1;
 }
 ```
 
@@ -451,7 +451,7 @@ pg_dump $DATABASE_URL > backup_$(date +%Y%m%d_%H%M%S).sql
 
 ```bash
 # Backup configuration
-tar -czf threadstorm_config_$(date +%Y%m%d).tar.gz \
+tar -czf kolekt_config_$(date +%Y%m%d).tar.gz \
     .env.production nginx/ssl/ logs/ uploads/
 ```
 
@@ -459,7 +459,7 @@ tar -czf threadstorm_config_$(date +%Y%m%d).tar.gz \
 
 ```bash
 # Restore from backup
-tar -xzf threadstorm_config_20241201.tar.gz
+tar -xzf kolekt_config_20241201.tar.gz
 ./deploy.sh deploy
 ```
 
@@ -486,7 +486,7 @@ After successful deployment:
 
 ---
 
-**ThreadStorm Production Deployment Complete! 🚀**
+**Kolekt Production Deployment Complete! 🚀**
 
 Your application is now running in production with:
 - ✅ High availability
