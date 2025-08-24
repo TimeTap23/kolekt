@@ -1,0 +1,191 @@
+# Load Balancer Configuration for ThreadStorm
+# Nginx-based load balancer with health checks and auto-scaling
+
+version: '3.8'
+
+services:
+  # Load Balancer
+  nginx-lb:
+    image: nginx:alpine
+    container_name: threadstorm-lb
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/load-balancer.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - threadstorm-1
+      - threadstorm-2
+      - threadstorm-3
+    networks:
+      - threadstorm-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis Cluster for Session Management
+  redis-master:
+    image: redis:7-alpine
+    container_name: threadstorm-redis-master
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis-master-data:/data
+    networks:
+      - threadstorm-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis-replica-1:
+    image: redis:7-alpine
+    container_name: threadstorm-redis-replica-1
+    command: redis-server --slaveof redis-master 6379 --requirepass ${REDIS_PASSWORD}
+    depends_on:
+      - redis-master
+    networks:
+      - threadstorm-network
+    restart: unless-stopped
+
+  redis-replica-2:
+    image: redis:7-alpine
+    container_name: threadstorm-redis-replica-2
+    command: redis-server --slaveof redis-master 6379 --requirepass ${REDIS_PASSWORD}
+    depends_on:
+      - redis-master
+    networks:
+      - threadstorm-network
+    restart: unless-stopped
+
+  # Application Instances (Auto-scaling)
+  threadstorm-1:
+    build: .
+    container_name: threadstorm-app-1
+    environment:
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis-master:6379
+      - DATABASE_URL=${DATABASE_URL}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+    depends_on:
+      - redis-master
+    networks:
+      - threadstorm-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  threadstorm-2:
+    build: .
+    container_name: threadstorm-app-2
+    environment:
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis-master:6379
+      - DATABASE_URL=${DATABASE_URL}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+    depends_on:
+      - redis-master
+    networks:
+      - threadstorm-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  threadstorm-3:
+    build: .
+    container_name: threadstorm-app-3
+    environment:
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis-master:6379
+      - DATABASE_URL=${DATABASE_URL}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+    depends_on:
+      - redis-master
+    networks:
+      - threadstorm-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Monitoring and Auto-scaling
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: threadstorm-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - threadstorm-network
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: threadstorm-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - threadstorm-network
+    restart: unless-stopped
+
+  # Auto-scaling Controller
+  autoscaler:
+    build: ./autoscaler
+    container_name: threadstorm-autoscaler
+    environment:
+      - PROMETHEUS_URL=http://prometheus:9090
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - SCALE_UP_THRESHOLD=80
+      - SCALE_DOWN_THRESHOLD=20
+      - MIN_INSTANCES=3
+      - MAX_INSTANCES=10
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - prometheus
+    networks:
+      - threadstorm-network
+    restart: unless-stopped
+
+volumes:
+  redis-master-data:
+  prometheus-data:
+  grafana-data:
+
+networks:
+  threadstorm-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

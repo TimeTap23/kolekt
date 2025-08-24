@@ -1,56 +1,17 @@
-# Core FastAPI dependencies
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
-pydantic==2.5.0
-pydantic-settings==2.1.0
-
-# Database and ORM
-supabase==2.0.2
-postgrest==0.13.2
-
-# HTTP requests
-requests==2.31.0
-httpx==0.24.1
-
-# Environment and configuration
-python-dotenv==1.0.0
-
-# Security and authentication
-python-jose[cryptography]==3.3.0
-passlib[bcrypt]==1.7.4
-cryptography==41.0.7
-PyJWT==2.8.0
-
-# Utilities
 python-multipart==0.0.6
-aiofiles==23.2.1
-
-# Development and testing
-pytest==7.4.3
-pytest-asyncio==0.21.1
-
-# Redis for caching
-redis==5.0.1
-
-# Celery for background tasks
-celery==5.3.4
-
-# Additional dependencies
+python-dotenv==1.0.0
 jinja2==3.1.2
-markupsafe==2.1.3
-
-# AI and Machine Learning (using hosted inference only)
-# Note: We use Hugging Face InferenceClient; no local model execution.
-huggingface-hub>=0.17,<1.0
-
-# Billing
-stripe==12.4.0
-
-# AWS (for KMS encryption)
+aiofiles==23.2.1
+httpx==0.25.2
+supabase==2.0.2
+redis==5.0.1
+psutil==5.9.6
+asyncpg==0.29.0
+stripe==7.8.0
+PyJWT==2.8.0
 boto3==1.34.0
-
-# System monitoring
-psutil==5.9.5
-
-# Cache buster - force fresh build
-# Build timestamp: 2025-08-21 - Fixed Stripe version
+gotrue==2.0.0
+celery==5.3.4
+huggingface_hub==0.19.4

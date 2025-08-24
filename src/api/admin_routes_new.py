@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Form
 from datetime import datetime, timezone, timedelta
 from typing import List, Optional
 from pydantic import BaseModel
@@ -80,7 +80,7 @@ async def get_admin_dashboard(current_user = Depends(require_admin)):
         raise HTTPException(status_code=500, detail="Failed to get dashboard data")
 
 @admin_router_new.post("/login")
-async def admin_login(email: str, password: str):
+async def admin_login(email: str = Form(...), password: str = Form(...)):
     """Admin login endpoint - no authentication required"""
     try:
         # Simple hardcoded credentials for now
