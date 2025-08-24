@@ -5,7 +5,7 @@ services:
   github:
     repo: TimeTap23/kolekt
     branch: main
-  run_command: uvicorn start_kolekt:app --host 0.0.0.0 --port $PORT
+  run_command: mkdir -p logs && uvicorn start_kolekt:app --host 0.0.0.0 --port $PORT
   environment_slug: python
   instance_count: 1
   instance_size_slug: basic-xs
