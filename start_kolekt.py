@@ -218,8 +218,11 @@ async def admin_panel():
         return {"message": "Admin panel not available"}
 
 if __name__ == "__main__":
+    # This block is for local development only
+    # Railway uses start.py for production deployment
+    import uvicorn
+    
     # Get port from environment or default to 8000
-    # Handle Railway's PORT environment variable properly
     port_str = os.getenv("PORT", "8000")
     try:
         port = int(port_str)
@@ -229,16 +232,15 @@ if __name__ == "__main__":
     
     host = os.getenv("HOST", "0.0.0.0")
     
-    print(f"🚀 Starting Kolekt on {host}:{port}")
+    print(f"🚀 Starting Kolekt (local development) on {host}:{port}")
     print(f"📊 Production mode: {PRODUCTION_READY}")
     print(f"🔗 Routes available: {ROUTES_AVAILABLE}")
     print(f"🛡️  Middleware available: {MIDDLEWARE_AVAILABLE}")
-    print(f"🚂 Railway deployment: Ready")
     
     uvicorn.run(
         "start_kolekt:app",
         host=host,
         port=port,
-        reload=True if os.getenv("ENVIRONMENT") == "development" else False,
+        reload=True,
         log_level="info"
     )
