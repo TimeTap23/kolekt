@@ -66,12 +66,18 @@ class ErrorHandler:
 class RateLimitMiddleware:
     """Simple rate limiting middleware"""
     
-    def __init__(self, app=None, requests_per_minute: int = 60):
+    def __init__(self, app, requests_per_minute: int = 60):
         self.app = app
         self.requests_per_minute = requests_per_minute
         self.requests = {}
     
-    async def __call__(self, request: Request, call_next):
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+        
+        request = Request(scope, receive)
+        
         # Get client IP
         client_ip = request.client.host if request.client else "unknown"
         
@@ -88,7 +94,7 @@ class RateLimitMiddleware:
         # Check rate limit
         if len(self.requests[client_ip]) >= self.requests_per_minute:
             logger.warning(f"Rate limit exceeded for {client_ip}")
-            return JSONResponse(
+            response = JSONResponse(
                 status_code=429,
                 content={
                     "error": "rate_limit_exceeded",
@@ -96,54 +102,62 @@ class RateLimitMiddleware:
                     "retry_after": 60
                 }
             )
+            await response(scope, receive, send)
+            return
         
         # Add current request
         self.requests[client_ip].append(current_time)
         
         # Process request
-        response = await call_next(request)
-        return response
+        await self.app(scope, receive, send)
 
 class LoggingMiddleware:
     """Request logging middleware"""
     
-    def __init__(self, app=None):
+    def __init__(self, app):
         self.app = app
     
-    async def __call__(self, request: Request, call_next):
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+        
         start_time = time.time()
         
         # Log request
-        logger.info(f"Request: {request.method} {request.url.path}")
+        logger.info(f"Request: {scope['method']} {scope['path']}")
         
         # Process request
-        response = await call_next(request)
+        await self.app(scope, receive, send)
         
         # Calculate duration
         duration = time.time() - start_time
         
         # Log response
-        logger.info(f"Response: {response.status_code} - {duration:.3f}s")
-        
-        # Add timing header
-        response.headers["X-Response-Time"] = f"{duration:.3f}s"
-        
-        return response
+        logger.info(f"Response completed - {duration:.3f}s")
 
 class SecurityMiddleware:
     """Security headers middleware"""
     
-    def __init__(self, app=None):
+    def __init__(self, app):
         self.app = app
     
-    async def __call__(self, request: Request, call_next):
-        response = await call_next(request)
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
         
-        # Add security headers
-        response.headers["X-Content-Type-Options"] = "nosniff"
-        response.headers["X-Frame-Options"] = "DENY"
-        response.headers["X-XSS-Protection"] = "1; mode=block"
-        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-        response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
+        # Create a custom send function to add headers
+        async def send_with_headers(message):
+            if message["type"] == "http.response.start":
+                # Add security headers
+                headers = dict(message.get("headers", []))
+                headers[b"x-content-type-options"] = b"nosniff"
+                headers[b"x-frame-options"] = b"DENY"
+                headers[b"x-xss-protection"] = b"1; mode=block"
+                headers[b"referrer-policy"] = b"strict-origin-when-cross-origin"
+                message["headers"] = list(headers.items())
+            
+            await send(message)
         
-        return response
+        await self.app(scope, receive, send_with_headers)

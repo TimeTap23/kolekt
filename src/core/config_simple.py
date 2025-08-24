@@ -6,7 +6,8 @@ Production-ready configuration with Railway support
 
 import os
 from typing import List, Optional
-from pydantic import BaseSettings, Field
+from pydantic_settings import BaseSettings
+from pydantic import Field
 
 class Settings(BaseSettings):
     """Application settings with Railway optimization"""
@@ -14,7 +15,7 @@ class Settings(BaseSettings):
     # Basic App Configuration
     DEBUG: bool = Field(default=False, env="DEBUG")
     SECRET_KEY: str = Field(default="kolekt-dev-secret-key", env="SECRET_KEY")
-    JWT_SECRET: str = Field(env="JWT_SECRET")  # New JWT signing key from Supabase
+    JWT_SECRET: Optional[str] = Field(default=None, env="JWT_SECRET")
     HOST: str = Field(default="0.0.0.0", env="HOST")
     PORT: int = Field(default=8000, env="PORT")
     ENVIRONMENT: str = Field(default="production", env="ENVIRONMENT")
@@ -45,10 +46,10 @@ class Settings(BaseSettings):
     
     # Admin Configuration
     ADMIN_EMAIL: str = Field(default="info@marteklabs.com", env="ADMIN_EMAIL")
-    ADMIN_PASSWORD: str = Field(env="ADMIN_PASSWORD")
+    ADMIN_PASSWORD: Optional[str] = Field(default=None, env="ADMIN_PASSWORD")
     
     # Security Configuration
-    TOKEN_ENCRYPTION_KEY: str = Field(env="TOKEN_ENCRYPTION_KEY")
+    TOKEN_ENCRYPTION_KEY: Optional[str] = Field(default=None, env="TOKEN_ENCRYPTION_KEY")
     ENABLE_TOKEN_ENCRYPTION: bool = Field(default=True, env="ENABLE_TOKEN_ENCRYPTION")
     
     # Custom Domain Configuration
@@ -59,8 +60,8 @@ class Settings(BaseSettings):
     # Email Configuration
     SMTP_HOST: str = Field(default="smtp.gmail.com", env="SMTP_HOST")
     SMTP_PORT: int = Field(default=587, env="SMTP_PORT")
-    SMTP_USER: str = Field(env="SMTP_USER")
-    SMTP_PASSWORD: str = Field(env="SMTP_PASSWORD")
+    SMTP_USER: Optional[str] = Field(default=None, env="SMTP_USER")
+    SMTP_PASSWORD: Optional[str] = Field(default=None, env="SMTP_PASSWORD")
     FROM_EMAIL: str = Field(default="noreply@kolekt.io", env="FROM_EMAIL")
     
     # Rate Limiting
@@ -70,6 +71,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = False
+        extra = "ignore"  # Ignore extra fields
 
 # Global settings instance
 settings = Settings()
