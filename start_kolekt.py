@@ -317,6 +317,39 @@ async def team_management():
     else:
         return {"message": "Team management not available"}
 
+@app.get("/login")
+async def login_page():
+    """Login page"""
+    html_path = Path(__file__).parent / "web" / "templates" / "login.html"
+    if html_path.exists():
+        with open(html_path, 'r') as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    else:
+        return {"message": "Login page not available"}
+
+@app.get("/register")
+async def register_page():
+    """Registration page"""
+    html_path = Path(__file__).parent / "web" / "templates" / "register.html"
+    if html_path.exists():
+        with open(html_path, 'r') as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    else:
+        return {"message": "Registration page not available"}
+
+@app.get("/forgot-password")
+async def forgot_password_page():
+    """Forgot password page"""
+    html_path = Path(__file__).parent / "web" / "templates" / "forgot-password.html"
+    if html_path.exists():
+        with open(html_path, 'r') as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    else:
+        return {"message": "Forgot password page not available"}
+
 # Include API routes AFTER page routes to prevent conflicts
 if ROUTES_AVAILABLE:
     app.include_router(api_router, prefix="/api/v1")
