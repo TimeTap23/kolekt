@@ -283,3 +283,8 @@ yarn-error.log*
 dist/
 build/
 *.egg-info/
+
+# Railway deployment
+.railway/
+railway.json
+railway.toml

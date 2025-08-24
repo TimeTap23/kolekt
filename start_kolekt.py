@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
 Kolekt - Consolidated Startup Script
-Combines production optimizations with simple configuration
+Optimized for Railway deployment
 """
-
 import os
 import sys
 import logging
@@ -13,6 +12,11 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
+
+# Railway-specific optimizations
+os.environ.setdefault('ENVIRONMENT', 'production')
+os.environ.setdefault('DEBUG', 'false')
+os.environ.setdefault('HOST', '0.0.0.0')
 
 # Add src to path
 sys.path.append(str(Path(__file__).parent / "src"))
@@ -130,10 +134,8 @@ app.add_middleware(
 if PRODUCTION_READY and MIDDLEWARE_AVAILABLE:
     # Add security middleware
     app.add_middleware(SecurityMiddleware)
-    
     # Add logging middleware
     app.add_middleware(LoggingMiddleware)
-    
     # Add rate limiting middleware (60 requests per minute)
     app.add_middleware(RateLimitMiddleware, requests_per_minute=60)
     
@@ -177,19 +179,21 @@ async def root():
         return HTMLResponse(content=html_content)
     else:
         return {
-            "message": "Kolekt API is running", 
+            "message": "Kolekt API is running",
             "status": "healthy",
             "version": "2.0.0",
-            "mode": "production" if PRODUCTION_READY else "basic"
+            "mode": "production" if PRODUCTION_READY else "basic",
+            "deployment": "railway"
         }
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint"""
+    """Health check endpoint for Railway"""
     return {
         "status": "healthy",
         "timestamp": "2025-08-24T14:00:00Z",
         "version": "2.0.0",
+        "deployment": "railway",
         "services": {
             "production_mode": PRODUCTION_READY,
             "routes_available": ROUTES_AVAILABLE,
@@ -217,6 +221,7 @@ if __name__ == "__main__":
     print(f"📊 Production mode: {PRODUCTION_READY}")
     print(f"🔗 Routes available: {ROUTES_AVAILABLE}")
     print(f"🛡️  Middleware available: {MIDDLEWARE_AVAILABLE}")
+    print(f"🚂 Railway deployment: Ready")
     
     uvicorn.run(
         "start_kolekt:app",
