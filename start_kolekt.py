@@ -214,7 +214,14 @@ async def admin_panel():
 
 if __name__ == "__main__":
     # Get port from environment or default to 8000
-    port = int(os.getenv("PORT", 8000))
+    # Handle Railway's PORT environment variable properly
+    port_str = os.getenv("PORT", "8000")
+    try:
+        port = int(port_str)
+    except ValueError:
+        print(f"⚠️  Invalid PORT value: {port_str}, using default 8000")
+        port = 8000
+    
     host = os.getenv("HOST", "0.0.0.0")
     
     print(f"🚀 Starting Kolekt on {host}:{port}")
