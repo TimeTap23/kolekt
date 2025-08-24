@@ -139,6 +139,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Mount static files
+static_path = Path(__file__).parent / "web" / "static"
+if static_path.exists():
+    app.mount("/static", StaticFiles(directory=str(static_path)), name="static")
+
 # Add production middleware if available
 if PRODUCTION_READY and MIDDLEWARE_AVAILABLE:
     # Add security middleware
@@ -165,16 +170,7 @@ if PRODUCTION_READY and MIDDLEWARE_AVAILABLE:
     async def generic_exception_handler(request: Request, exc: Exception):
         return await ErrorHandler.handle_generic_exception(request, exc)
 
-# Mount static files
-static_path = Path(__file__).parent / "web" / "static"
-if static_path.exists():
-    app.mount("/static", StaticFiles(directory=str(static_path)), name="static")
-
-# Include API routes if available
-if ROUTES_AVAILABLE:
-    app.include_router(api_router, prefix="/api/v1")
-
-# Define routes
+# Define page routes FIRST (before API routes to prevent conflicts)
 @app.get("/")
 async def root():
     html_path = Path(__file__).parent / "web" / "templates" / "index.html"
@@ -216,6 +212,103 @@ async def admin_panel():
         return HTMLResponse(content=html_content)
     else:
         return {"message": "Admin panel not available"}
+
+@app.get("/test-preview")
+async def test_preview():
+    """Test preview page"""
+    return {"message": "Test preview route works!"}
+
+@app.get("/formatter-preview")
+async def formatter_preview():
+    """Formatter preview page"""
+    html_path = Path(__file__).parent / "web" / "templates" / "formatter-preview.html"
+    if html_path.exists():
+        with open(html_path, 'r') as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    else:
+        return {"message": "Formatter preview not available"}
+
+@app.get("/templates-preview")
+async def templates_preview():
+    """Templates preview page"""
+    html_path = Path(__file__).parent / "web" / "templates" / "templates-preview.html"
+    if html_path.exists():
+        with open(html_path, 'r') as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    else:
+        return {"message": "Templates preview not available"}
+
+@app.get("/analytics-preview")
+async def analytics_preview():
+    """Analytics preview page"""
+    html_path = Path(__file__).parent / "web" / "templates" / "analytics-preview.html"
+    if html_path.exists():
+        with open(html_path, 'r') as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    else:
+        return {"message": "Analytics preview not available"}
+
+@app.get("/formatter")
+async def formatter():
+    """Formatter application page"""
+    html_path = Path(__file__).parent / "web" / "templates" / "formatter.html"
+    if html_path.exists():
+        with open(html_path, 'r') as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    else:
+        return {"message": "Formatter not available"}
+
+@app.get("/templates")
+async def templates():
+    """Templates application page"""
+    html_path = Path(__file__).parent / "web" / "templates" / "templates.html"
+    if html_path.exists():
+        with open(html_path, 'r') as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    else:
+        return {"message": "Templates not available"}
+
+@app.get("/analytics")
+async def analytics():
+    """Analytics application page"""
+    html_path = Path(__file__).parent / "web" / "templates" / "analytics.html"
+    if html_path.exists():
+        with open(html_path, 'r') as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    else:
+        return {"message": "Analytics not available"}
+
+@app.get("/social-manager")
+async def social_manager():
+    """Social manager application page"""
+    html_path = Path(__file__).parent / "web" / "templates" / "social-manager.html"
+    if html_path.exists():
+        with open(html_path, 'r') as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    else:
+        return {"message": "Social manager not available"}
+
+@app.get("/team-management")
+async def team_management():
+    """Team management application page"""
+    html_path = Path(__file__).parent / "web" / "templates" / "team-management.html"
+    if html_path.exists():
+        with open(html_path, 'r') as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    else:
+        return {"message": "Team management not available"}
+
+# Include API routes AFTER page routes to prevent conflicts
+if ROUTES_AVAILABLE:
+    app.include_router(api_router, prefix="/api/v1")
 
 if __name__ == "__main__":
     # This block is for local development only
