@@ -10,7 +10,6 @@ A modern, production-ready social media management platform that allows users to
 - **Analytics Dashboard**: Track performance across all connected platforms
 - **Admin Panel**: Comprehensive admin interface for platform management
 - **OAuth Integration**: Secure authentication with social media platforms
-- **Production Ready**: Kubernetes deployment with monitoring and scaling
 
 ## 🛠 Tech Stack
 
@@ -25,7 +24,6 @@ A modern, production-ready social media management platform that allows users to
 
 - Python 3.11+
 - Docker
-- Kubernetes cluster
 - Supabase account
 - Social media platform developer accounts
 
@@ -57,7 +55,6 @@ A modern, production-ready social media management platform that allows users to
 
 ### Production Deployment
 
-See [KUBERNETES_DEPLOYMENT_GUIDE.md](KUBERNETES_DEPLOYMENT_GUIDE.md) for complete production deployment instructions.
 
 ## 🔧 Configuration
 
@@ -83,7 +80,6 @@ THREADS_APP_SECRET=your_threads_app_secret
 
 ## 📚 Documentation
 
-- [Kubernetes Deployment Guide](KUBERNETES_DEPLOYMENT_GUIDE.md)
 - [Production OAuth Setup](PRODUCTION_OAUTH_SETUP.md)
 - [Admin Dashboard Setup](ADMIN_SETUP.md)
 

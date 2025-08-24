@@ -223,7 +223,6 @@ async def health_check() -> Dict[str, Any]:
 @health_router.get("/readyz")
 async def readiness_check() -> Dict[str, Any]:
     """
-    Readiness check endpoint for Kubernetes
     """
     try:
         monitoring_service = SystemMonitoringService()

@@ -135,7 +135,6 @@ jobs:
       run: |
         echo "Deploying to staging environment..."
         # Add your staging deployment commands here
-        # Example: kubectl apply -f k8s/staging/
         # or: docker-compose -f docker-compose.staging.yml up -d
 
   # Deploy to production
@@ -150,7 +149,6 @@ jobs:
       run: |
         echo "Deploying to production environment..."
         # Add your production deployment commands here
-        # Example: kubectl apply -f k8s/production/
         # or: docker-compose -f docker-compose.production.yml up -d
 
 
