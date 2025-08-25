@@ -11,43 +11,63 @@ class KolektAdmin {
     }
 
     init() {
+        console.log('Initializing KolektAdmin...');
+        
         // Check if admin is authenticated
         const adminToken = localStorage.getItem('admin_token');
         if (!adminToken) {
+            console.log('No admin token found, redirecting to login');
             // Redirect to admin login
             window.location.href = '/admin/login';
             return;
         }
 
+        console.log('Admin token found, setting up navigation...');
         this.setupNavigation();
         this.loadDashboard();
         
         // Show welcome message
         this.showSuccess('Welcome to Kolekt Admin Dashboard!');
+        console.log('KolektAdmin initialized successfully');
     }
 
     setupNavigation() {
         const navItems = document.querySelectorAll('.admin-nav-item');
+        console.log('Setting up navigation for', navItems.length, 'items');
         navItems.forEach(item => {
             item.addEventListener('click', (e) => {
+                console.log('Navigation item clicked:', e.target);
                 const section = e.target.closest('.admin-nav-item').dataset.section;
+                console.log('Switching to section:', section);
                 this.switchSection(section);
             });
         });
     }
 
     switchSection(section) {
+        console.log('Switching to section:', section);
+        
         // Update navigation
         document.querySelectorAll('.admin-nav-item').forEach(item => {
             item.classList.remove('active');
         });
-        document.querySelector(`[data-section="${section}"]`).classList.add('active');
+        const activeNavItem = document.querySelector(`[data-section="${section}"]`);
+        if (activeNavItem) {
+            activeNavItem.classList.add('active');
+        } else {
+            console.error('Navigation item not found for section:', section);
+        }
 
         // Update content
         document.querySelectorAll('.admin-section').forEach(section => {
             section.classList.add('hidden');
         });
-        document.getElementById(`${section}-section`).classList.remove('hidden');
+        const targetSection = document.getElementById(`${section}-section`);
+        if (targetSection) {
+            targetSection.classList.remove('hidden');
+        } else {
+            console.error('Section not found:', `${section}-section`);
+        }
 
         this.currentSection = section;
 
@@ -74,6 +94,8 @@ class KolektAdmin {
             case 'system':
                 this.loadSystemHealth();
                 break;
+            default:
+                console.warn('Unknown section:', section);
         }
     }
 
